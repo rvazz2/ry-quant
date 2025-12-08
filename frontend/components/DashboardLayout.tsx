@@ -1,0 +1,388 @@
+"use client";
+
+import React, { Suspense } from 'react';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { LayoutDashboard, TrendingUp, Activity, Calculator, Search, Settings, Terminal, SquareTerminal, BookOpen, BrainCircuit, Command, Bitcoin, Menu, X, GraduationCap, HardDrive } from 'lucide-react';
+import { SearchResult } from '@/lib/types';
+import MarketStatus from './MarketStatus';
+import ErrorBoundary from './ErrorBoundary';
+import { useSettings } from "@/contexts/SettingsContext";
+
+interface DashboardLayoutProps {
+    children: React.ReactNode;
+}
+
+const SidebarContent = () => {
+    const { updateAvailable } = useSettings();
+
+    return (
+        <nav className="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar py-2">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-2 px-2 neon-text-shadow-sm">Platform</div>
+
+            <NavItem href="/dashboard?view=overview" icon={<LayoutDashboard size={18} className="text-sky-400" />} label="Overview" />
+            <NavItem href="/crypto" icon={<Bitcoin size={18} className="text-orange-400" />} label="Crypto Command" />
+            <NavItem href="/research" icon={<Search size={18} className="text-violet-400" />} label="Stock Research" />
+            <NavItem href="/macro" icon={<Activity size={18} className="text-rose-400" />} label="Macro War Room" />
+            <NavItem href="/valuation" icon={<Calculator size={18} className="text-emerald-400" />} label="Valuation Sandbox" />
+
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-6 px-2">Education & Sim</div>
+            <NavItem href="/library" icon={<BookOpen size={18} className="text-lime-400" />} label="Library" />
+            <NavItem href="/mission" icon={<GraduationCap size={18} className="text-yellow-400" />} label="Financial Quiz" />
+            <NavItem href="/planning" icon={<BookOpen size={18} className="text-amber-400" />} label="Financial Planning" />
+            <NavItem href="/simulator" icon={<Activity size={18} className="text-indigo-400" />} label="Trading Simulator" />
+
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-6 px-2">Psychology</div>
+            <NavItem href="/behavioral" icon={<BrainCircuit size={18} className="text-pink-400" />} label="Behavioral Engine" />
+
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-6 px-2">Quant Lab</div>
+            <NavItem href="/dashboard?view=efficient-frontier" icon={<TrendingUp size={18} className="text-teal-400" />} label="Efficient Frontier" />
+            <NavItem href="/dashboard?view=backtester" icon={<Activity size={18} className="text-blue-400" />} label="Backtester" />
+            <NavItem href="/quant" icon={<Calculator size={18} className="text-cyan-400" />} label="Greeks 3D Lab" />
+            <NavItem href="/terminal" icon={<SquareTerminal size={18} className="text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]" />} label="Terminal" />
+
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-6 px-2">System</div>
+            <NavItem
+                href="/settings"
+                icon={
+                    <div className="relative">
+                        <Settings size={18} />
+                        {updateAvailable && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-slate-900 animate-pulse box-shadow-glow-red" />}
+                    </div>
+                }
+                label="Settings"
+            />
+            <NavItem href="/system" icon={<HardDrive size={18} className="text-red-400" />} label="Health & Control" />
+        </nav>
+    );
+};
+
+const NavItem = React.memo(({ icon, label, href, view }: { icon: React.ReactNode, label: string, href?: string, view?: string }) => {
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const currentView = searchParams.get('view') || 'overview';
+
+    // Determine if active
+    let isActive = false;
+    if (href) {
+        isActive = pathname === href;
+    } else if (view) {
+        isActive = pathname === '/dashboard' && currentView === view;
+    }
+
+    const linkHref = href ? href : `/?view=${view}`;
+
+    // Fix active state logic for dashboard sub-views
+    if (href?.includes('?view=')) {
+        const viewParam = href.split('?view=')[1];
+        isActive = pathname === '/dashboard' && currentView === viewParam;
+    } else if (href === '/dashboard' && !pathname.includes('view')) {
+        isActive = pathname === '/dashboard' && currentView === 'overview';
+    }
+
+    // Safety: Only show active state on client after mount to prevent hydration mismatch
+    const isActuallyActive = mounted && isActive;
+
+    return (
+        <Link
+            href={linkHref}
+            prefetch={true}
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-300 relative overflow-hidden group ${isActuallyActive
+                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 shadow-[0_0_15px_rgba(34,211,238,0.15)]'
+                : 'text-slate-400 hover:bg-white/5 hover:text-slate-200 hover:translate-x-1'
+                }`}>
+            {isActuallyActive && (
+                <div className="absolute left-0 top-0 h-full w-[3px] bg-cyan-400 shadow-[0_0_10px_2px_rgba(34,211,238,0.6)]" />
+            )}
+            <div className={`transition-transform duration-300 ${isActuallyActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]' : 'group-hover:scale-110'}`}>
+                {icon}
+            </div>
+            <span className={`font-medium tracking-wide text-sm ${isActuallyActive ? 'text-cyan-100' : ''}`}>{label}</span>
+        </Link>
+    );
+});
+
+interface CommandItemProps {
+    icon: React.ReactNode;
+    label: string;
+    subLabel?: string;
+    href?: string;
+    onClick?: () => void;
+}
+
+const CommandItem = React.memo(({ icon, label, subLabel, href, onClick }: CommandItemProps) => (
+    <Link
+        href={href || "#"}
+        onClick={onClick}
+        className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-cyan-500/10 hover:border hover:border-cyan-500/20 hover:text-cyan-400 text-slate-300 transition-all duration-200 group cursor-pointer border border-transparent"
+    >
+        <div className="text-slate-500 group-hover:text-cyan-500 transition-colors">{icon}</div>
+        <div className="flex-1">
+            <div className="font-medium">{label}</div>
+            {subLabel && <div className="text-xs text-slate-500">{subLabel}</div>}
+        </div>
+    </Link>
+));
+
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+    // Command Palette State
+    const [isCmdKOpen, setIsCmdKOpen] = React.useState(false);
+    const [searchQuery, setSearchQuery] = React.useState("");
+    const [searchResults, setSearchResults] = React.useState<SearchResult[]>([]);
+    const [searching, setSearching] = React.useState(false);
+
+    // Mobile Nav State
+    const [isMobileNavOpen, setIsMobileNavOpen] = React.useState(false);
+
+    // Toggle Cmd+K
+    React.useEffect(() => {
+        const down = (e: KeyboardEvent) => {
+            if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                setIsCmdKOpen((open) => !open);
+            }
+        };
+        document.addEventListener('keydown', down);
+        return () => document.removeEventListener('keydown', down);
+    }, []);
+
+    // Search Logic
+    React.useEffect(() => {
+        const delayDebounceFn = setTimeout(async () => {
+            if (searchQuery.length > 1) {
+                setSearching(true);
+                try {
+                    // Import dynamically to avoid circular dependency issues if any
+                    const { searchTickers } = await import('@/lib/api');
+                    const results = await searchTickers(searchQuery);
+                    setSearchResults(results);
+                } catch (error) {
+                    console.error("Search failed", error);
+                } finally {
+                    setSearching(false);
+                }
+            } else {
+                setSearchResults([]);
+            }
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchQuery]);
+
+    const [mounted, setMounted] = React.useState(false);
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    return (
+        // Added suppressHydrationWarning to handle potential server/client mismatches during dev
+        <div suppressHydrationWarning className="min-h-screen bg-transparent text-slate-100 flex font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden">
+            {/* Background Ambient Glow - Client Only */}
+            {mounted && (
+                <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                    <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[150px] animate-pulse" />
+                    <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-cyan-900/10 rounded-full blur-[150px] animate-pulse delay-1000" />
+                </div>
+            )}
+
+            {/* Sidebar */}
+            <aside className="w-64 bg-[rgba(13,16,28,0.85)] backdrop-blur-2xl border-r border-white/5 hidden md:flex flex-col relative z-20 shadow-[4px_0_24px_rgba(0,0,0,0.4)]">
+                <div className="p-6 border-b border-slate-800/60">
+                    <Link href="/">
+                        <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent cursor-pointer tracking-tight hover:brightness-125 transition-all duration-300">
+                            QUANT<span className="font-light text-slate-100">DASH</span>
+                        </h1>
+                    </Link>
+                </div>
+
+                <div className="px-4 py-4">
+                    <button
+                        onClick={() => setIsCmdKOpen(true)}
+                        className="w-full flex items-center justify-between px-3 py-2 bg-slate-800/40 hover:bg-slate-800/60 hover:shadow-[0_0_15px_rgba(6,182,212,0.1)] border border-slate-700/50 rounded-xl text-sm text-slate-400 transition-all group duration-300"
+                    >
+                        <span className="flex items-center gap-2 group-hover:text-cyan-300 transition-colors">
+                            <Search size={14} />
+                            Search...
+                        </span>
+                        <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border border-slate-700/50 px-2 font-mono text-[10px] font-bold text-slate-500 group-hover:text-cyan-400 transition-colors">
+                            <span className="text-xs">Ctrl</span> + K
+                        </kbd>
+                    </button>
+                </div>
+
+                {/* Suspense Boundary for Sidebar Navigation using searchParams */}
+                <Suspense fallback={<div className="p-4 text-slate-500 text-sm animate-pulse">Loading Nav...</div>}>
+                    <SidebarContent />
+                </Suspense>
+
+                <div className="p-4 border-t border-slate-800/60 bg-slate-900/30 backdrop-blur-sm">
+                    <div className="flex items-center gap-3 hover:scale-105 transition-transform duration-300 cursor-pointer">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-cyan-500/20">
+                            RV
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-slate-200">Ryan Vazzano</p>
+                            <p className="text-xs text-cyan-500/80 font-medium">Head of Quant</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            {/* Main Content */}
+            <main className="flex-1 overflow-y-auto h-screen relative z-10 scroll-smooth">
+                <header className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[rgba(13,16,28,0.8)] backdrop-blur-xl sticky top-0 z-30 transition-all duration-300 shadow-sm">
+                    <div className="flex items-center gap-2">
+                        {/* Mobile Menu Trigger */}
+                        <button
+                            className="md:hidden mr-2 text-slate-400 hover:text-white transition-colors"
+                            onClick={() => setIsMobileNavOpen(true)}
+                        >
+                            <Menu size={24} />
+                        </button>
+
+                        <h2 className="text-sm font-medium text-slate-400 flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-[pulse_2s_infinite]"></span>
+                            <span className="bg-gradient-to-r from-slate-200 to-slate-400 bg-clip-text text-transparent font-semibold tracking-wide">Market Dashboard</span>
+                        </h2>
+                    </div>
+
+                    <Link href="/" className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-cyan-300 transition-colors ml-auto mr-4 group">
+                        <BookOpen size={14} className="group-hover:rotate-12 transition-transform" />
+                        <span>Our Mission</span>
+                    </Link>
+
+                    <div className="flex items-center gap-4">
+                        <MarketStatus />
+                        <span className="text-xs text-cyan-500/70 font-mono bg-cyan-950/30 px-2 py-1 rounded border border-cyan-500/20">
+                            {mounted && new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                        </span>
+                    </div>
+                </header>
+
+                <div className="p-8 pb-32 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out max-w-[1920px] mx-auto">
+                    <ErrorBoundary name="Dashboard Content">
+                        {children}
+                    </ErrorBoundary>
+                </div>
+            </main>
+
+            {/* Command Palette Modal */}
+            {isCmdKOpen && (
+                <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] px-4">
+                    <div
+                        className="absolute inset-0 bg-black/60 backdrop-blur-md animate-in fade-in duration-300"
+                        onClick={() => setIsCmdKOpen(false)}
+                    />
+                    <div className="relative w-full max-w-2xl bg-[#0f1115] border border-white/10 rounded-2xl shadow-2xl shadow-cyan-900/20 overflow-hidden animate-in zoom-in-95 duration-200 ring-1 ring-white/5">
+                        <div className="flex items-center border-b border-white/10 px-5 py-4">
+                            <Search className="text-cyan-500 mr-4" size={22} />
+                            <input
+                                autoFocus
+                                type="text"
+                                placeholder="Search tickers, analysis tools, or execute commands..."
+                                className="flex-1 bg-transparent border-none outline-none text-slate-100 placeholder-slate-600 text-xl font-light"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        if (searchResults.length > 0) {
+                                            const first = searchResults[0];
+                                            setIsCmdKOpen(false);
+                                            window.location.href = `/research?ticker=${first.symbol}`;
+                                        } else if (searchQuery.length > 1) {
+                                            setIsCmdKOpen(false);
+                                            window.location.href = `/research?ticker=${searchQuery.toUpperCase()}`;
+                                        }
+                                    }
+                                }}
+                            />
+                            <div className="text-[10px] font-bold text-slate-600 border border-slate-800 rounded px-2 py-1 bg-slate-900/50">ESC</div>
+                        </div>
+
+                        <div className="max-h-[60vh] overflow-y-auto p-3 custom-scrollbar">
+                            {/* Quick Links (if no search) */}
+                            {searchQuery.length < 2 && (
+                                <div className="space-y-1">
+                                    <div className="px-3 py-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Suggested Tools</div>
+                                    <CommandItem icon={<LayoutDashboard size={18} />} label="Overview" href="/dashboard?view=overview" onClick={() => setIsCmdKOpen(false)} />
+                                    <CommandItem icon={<Search size={18} />} label="Stock Research" href="/research" onClick={() => setIsCmdKOpen(false)} />
+                                    <CommandItem icon={<Bitcoin size={18} />} label="Crypto Command" href="/crypto" onClick={() => setIsCmdKOpen(false)} />
+                                    <CommandItem icon={<Calculator size={18} />} label="Valuation Sandbox" href="/valuation" onClick={() => setIsCmdKOpen(false)} />
+                                    <CommandItem icon={<Activity size={18} />} label="Backtester" href="/dashboard?view=backtester" onClick={() => setIsCmdKOpen(false)} />
+                                </div>
+                            )}
+
+                            {/* Search Results */}
+                            {searchQuery.length >= 2 && (
+                                <div className="space-y-1">
+                                    <div className="px-3 py-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Results</div>
+                                    {searching ? (
+                                        <div className="px-4 py-12 flex flex-col items-center justify-center text-slate-500 gap-3">
+                                            <div className="w-6 h-6 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
+                                            <span className="text-sm">Searching markets...</span>
+                                        </div>
+                                    ) : searchResults.length > 0 ? (
+                                        searchResults.map((result) => (
+                                            <CommandItem
+                                                key={result.symbol}
+                                                icon={<span className={`font-bold text-[10px] w-6 py-0.5 text-center rounded ${result.type === 'ETF' ? 'bg-purple-500/20 text-purple-300' : 'bg-cyan-500/20 text-cyan-300'}`}>{result.type === 'ETF' ? 'ETF' : 'STK'}</span>}
+                                                label={result.symbol}
+                                                subLabel={result.name}
+                                                href={`/research?ticker=${result.symbol}`}
+                                                onClick={() => {
+                                                    setIsCmdKOpen(false);
+                                                    window.location.href = `/research?ticker=${result.symbol}`;
+                                                }}
+                                            />
+                                        ))
+                                    ) : (
+                                        <div className="px-4 py-12 text-center text-slate-500 text-sm">No results found for "{searchQuery}".</div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="bg-[#0a0a0c] border-t border-white/5 px-4 py-3 text-[10px] text-slate-600 flex justify-between items-center">
+                            <div className="flex gap-4">
+                                <span><strong className="text-slate-400">↑↓</strong> to navigate</span>
+                                <span><strong className="text-slate-400">↵</strong> to select</span>
+                            </div>
+                            <span className="opacity-50">QuantDash Terminal v2.1</span>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Mobile Navigation Overlay */}
+            {isMobileNavOpen && (
+                <div className="fixed inset-0 z-50 md:hidden flex">
+                    <div
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+                        onClick={() => setIsMobileNavOpen(false)}
+                    />
+                    <aside className="relative w-72 bg-slate-900 h-full shadow-2xl animate-in slide-in-from-left duration-300 flex flex-col border-r border-slate-800">
+                        <div className="p-6 border-b border-slate-800/60 flex items-center justify-between">
+                            <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                                QUANT<span className="font-light text-slate-100">DASH</span>
+                            </h1>
+                            <button onClick={() => setIsMobileNavOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div className="flex-1 overflow-y-auto">
+                            <SidebarContent />
+                        </div>
+                    </aside>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default DashboardLayout;

@@ -1,0 +1,179 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+.font-cursive {
+  font-family: 'Pinyon Script', cursive;
+}
+
+:root {
+  /* Premium Dark Theme Palette */
+  --bg-dark: 8, 10, 20;
+  /* Darker, richer blue-black */
+  --bg-card: 13, 16, 28;
+  /* Slightly lighter for cards */
+
+  --primary-rgb: 34, 211, 238;
+  /* Cyan-400 */
+  --secondary-rgb: 139, 92, 246;
+  /* Violet-500 */
+  --accent-rgb: 16, 185, 129;
+  /* Emerald-500 */
+  --rose-rgb: 244, 63, 94;
+  /* Rose-500 */
+
+  --foreground-rgb: 248, 250, 252;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background-color: rgb(var(--bg-dark));
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(34, 211, 238, 0.06), transparent 25%),
+    radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.06), transparent 25%),
+    radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03), transparent 40%);
+  background-attachment: fixed;
+  font-family: 'Inter', sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Premium Glassmorphism 2.0 --- */
+
+.glass-panel {
+  background: rgba(13, 16, 28, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  /* Subtle top highlight */
+  border-radius: 1rem;
+  /* More rounded */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hover Effect for Cards */
+.glass-panel-hover:hover {
+  transform: translateY(-3px);
+  background: rgba(13, 16, 28, 0.75);
+  border-color: rgba(34, 211, 238, 0.2);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(34, 211, 238, 0.1);
+}
+
+/* Focused "Active" Card */
+.glass-panel-active {
+  background: rgba(13, 16, 28, 0.85);
+  border-color: rgba(34, 211, 238, 0.4);
+  box-shadow: 0 0 30px rgba(34, 211, 238, 0.15);
+}
+
+/* Inner Glow Effect using pseudo-element */
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  opacity: 0.5;
+}
+
+/* --- Typography Utilities --- */
+
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #fde68a 0%, #eab308 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+.text-gradient-emerald {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+.label-text {
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  /* slate-400 */
+  font-weight: 600;
+}
+
+.value-text-lg {
+  font-size: 1.875rem;
+  /* 3xl */
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: white;
+}
+
+/* --- Animations --- */
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+/* Stagger delays */
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+/* Scrollbar Polish */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.5);
+  /* slate-600 */
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 211, 238, 0.5);
+}

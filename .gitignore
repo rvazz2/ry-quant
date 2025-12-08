@@ -1,0 +1,49 @@
+# Python
+.venv/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.swc/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Database & Cache
+market_cache_db/
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Misc
+*.bat
+*.url
+test_*.py
+verify_*.py

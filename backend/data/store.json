@@ -1,0 +1,17 @@
+{
+  "planning_profile": {
+    "salary": 65000.0,
+    "filing_status": "single",
+    "age": 25,
+    "retirement_age": 65,
+    "savings_rate": 20.0
+  },
+  "simulator_portfolio": [
+    {
+      "symbol": "AAPL",
+      "shares": 20,
+      "avgCost": 276.44
+    }
+  ],
+  "simulator_cash": 94471.20000000001
+}

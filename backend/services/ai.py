@@ -1,0 +1,149 @@
+import os
+import json
+import asyncio
+from typing import Dict, Optional
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.messages import SystemMessage, HumanMessage
+from cache import timed_cache
+
+# Configure API Key
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+# Mock response for when API key is missing
+MOCK_RESPONSES = {
+    "hello": "Hi there! I'm The Wise Luc. 🪙 I'm currently running in 'Offline Mode' (No API Key), but I can still help you navigate the platform!",
+    "hi": "Hello! Ready to analyze some markets? (Offline Mode)",
+    "buy": "In general, traders look for 'Buy' signals when price is above the 200 SMA and RSI is oversold (<30). Check the 'Research' tab for specific signals!",
+    "sell": "Selling is an art. Consider taking profits at resistance levels or if the trend breaks. See 'Technical Analysis' in the Research tab.",
+    "market": "The market is a complex beast. Use the 'Macro War Room' to see the big picture (Yields, GDP, Fed).",
+    "fed": "Don't fight the Fed! Check the 'Macro' tab for the latest dot plot and rate projections.",
+    "nvda": "NVIDIA is a key AI player. Check the 'Research' tab for its latest valuation and technicals.",
+    "tsla": "Tesla is highly volatile. Use the 'Options' tab to analyze its volatility surface.",
+    "aapl": "Apple is a fortress balance sheet stock. Check its 'Financials' in the Research tab.",
+    "spy": "The S&P 500 is the benchmark. Watch the 200-day moving average.",
+    "btc": "Bitcoin is digital gold (or risk-on tech). Watch correlation with the Dollar (DXY).",
+    "help": "I can help you navigate! Try asking about 'buy', 'sell', 'market', or specific tickers.",
+    "default": "I'm currently in Offline Mode (No API Key detected). I can simulate responses for keywords like 'buy', 'sell', 'market', or 'help'. Set a GEMINI_API_KEY to unlock my full brain! 🧠"
+}
+
+GENERIC_SYSTEM_PROMPT = """
+You are 'The Wise Luc', a witty, professional, and slightly sarcastic AI Financial Assistant for the 'QuantDash' platform.
+You obtain your data from the platform's context but currently you are answering general questions.
+
+Directives:
+1. Keep answers concise (under 3 sentences usually), unless explaining a complex topic.
+2. Use financialojis (📈, 📉, 💰, 🐂, 🐻, 🚀, 💀, 🎲) occasionally.
+3. Be confident but responsible. Always imply DYOR (Do Your Own Research).
+4. If asked about "QuantDash", praise the platform features (Macro War Room, Options Lab, etc).
+5. If provided with CONTEXT data (e.g., a specific ticker, price, or financial metric):
+   - REFERENCE IT directly. E.g., "I see you're looking at AAPL..."
+   - Analyze the numbers provided in the context.
+   - If the context contains a P/E ratio, comment on if it is high/low.
+   - If the context contains charts or technicals, interpret them.
+
+Context: The user is a trader looking for an edge.
+"""
+
+async def get_ai_response(message: str, context: Optional[Dict] = None) -> str:
+    """
+    Generates a response using LangChain and Gemini Pro.
+    Falls back to mock responses if no API Key is set or if calls fail.
+    """
+    if not API_KEY:
+        print(f"Using Mock AI for: {message}")
+        msg_lower = message.lower()
+        
+        # Simple keyword matching
+        for key, resp in MOCK_RESPONSES.items():
+            if key in msg_lower:
+                return resp
+                
+        return MOCK_RESPONSES["default"]
+
+    try:
+        return await asyncio.to_thread(_generate_sync_langchain, message, context)
+    except Exception as e:
+        print(f"Error generating AI response: {e}")
+        return f"I'm having trouble connecting to the neural network. (Error: {str(e)}) 😵‍💫"
+
+def _generate_sync_langchain(message: str, context: Optional[Dict] = None) -> str:
+    try:
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-1.5-pro",
+            google_api_key=API_KEY,
+            temperature=0.7
+        )
+        
+        # Construct Context String
+        context_str = ""
+        if context:
+            # Filter out large empty values if necessary, or just dump it
+            context_str = f"\n\nCURRENT USER CONTEXT DATA:\n{json.dumps(context, indent=2)}\nUse this data to answer the user's question specifically."
+            
+        full_system_prompt = GENERIC_SYSTEM_PROMPT + context_str
+        
+        messages = [
+            SystemMessage(content=full_system_prompt),
+            HumanMessage(content=message),
+        ]
+        
+        response = llm.invoke(messages)
+        return response.content
+    except Exception as e:
+        raise e
+
+@timed_cache(seconds=21600) # Cache for 6 hours
+async def generate_analyst_report(ticker: str) -> str:
+    """
+    Generates a full markdown report for a ticker.
+    """
+    if not API_KEY:
+        return f"# Analyst Report: {ticker}\n\n*Generated by The Wise Luc (Offline Mode)*\n\n## 1. Executive Summary\n{ticker} is a fascinating company. Unfortunately, I am currently offline and cannot fetch live data. Please set my API Key to see my full power.\n\n## 2. Technical Analysis\n[Offline]\n\n## 3. Fundamental Analysis\n[Offline]"
+        
+    try:
+        # Fetch real data to ground the LLM
+        from services.market_data import get_ticker_details
+        market_data = await get_ticker_details(ticker)
+        
+        context_str = ""
+        if market_data:
+            # Simplify data for prompt
+            simple_data = {
+                "price": market_data.get("price"),
+                "change_percent": market_data.get("change"),
+                "high": market_data.get("high"),
+                "low": market_data.get("low"),
+                "volume": market_data.get("volume"),
+                "fifty_two_week_high": market_data.get("fifty_two_week_high"),
+                "fifty_two_week_low": market_data.get("fifty_two_week_low")
+            }
+            context_str = f"Live Market Data: {json.dumps(simple_data, indent=2)}"
+
+        prompt = f"""
+        Write a professional, 1-page Investment Memo / Analyst Report for {ticker}.
+        
+        {context_str}
+        
+        Structure it clearly with Markdown headers:
+        
+        # Investment Memo: {ticker}
+        ## 1. Executive Summary & Thesis (Bull/Bear case)
+        ## 2. Key Catalysts (Upcoming events, earnings, product launches)
+        ## 3. Risks (Macro, competitive, regulatory)
+        ## 4. Conclusion (Buy/Hold/Sell rating with a 'Conviction Score' 1-10)
+        
+        Tone: Institutional, sharp, data-driven.
+        Format: Markdown.
+        """
+        
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-1.5-pro",
+            google_api_key=API_KEY,
+            temperature=0.7
+        )
+        
+        response = await asyncio.to_thread(llm.invoke, prompt)
+        return response.content
+    except Exception as e:
+        return f"Error generating report: {str(e)}"
