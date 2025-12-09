@@ -27,8 +27,96 @@ MOCK_SECTOR_DATA = [
 
 # In-memory fallback for resilience - PRE-SEEDED with Mock Data
 _LAST_VALID_SECTOR_DATA = MOCK_SECTOR_DATA
+
+# Pre-seed cache if empty (Instant Load Fix)
+# We can do this with a separate initialization function or just rely on the first run
+def init_cache():
+    # Only seed if completely empty to avoid overwriting valid data
+    if len(cache) == 0:
+        pass # Let the scheduled tasks handle it
+
+
+@timed_cache(seconds=600)
+def get_market_overview():
+    """
+    Fetches data for major indices and returns percent changes.
+    Cached for performance (clears on restart).
+    """
+    tickers = ["^GSPC", "^IXIC", "^DJI", "^RUT"]
+    names = {
+        "^GSPC": "S&P 500",
+        "^IXIC": "NASDAQ",
+        "^DJI": "Dow Jones",
+        "^RUT": "Russell 2000"
+    }
     
-    sector_etfs = {
+    overview = []
+    
+    # 1. Try Bulk Fetch
+    try:
+        data = yf.download(tickers, period="5d", interval="1d", progress=False, threads=False)
+        
+        # Handle MultiIndex columns (Price, Ticker) or (Ticker, Price)
+        if isinstance(data.columns, pd.MultiIndex):
+            # Try to find Close or Adj Close
+            if 'Adj Close' in data.columns.get_level_values(0):
+                data = data['Adj Close']
+            elif 'Close' in data.columns.get_level_values(0):
+                data = data['Close']
+        elif 'Adj Close' in data:
+            data = data['Adj Close']
+        elif 'Close' in data:
+            data = data['Close']
+            
+    except Exception as e:
+        print(f"Error bulk fetching market overview: {e}")
+        data = pd.DataFrame()
+
+    # 2. Process and Retry if needed
+    for ticker in tickers:
+        price = 0.0
+        change = 0.0
+        
+        # Check if we have valid data from bulk fetch
+        if not data.empty and ticker in data.columns and len(data) >= 2:
+            series = data[ticker]
+            if not series.isna().iloc[-1]:
+                latest = float(series.iloc[-1])
+                prev = float(series.iloc[-2])
+                price = latest
+                change = ((latest - prev) / prev) * 100
+        
+        # 3. Retry Individually if missing
+        if price == 0:
+            try:
+                print(f"Retrying fetch for {ticker}...")
+                ticker_obj = yf.Ticker(ticker)
+                hist = ticker_obj.history(period="2d")
+                if len(hist) >= 2:
+                    latest = float(hist['Close'].iloc[-1])
+                    prev = float(hist['Close'].iloc[-2])
+                    price = latest
+                    change = ((latest - prev) / prev) * 100
+            except Exception as e:
+                print(f"Retry failed for {ticker}: {e}")
+
+        overview.append({
+            "symbol": ticker,
+            "name": names.get(ticker, ticker),
+            "price": price,
+            "change": change
+        })
+        
+    return overview
+
+@timed_cache(seconds=900)
+def get_sector_performance():
+    """
+    Fetches sector performance data.
+    Note: yfinance sector data can be tricky. We might use representative ETFs.
+    """
+    global _LAST_VALID_SECTOR_DATA
+    
         "XLE": "Energy",
         "XLB": "Materials",
         "XLI": "Industrials",
