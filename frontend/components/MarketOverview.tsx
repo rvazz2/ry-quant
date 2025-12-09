@@ -47,10 +47,7 @@ const IndexCard = React.memo(({ item, isLoading, onClick }: { item: MarketOvervi
 ));
 IndexCard.displayName = 'IndexCard';
 
-const SectorChart = dynamic(() => import('./SectorChart'), {
-    loading: () => <ShimmerSkeleton className="h-full w-full min-h-[300px]" />,
-    ssr: false
-});
+
 
 const MarketNews = dynamic(() => import('./MarketNews'), {
     loading: () => <ShimmerSkeleton className="h-96 w-full" />,
@@ -59,7 +56,7 @@ const MarketNews = dynamic(() => import('./MarketNews'), {
 
 const MarketOverview = () => {
     // Force rebuild: MarketOverview Layout Update - v2
-    const { overview, sectors, overviewLoading, sectorsLoading, isSectorsError, sectorsError } = useDashboard();
+    const { overview, overviewLoading } = useDashboard();
     const [modalData, setModalData] = useState<IndexDetails | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [loadingTicker, setLoadingTicker] = useState<string | null>(null);
@@ -117,49 +114,7 @@ const MarketOverview = () => {
                     </>
                 )}
 
-                {/* Sector Chart */}
-                <div className="lg:col-span-4 min-h-[400px] flex flex-col" suppressHydrationWarning>
-                    <h2 className="text-xl font-bold text-slate-100 mb-4 flex items-center gap-2">
-                        <PieChart size={20} className="text-purple-400" />
-                        Sector Performance
-                    </h2>
-                    <div className="glass-panel p-4 h-[400px] relative overflow-hidden">
-                        {!mounted || sectorsLoading ? (
-                            <ShimmerSkeleton className="h-full w-full min-h-[300px]" />
-                        ) : isSectorsError ? (
-                            <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                                <Activity size={48} className="mb-4 opacity-20 text-rose-500" />
-                                <p className="text-rose-400 font-bold mb-2">Failed to load data</p>
-                                <p className="text-xs text-slate-500 max-w-xs text-center mb-4">
-                                    {sectorsError?.message || "Connection error"}
-                                </p>
-                                <button
-                                    onClick={() => window.location.reload()}
-                                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-md text-sm transition-colors text-white"
-                                >
-                                    Retry
-                                </button>
-                            </div>
-                        ) : (
-                            sectors && sectors.length > 0 ? (
-                                <div className="h-full w-full">
-                                    <SectorChart sectors={sectors} />
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                                    <Activity size={48} className="mb-4 opacity-20" />
-                                    <p>No sector data available</p>
-                                    <button
-                                        onClick={() => window.location.reload()}
-                                        className="mt-4 text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-md transition-colors"
-                                    >
-                                        Refresh
-                                    </button>
-                                </div>
-                            )
-                        )}
-                    </div>
-                </div>
+
             </div>
 
             {/* Market News Section - RESTORED */}

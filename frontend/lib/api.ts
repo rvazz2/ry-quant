@@ -31,7 +31,6 @@ api.interceptors.response.use(undefined, async (err) => {
 
 import {
     MarketOverviewItem,
-    SectorPerformanceItem,
     EfficientFrontierResult,
     BacktestResult,
     OptionPriceResult,
@@ -136,17 +135,7 @@ export const getMarketOverview = async (): Promise<MarketOverviewItem[]> => {
     }, 300); // 5 min cache - market data changes slowly
 };
 
-export const getSectorPerformance = async (): Promise<SectorPerformanceItem[]> => {
-    return fetchWithCache('sector_performance', async () => {
-        try {
-            const response = await api.get('/market/sectors');
-            return response.data;
-        } catch (error) {
-            console.error('[SECTOR API] ERROR: Failed to fetch sector performance:', error);
-            throw error;
-        }
-    }, 300); // 5 min cache - sectors don't change that often
-};
+
 
 export interface Constraints {
     min_weight?: number;

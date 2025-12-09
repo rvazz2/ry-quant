@@ -1,5 +1,5 @@
 import asyncio
-from services.market_data import get_market_overview, get_sector_performance, get_ticker_details, search_tickers, get_market_news
+from services.market_data import get_market_overview, get_ticker_details, search_tickers, get_market_news
 from fastapi import APIRouter
 
 router = APIRouter(prefix="/api/market", tags=["market"])
@@ -16,15 +16,6 @@ async def market_overview():
         print(f"API Error (market_overview): {e}")
         return []
 
-@router.get("/sectors")
-async def sector_performance():
-    try:
-        # Run in thread to prevent blocking main loop
-        data = await asyncio.to_thread(get_sector_performance)
-        return data if data else []
-    except Exception as e:
-        print(f"API Error (sector_performance): {e}")
-        return []
 
 @router.get("/ticker/{symbol}")
 async def ticker_details(symbol: str):

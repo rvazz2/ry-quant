@@ -5,11 +5,6 @@ export interface MarketOverviewItem {
     change: number;
 }
 
-export interface SectorPerformanceItem {
-    sector: string;
-    ticker: string;
-    change: number;
-}
 
 export interface CompanyInfo {
     symbol: string;

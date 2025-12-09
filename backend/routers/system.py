@@ -3,7 +3,7 @@ import psutil
 import os
 import time
 from cache import cache
-from services.market_data import get_market_overview, get_sector_performance
+from services.market_data import get_market_overview
 
 router = APIRouter(
     prefix="/system",
@@ -43,7 +43,6 @@ def force_refresh_data():
     """
     try:
         get_market_overview()
-        get_sector_performance()
         return {"status": "success", "message": "Market data refreshed successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to refresh data: {str(e)}")

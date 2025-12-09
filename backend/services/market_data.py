@@ -10,23 +10,7 @@ import time
 from typing import Callable, Any
 from cache import timed_cache, cache
 
-# Mock data defined at module level for robust fallback
-MOCK_SECTOR_DATA = [
-    {"sector": "Technology", "ticker": "XLK", "change": 1.24},
-    {"sector": "Financials", "ticker": "XLF", "change": 0.87},
-    {"sector": "Health Care", "ticker": "XLV", "change": 0.56},
-    {"sector": "Consumer Discretionary", "ticker": "XLY", "change": -0.34},
-    {"sector": "Communication Services", "ticker": "XLC", "change": 1.12},
-    {"sector": "Industrials", "ticker": "XLI", "change": 0.45},
-    {"sector": "Consumer Staples", "ticker": "XLP", "change": 0.23},
-    {"sector": "Energy", "ticker": "XLE", "change": -1.56},
-    {"sector": "Utilities", "ticker": "XLU", "change": -0.12},
-    {"sector": "Real Estate", "ticker": "XLRE", "change": -0.78},
-    {"sector": "Materials", "ticker": "XLB", "change": 0.67},
-]
 
-# In-memory fallback for resilience - PRE-SEEDED with Mock Data
-_LAST_VALID_SECTOR_DATA = MOCK_SECTOR_DATA
 
 # Pre-seed cache if empty (Instant Load Fix)
 # We can do this with a separate initialization function or just rely on the first run
@@ -109,115 +93,6 @@ def get_market_overview():
         
     return overview
 
-@timed_cache(seconds=900)
-def get_sector_performance():
-    """
-    Fetches sector performance data.
-    Note: yfinance sector data can be tricky. We might use representative ETFs.
-    """
-    global _LAST_VALID_SECTOR_DATA
-    
-    sector_etfs = {
-        "XLE": "Energy",
-        "XLB": "Materials",
-        "XLI": "Industrials",
-        "XLY": "Consumer Discretionary",
-        "XLP": "Consumer Staples",
-        "XLV": "Health Care",
-        "XLF": "Financials",
-        "XLK": "Technology",
-        "XLC": "Communication Services",
-        "XLU": "Utilities",
-        "XLRE": "Real Estate"
-    }
-    
-    tickers = list(sector_etfs.keys())
-    
-    print(f"[SECTOR] Fetching sector performance data for {len(tickers)} tickers...")
-    
-    try:
-        # Increased to 5d to ensure we cover weekends/holidays
-        data = yf.download(tickers, period="5d", interval="1d", progress=False, threads=False)
-        
-        if isinstance(data.columns, pd.MultiIndex):
-            if 'Adj Close' in data.columns.get_level_values(0):
-                data = data['Adj Close']
-            elif 'Close' in data.columns.get_level_values(0):
-                data = data['Close']
-        elif 'Adj Close' in data:
-            data = data['Adj Close']
-        elif 'Close' in data:
-            data = data['Close']
-        else:
-            print("[SECTOR] ERROR: No Close or Adj Close column found in data")
-            print(f"[SECTOR] Falling back to mock data")
-            return MOCK_SECTOR_DATA
-
-    except Exception as e:
-        print(f"[SECTOR] ERROR: Exception fetching sector performance: {e}")
-        if _LAST_VALID_SECTOR_DATA:
-            print("[SECTOR] Returning stale sector data after error.")
-            return _LAST_VALID_SECTOR_DATA
-        print(f"[SECTOR] Falling back to mock data")
-        return MOCK_SECTOR_DATA
-
-    if data is None or data.empty or len(data) < 2:
-        print(f"[SECTOR] WARNING: Insufficient data (rows: {len(data) if data is not None and not data.empty else 0})")
-        if _LAST_VALID_SECTOR_DATA:
-            print("[SECTOR] Returning stale sector data.")
-            return _LAST_VALID_SECTOR_DATA
-        print(f"[SECTOR] Falling back to mock data")
-        return MOCK_SECTOR_DATA
-
-    # Sanity Check: If change is > 10% (unlikely for major sector ETFs), potentially bad data for "today"
-    # Fallback to previous day comparison
-    latest = data.iloc[-1]
-    prev = data.iloc[-2]
-    
-    # Calculate tentative change
-    change = ((latest - prev) / prev) * 100
-    
-    # Check if ANY sector has > 20% move OR mean > 15%
-    if change.abs().mean() > 15:
-        print(f"[SECTOR] WARNING: Detected abnormal price changes (mean: {change.abs().mean():.2f}%), using older data points")
-        # Likely bad data for the last row
-        if len(data) > 2:
-            latest = data.iloc[-2]
-            prev = data.iloc[-3]
-    
-    # Post-processing and stale cache update
-    results = []
-    for ticker in tickers:
-        try:
-            current_price = float(latest[ticker])
-            prev_price = float(prev[ticker])
-            
-            if pd.isna(current_price) or pd.isna(prev_price) or prev_price == 0:
-                print(f"[SECTOR] WARNING: Invalid data for {ticker} (current: {current_price}, prev: {prev_price})")
-                continue
-                
-            change_pct = ((current_price - prev_price) / prev_price) * 100
-            
-            results.append({
-                "sector": sector_etfs.get(ticker, ticker),
-                "ticker": ticker,
-                "change": change_pct
-            })
-        except Exception as e:
-            print(f"[SECTOR] ERROR: Failed to process {ticker}: {e}")
-            continue
-    
-    if results:
-        _LAST_VALID_SECTOR_DATA = results
-        print(f"[SECTOR] SUCCESS: Returning {len(results)} sector data points")
-        return results
-
-    if _LAST_VALID_SECTOR_DATA:
-        print("[SECTOR] WARNING: Sector fetch failed, returning stale data.")
-        return _LAST_VALID_SECTOR_DATA
-    
-    print(f"[SECTOR] WARNING: All data sources failed, falling back to mock data")
-    return MOCK_SECTOR_DATA
 
 
 @timed_cache(seconds=300)
