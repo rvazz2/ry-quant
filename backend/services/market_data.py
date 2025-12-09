@@ -117,6 +117,7 @@ def get_sector_performance():
     """
     global _LAST_VALID_SECTOR_DATA
     
+    sector_etfs = {
         "XLE": "Energy",
         "XLB": "Materials",
         "XLI": "Industrials",
