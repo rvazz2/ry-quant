@@ -8,6 +8,7 @@ import { SearchResult } from '@/lib/types';
 import MarketStatus from './MarketStatus';
 import ErrorBoundary from './ErrorBoundary';
 import { useSettings } from "@/contexts/SettingsContext";
+import ConnectionStatus from './ConnectionStatus';
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -17,8 +18,11 @@ const SidebarContent = () => {
     const { updateAvailable } = useSettings();
 
     return (
-        <nav className="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar py-2">
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-2 px-2 neon-text-shadow-sm">Platform</div>
+        <nav className="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar py-4">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 mt-2 px-3 neon-text-shadow-sm flex items-center justify-between">
+                <span>Platform</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+            </div>
 
             <NavItem href="/dashboard?view=overview" icon={<LayoutDashboard size={18} className="text-sky-400" />} label="Overview" />
             <NavItem href="/crypto" icon={<Bitcoin size={18} className="text-orange-400" />} label="Crypto Command" />
@@ -26,22 +30,34 @@ const SidebarContent = () => {
             <NavItem href="/macro" icon={<Activity size={18} className="text-rose-400" />} label="Macro War Room" />
             <NavItem href="/valuation" icon={<Calculator size={18} className="text-emerald-400" />} label="Valuation Sandbox" />
 
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-6 px-2">Education & Sim</div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 mt-8 px-3 flex items-center justify-between">
+                <span>Education & Sim</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+            </div>
             <NavItem href="/library" icon={<BookOpen size={18} className="text-lime-400" />} label="Library" />
             <NavItem href="/mission" icon={<GraduationCap size={18} className="text-yellow-400" />} label="Financial Quiz" />
             <NavItem href="/planning" icon={<BookOpen size={18} className="text-amber-400" />} label="Financial Planning" />
             <NavItem href="/simulator" icon={<Activity size={18} className="text-indigo-400" />} label="Trading Simulator" />
 
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-6 px-2">Psychology</div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 mt-8 px-3 flex items-center justify-between">
+                <span>Psychology</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+            </div>
             <NavItem href="/behavioral" icon={<BrainCircuit size={18} className="text-pink-400" />} label="Behavioral Engine" />
 
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-6 px-2">Quant Lab</div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 mt-8 px-3 flex items-center justify-between">
+                <span>Quant Lab</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+            </div>
             <NavItem href="/dashboard?view=efficient-frontier" icon={<TrendingUp size={18} className="text-teal-400" />} label="Efficient Frontier" />
             <NavItem href="/dashboard?view=backtester" icon={<Activity size={18} className="text-blue-400" />} label="Backtester" />
             <NavItem href="/quant" icon={<Calculator size={18} className="text-cyan-400" />} label="Greeks 3D Lab" />
             <NavItem href="/terminal" icon={<SquareTerminal size={18} className="text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]" />} label="Terminal" />
 
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-6 px-2">System</div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 mt-8 px-3 flex items-center justify-between">
+                <span>System</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+            </div>
             <NavItem
                 href="/settings"
                 icon={
@@ -93,9 +109,9 @@ const NavItem = React.memo(({ icon, label, href, view }: { icon: React.ReactNode
         <Link
             href={linkHref}
             prefetch={true}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-300 relative overflow-hidden group ${isActuallyActive
-                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 shadow-[0_0_15px_rgba(34,211,238,0.15)]'
-                : 'text-slate-400 hover:bg-white/5 hover:text-slate-200 hover:translate-x-1'
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 relative overflow-hidden group ${isActuallyActive
+                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 shadow-[0_0_20px_rgba(34,211,238,0.1)]'
+                : 'text-slate-400 hover:bg-white/5 hover:text-slate-200 hover:translate-x-1 border border-transparent'
                 }`}>
             {isActuallyActive && (
                 <div className="absolute left-0 top-0 h-full w-[3px] bg-cyan-400 shadow-[0_0_10px_2px_rgba(34,211,238,0.6)]" />
@@ -103,7 +119,7 @@ const NavItem = React.memo(({ icon, label, href, view }: { icon: React.ReactNode
             <div className={`transition-transform duration-300 ${isActuallyActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]' : 'group-hover:scale-110'}`}>
                 {icon}
             </div>
-            <span className={`font-medium tracking-wide text-sm ${isActuallyActive ? 'text-cyan-100' : ''}`}>{label}</span>
+            <span className={`font-medium tracking-wide text-sm ${isActuallyActive ? 'text-cyan-100 font-semibold' : ''}`}>{label}</span>
         </Link>
     );
 });
@@ -183,35 +199,34 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     return (
         // Added suppressHydrationWarning to handle potential server/client mismatches during dev
         <div suppressHydrationWarning className="min-h-screen bg-transparent text-slate-100 flex font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden">
-            {/* Background Ambient Glow - Client Only */}
+            {/* Background Ambient Glow - Client Only - Reused global background mostly but adding specific ambient spots */}
             {mounted && (
                 <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-                    <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[150px] animate-pulse" />
-                    <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-cyan-900/10 rounded-full blur-[150px] animate-pulse delay-1000" />
+                    {/* Rely on global body background for the base, add subtle overlay if needed */}
                 </div>
             )}
 
             {/* Sidebar */}
-            <aside className="w-64 bg-[rgba(13,16,28,0.85)] backdrop-blur-2xl border-r border-white/5 hidden md:flex flex-col relative z-20 shadow-[4px_0_24px_rgba(0,0,0,0.4)]">
-                <div className="p-6 border-b border-slate-800/60">
+            <aside className="w-64 bg-[rgba(13,16,28,0.7)] backdrop-blur-2xl border-r border-white/5 hidden md:flex flex-col relative z-20 shadow-[5px_0_30px_rgba(0,0,0,0.3)] h-screen">
+                <div className="p-6 border-b border-white/5 flex items-center justify-between">
                     <Link href="/">
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent cursor-pointer tracking-tight hover:brightness-125 transition-all duration-300">
+                        <h1 className="text-2xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent cursor-pointer tracking-tighter hover:brightness-125 transition-all duration-300">
                             QUANT<span className="font-light text-slate-100">DASH</span>
                         </h1>
                     </Link>
                 </div>
 
-                <div className="px-4 py-4">
+                <div className="px-4 py-6">
                     <button
                         onClick={() => setIsCmdKOpen(true)}
-                        className="w-full flex items-center justify-between px-3 py-2 bg-slate-800/40 hover:bg-slate-800/60 hover:shadow-[0_0_15px_rgba(6,182,212,0.1)] border border-slate-700/50 rounded-xl text-sm text-slate-400 transition-all group duration-300"
+                        className="w-full flex items-center justify-between px-3 py-2.5 bg-black/20 hover:bg-black/40 hover:shadow-[0_0_15px_rgba(6,182,212,0.1)] border border-white/5 hover:border-cyan-500/30 rounded-xl text-sm text-slate-400 transition-all group duration-300"
                     >
                         <span className="flex items-center gap-2 group-hover:text-cyan-300 transition-colors">
-                            <Search size={14} />
+                            <Search size={15} />
                             Search...
                         </span>
-                        <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border border-slate-700/50 px-2 font-mono text-[10px] font-bold text-slate-500 group-hover:text-cyan-400 transition-colors">
-                            <span className="text-xs">Ctrl</span> + K
+                        <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border border-white/10 px-2 font-mono text-[10px] font-bold text-slate-500 group-hover:text-cyan-400 transition-colors">
+                            <span className="text-xs">Ctrl</span> K
                         </kbd>
                     </button>
                 </div>
@@ -221,47 +236,51 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     <SidebarContent />
                 </Suspense>
 
-                <div className="p-4 border-t border-slate-800/60 bg-slate-900/30 backdrop-blur-sm">
-                    <div className="flex items-center gap-3 hover:scale-105 transition-transform duration-300 cursor-pointer">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-cyan-500/20">
+                <div className="p-4 border-t border-white/5 bg-gradient-to-t from-slate-900/50 to-transparent">
+                    <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/30 transition-all">
                             RV
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-slate-200">Ryan Vazzano</p>
-                            <p className="text-xs text-cyan-500/80 font-medium">Head of Quant</p>
+                            <p className="text-sm font-bold text-slate-200 group-hover:text-white transition-colors">Ryan Vazzano</p>
+                            <p className="text-xs text-cyan-500/80 font-medium tracking-wide">Head of Quant</p>
                         </div>
                     </div>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-y-auto h-screen relative z-10 scroll-smooth">
-                <header className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[rgba(13,16,28,0.8)] backdrop-blur-xl sticky top-0 z-30 transition-all duration-300 shadow-sm">
-                    <div className="flex items-center gap-2">
+            <main className="flex-1 overflow-y-auto h-screen relative z-10 scroll-smooth custom-scrollbar">
+                <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-[rgba(8,10,20,0.6)] backdrop-blur-xl sticky top-0 z-30 transition-all duration-300">
+                    <div className="flex items-center gap-4">
                         {/* Mobile Menu Trigger */}
                         <button
-                            className="md:hidden mr-2 text-slate-400 hover:text-white transition-colors"
+                            className="md:hidden mr-2 text-slate-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/5"
                             onClick={() => setIsMobileNavOpen(true)}
                         >
                             <Menu size={24} />
                         </button>
 
-                        <h2 className="text-sm font-medium text-slate-400 flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-[pulse_2s_infinite]"></span>
-                            <span className="bg-gradient-to-r from-slate-200 to-slate-400 bg-clip-text text-transparent font-semibold tracking-wide">Market Dashboard</span>
+                        <h2 className="text-sm font-medium text-slate-400 flex items-center gap-3 bg-black/20 px-3 py-1.5 rounded-full border border-white/5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-[pulse_2s_infinite] shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+                            <span className="bg-gradient-to-r from-slate-200 to-slate-400 bg-clip-text text-transparent font-semibold tracking-wide">Live Connection</span>
                         </h2>
                     </div>
 
-                    <Link href="/" className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-cyan-300 transition-colors ml-auto mr-4 group">
-                        <BookOpen size={14} className="group-hover:rotate-12 transition-transform" />
-                        <span>Our Mission</span>
-                    </Link>
+                    <div className="flex items-center gap-6">
+                        <Link href="/" className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-cyan-300 transition-colors group hidden sm:flex">
+                            <BookOpen size={16} className="group-hover:rotate-12 transition-transform" />
+                            <span>Mission Control</span>
+                        </Link>
 
-                    <div className="flex items-center gap-4">
-                        <MarketStatus />
-                        <span className="text-xs text-cyan-500/70 font-mono bg-cyan-950/30 px-2 py-1 rounded border border-cyan-500/20">
-                            {mounted && new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
-                        </span>
+                        <div className="h-6 w-[1px] bg-white/10 hidden sm:block"></div>
+
+                        <div className="flex items-center gap-4">
+                            <MarketStatus />
+                            <span className="text-xs text-cyan-500/90 font-mono bg-cyan-950/40 px-3 py-1.5 rounded-lg border border-cyan-500/20 shadow-[0_0_15px_-5px_rgba(34,211,238,0.3)]">
+                                {mounted && new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                            </span>
+                        </div>
                     </div>
                 </header>
 
@@ -276,12 +295,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             {isCmdKOpen && (
                 <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] px-4">
                     <div
-                        className="absolute inset-0 bg-black/60 backdrop-blur-md animate-in fade-in duration-300"
+                        className="absolute inset-0 bg-black/70 backdrop-blur-md animate-in fade-in duration-300"
                         onClick={() => setIsCmdKOpen(false)}
                     />
                     <div className="relative w-full max-w-2xl bg-[#0f1115] border border-white/10 rounded-2xl shadow-2xl shadow-cyan-900/20 overflow-hidden animate-in zoom-in-95 duration-200 ring-1 ring-white/5">
-                        <div className="flex items-center border-b border-white/10 px-5 py-4">
-                            <Search className="text-cyan-500 mr-4" size={22} />
+                        <div className="flex items-center border-b border-white/10 px-5 py-5">
+                            <Search className="text-cyan-500 mr-4" size={24} />
                             <input
                                 autoFocus
                                 type="text"
@@ -302,7 +321,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                                     }
                                 }}
                             />
-                            <div className="text-[10px] font-bold text-slate-600 border border-slate-800 rounded px-2 py-1 bg-slate-900/50">ESC</div>
+                            <div className="text-[10px] font-bold text-slate-500 border border-slate-700/50 rounded px-2 py-1 bg-slate-800/50">ESC</div>
                         </div>
 
                         <div className="max-h-[60vh] overflow-y-auto p-3 custom-scrollbar">
@@ -363,24 +382,25 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             {isMobileNavOpen && (
                 <div className="fixed inset-0 z-50 md:hidden flex">
                     <div
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
                         onClick={() => setIsMobileNavOpen(false)}
                     />
-                    <aside className="relative w-72 bg-slate-900 h-full shadow-2xl animate-in slide-in-from-left duration-300 flex flex-col border-r border-slate-800">
-                        <div className="p-6 border-b border-slate-800/60 flex items-center justify-between">
+                    <aside className="relative w-80 bg-[#0d101c] h-full shadow-2xl animate-in slide-in-from-left duration-300 flex flex-col border-r border-white/10">
+                        <div className="p-6 border-b border-white/10 flex items-center justify-between">
                             <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                                 QUANT<span className="font-light text-slate-100">DASH</span>
                             </h1>
-                            <button onClick={() => setIsMobileNavOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                            <button onClick={() => setIsMobileNavOpen(false)} className="text-slate-500 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full">
                                 <X size={24} />
                             </button>
                         </div>
-                        <div className="flex-1 overflow-y-auto">
+                        <div className="flex-1 overflow-y-auto custom-scrollbar">
                             <SidebarContent />
                         </div>
                     </aside>
                 </div>
             )}
+            <ConnectionStatus />
         </div>
     );
 };

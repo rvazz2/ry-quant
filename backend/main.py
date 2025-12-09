@@ -4,7 +4,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from routers import market, quant, research, macro, mergers, planning, accounting, behavioral, ai, strategy_builder, stress, crypto, reports, simulator, system
 from contextlib import asynccontextmanager
 import asyncio
-from services.market_data import get_market_overview, get_sector_performance
+from services.market_data import get_market_overview, get_market_news
 from services.research import get_treasury_rates
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -18,7 +18,7 @@ def refresh_market_data():
         # Run refreshes concurrently to save time
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.submit(get_market_overview)
-            executor.submit(get_sector_performance)
+            executor.submit(get_market_news)
     except Exception as e:
         print(f"Error refreshing market data: {e}")
 
@@ -64,10 +64,10 @@ from starlette.responses import Response
 class TimeoutMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         try:
-            # 30-second timeout for ALL requests
-            return await asyncio.wait_for(call_next(request), timeout=30.0)
+            # 60-second timeout for ALL requests (increased for local cold starts)
+            return await asyncio.wait_for(call_next(request), timeout=60.0)
         except asyncio.TimeoutError:
-            print(f"⏱️ TIMEOUT: {request.method} {request.url.path} exceeded 30s")
+            print(f"⏱️ TIMEOUT: {request.method} {request.url.path} exceeded 60s")
             return JSONResponse(
                 status_code=504,
                 content={"detail": "Request timeout - server took too long to respond"},

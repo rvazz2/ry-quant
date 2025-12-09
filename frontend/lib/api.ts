@@ -29,6 +29,15 @@ api.interceptors.response.use(undefined, async (err) => {
     return Promise.reject(err);
 });
 
+export const checkBackendHealth = async (): Promise<boolean> => {
+    try {
+        await api.get('/health', { timeout: 2000, retry: 0 } as any);
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+
 import {
     MarketOverviewItem,
     EfficientFrontierResult,
