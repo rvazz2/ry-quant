@@ -17,6 +17,15 @@ const SECTOR_WEIGHTS: Record<string, number> = {
 };
 
 const SectorChart = React.memo(({ sectors }: { sectors: any[] }) => {
+    // Fix: Recharts sizing issue - ensure mount before measuring
+    const [ready, setReady] = React.useState(false);
+
+    React.useEffect(() => {
+        // Small delay to ensure parent container has dimensions
+        const timer = setTimeout(() => setReady(true), 100);
+        return () => clearTimeout(timer);
+    }, []);
+
     // Merge backend data with specific weights/sizes for the Treemap
     const data = useMemo(() => {
 
@@ -44,6 +53,10 @@ const SectorChart = React.memo(({ sectors }: { sectors: any[] }) => {
         return mapped;
     }, [sectors]);
 
+    if (!ready) {
+        return <div className="h-full w-full animate-pulse bg-slate-800/50 rounded-lg"></div>;
+    }
+
     if (!data || data.length === 0) {
         console.warn('[SectorChart] No valid data to display');
         return (
@@ -58,17 +71,19 @@ const SectorChart = React.memo(({ sectors }: { sectors: any[] }) => {
 
 
     return (
-        <ResponsiveContainer width="100%" height="100%">
-            <Treemap
-                data={data}
-                dataKey="size"
-                aspectRatio={4 / 3}
-                stroke="#0f172a"
-                content={<CustomizedContent />}
-            >
-                <Tooltip content={<CustomTooltip />} />
-            </Treemap>
-        </ResponsiveContainer>
+        <div style={{ width: '100%', height: '100%', minHeight: '300px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+                <Treemap
+                    data={data}
+                    dataKey="size"
+                    aspectRatio={4 / 3}
+                    stroke="#0f172a"
+                    content={<CustomizedContent />}
+                >
+                    <Tooltip content={<CustomTooltip />} />
+                </Treemap>
+            </ResponsiveContainer>
+        </div>
     );
 });
 SectorChart.displayName = 'SectorChart';
