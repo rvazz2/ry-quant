@@ -1,6 +1,21 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+// Automatically strip trailing /api if present to handle both raw domain and /api path configs
+const getApiUrl = () => {
+    // Check environment variable
+    let url = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+    // If it ends with /api, strip it
+    if (url.endsWith('/api')) {
+        url = url.slice(0, -4);
+    }
+    // Remove trailing slash if present
+    if (url.endsWith('/')) {
+        url = url.slice(0, -1);
+    }
+    return url;
+};
+
+const API_URL = getApiUrl();
 
 export const api = axios.create({
     baseURL: API_URL,
