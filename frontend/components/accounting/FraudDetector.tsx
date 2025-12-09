@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { AlertTriangle, CheckCircle } from "lucide-react";
+import { getBeneishScore } from "@/lib/api";
 
 interface BeneishData {
     m_score: number;
@@ -29,9 +30,7 @@ const FraudDetector = ({ ticker }: { ticker: string }) => {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`http://localhost:8000/api/accounting/beneish/${ticker}`);
-            if (!res.ok) throw new Error("Fetch failed");
-            const json = await res.json();
+            const json = await getBeneishScore(ticker);
             setData(json);
         } catch (error) {
             console.error(error);

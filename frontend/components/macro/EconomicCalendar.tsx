@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, AlertCircle } from 'lucide-react';
+import { getEconomicCalendar } from '@/lib/api';
 
 interface EconomicEvent {
     event: string;
@@ -19,11 +20,9 @@ const EconomicCalendar = () => {
     useEffect(() => {
         const fetchCalendar = async () => {
             try {
-                // In a real app, this would be a real API call.
-                // Assuming the backend endpoint /api/macro/calendar exists as seen in router research
-                const res = await fetch('http://localhost:8000/api/macro/calendar');
-                if (res.ok) {
-                    const data = await res.json();
+                // Use the centralized API client
+                const data = await getEconomicCalendar();
+                if (data) {
                     setEvents(data);
                 }
             } catch (error) {

@@ -2,10 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import axios from 'axios';
 import { MessageSquare, Twitter, TrendingUp, ThumbsUp, ThumbsDown, Zap } from 'lucide-react';
-
-const API_URL = "http://localhost:8000/api/behavioral";
+import { getTrendingTickers } from '@/lib/api';
 
 export default function TrendTracker() {
     const [trending, setTrending] = useState<any[]>([]);
@@ -14,8 +12,8 @@ export default function TrendTracker() {
     useEffect(() => {
         const fetchTrending = async () => {
             try {
-                const res = await axios.get(`${API_URL}/trending`);
-                setTrending(res.data);
+                const data = await getTrendingTickers();
+                setTrending(data || []);
             } catch (error) {
                 console.error("Failed to fetch trending data", error);
             } finally {
@@ -43,8 +41,8 @@ export default function TrendTracker() {
                                 <p className="text-xs text-gray-500">{item.name}</p>
                             </div>
                             <div className={`px-2 py-1 rounded-full text-xs font-bold ${item.sentiment === 'Bullish' ? 'bg-green-500/20 text-green-400' :
-                                    item.sentiment === 'Bearish' ? 'bg-red-500/20 text-red-400' :
-                                        'bg-gray-500/20 text-gray-400'
+                                item.sentiment === 'Bearish' ? 'bg-red-500/20 text-red-400' :
+                                    'bg-gray-500/20 text-gray-400'
                                 }`}>
                                 {item.sentiment}
                             </div>

@@ -1,17 +1,17 @@
 import axios from 'axios';
 
-// Automatically strip trailing /api if present to handle both raw domain and /api path configs
 const getApiUrl = () => {
     // Check environment variable
-    let url = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-    // If it ends with /api, strip it
-    if (url.endsWith('/api')) {
-        url = url.slice(0, -4);
-    }
-    // Remove trailing slash if present
+    let url = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+
+    // Ensure it doesn't end with a slash for consistency
     if (url.endsWith('/')) {
         url = url.slice(0, -1);
     }
+
+    // If it doesn't end with /api, we should probably warn or append it, 
+    // but the previous code actively stripped it which was wrong.
+    // For now, we trust the env var or default.
     return url;
 };
 
@@ -369,4 +369,16 @@ export const getCryptoWhaleAlerts = async (): Promise<any[]> => {
         const response = await api.get('/crypto/whales');
         return response.data;
     }, 30); // 30s cache
+};
+
+export const getBeneishScore = async (ticker: string) => {
+    const response = await api.get(`/accounting/beneish/${ticker}`);
+    return response.data;
+};
+
+export const generatePDFReport = async (ticker: string) => {
+    const response = await api.get(`/reports/generate/${ticker}`, {
+        responseType: 'blob'
+    });
+    return response.data;
 };

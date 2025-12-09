@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import axios from 'axios';
 import { FileText, Loader2, Download } from 'lucide-react';
+import { generatePDFReport } from '@/lib/api';
 
 interface ReportButtonProps {
     ticker: string;
@@ -14,12 +14,10 @@ export default function ReportButton({ ticker }: ReportButtonProps) {
     const generateReport = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:8000/api/reports/generate/${ticker}`, {
-                responseType: 'blob', // Important for PDF
-            });
+            const blob = await generatePDFReport(ticker);
 
             // Create blob link to download
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const url = window.URL.createObjectURL(new Blob([blob]));
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', `${ticker}_Analyst_Report.pdf`);

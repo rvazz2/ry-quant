@@ -6,17 +6,21 @@ import { Split, ArrowDown } from "lucide-react";
 const DuPontTree = ({ ticker }: { ticker: string }) => {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const analyze = React.useCallback(async () => {
         if (!ticker) return;
         setLoading(true);
+        setError(null);
         try {
-            const res = await fetch(`http://localhost:8000/api/accounting/dupont/${ticker}`);
+            // Using direct api call or creating a helper if preferred
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/accounting/dupont/${ticker}`);
             if (!res.ok) throw new Error("Fetch failed");
             const json = await res.json();
             setData(json);
         } catch (error) {
             console.error(error);
+            setError("Failed to fetch DuPont data.");
         } finally {
             setLoading(false);
         }

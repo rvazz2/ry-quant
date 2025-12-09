@@ -4,12 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useCopilot } from '@/contexts/CopilotContext';
 import { Bot, Send, X, Minimize2, Maximize2, Sparkles, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import axios from 'axios';
-
-// IMPORTANT: Using absolute URL for localhost to avoid issues if next.js rewrites fail, 
-// but ideally should be relative (e.g., /api/ai/chat). 
-// Assuming FastAPI is on port 8000 for local dev or via proxy.
-const API_URL = "http://localhost:8000/api/ai/chat";
+import { getAIChatResponse } from '@/lib/api';
 
 export default function CopilotWidget() {
     const { isOpen, toggleOpen, messages, addMessage, isLoading, setIsLoading, currentContext } = useCopilot();
@@ -34,13 +29,9 @@ export default function CopilotWidget() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(API_URL, {
-                message: userMsg,
-                context: currentContext
-            });
-
-            if (response.data && response.data.response) {
-                addMessage('assistant', response.data.response);
+            const response = await getAIChatResponse(userMsg, currentContext);
+            if (response && response.response) {
+                addMessage('assistant', response.response);
             }
         } catch (error) {
             console.error("Copilot Error:", error);

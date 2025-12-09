@@ -5,7 +5,7 @@ import {
     AreaChart, Area, LineChart, Line, BarChart, Bar,
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Label
 } from 'recharts';
-import { getTickerHistory } from '@/lib/api';
+import { getTickerHistory, getEconomicCalendar } from '@/lib/api';
 import { ChartPoint } from '@/lib/types';
 import { Loader2, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
 import axios from 'axios';
@@ -68,8 +68,8 @@ const PriceChart: React.FC<PriceChartProps> = ({ symbol, color = "#22d3ee", heig
     // Fetch econ events if enabled
     useEffect(() => {
         if (showEvents) {
-            axios.get('http://localhost:8000/api/macro/calendar')
-                .then(res => setEvents(res.data))
+            getEconomicCalendar()
+                .then(data => setEvents(data))
                 .catch(err => console.error("Failed to fetch calendar", err));
         }
     }, [showEvents]);
