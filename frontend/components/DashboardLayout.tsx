@@ -54,6 +54,7 @@ const SidebarContent = () => {
                 <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
             </div>
             <NavItem href="/dashboard?view=efficient-frontier" icon={<TrendingUp size={18} className="text-teal-400" />} label="Efficient Frontier" />
+            <NavItem href="/dashboard?view=options" icon={<Calculator size={18} className="text-purple-400" />} label="Options Strategy Lab" />
             <NavItem href="/dashboard?view=backtester" icon={<Activity size={18} className="text-blue-400" />} label="Backtester" />
             <NavItem href="/quant" icon={<Calculator size={18} className="text-cyan-400" />} label="Greeks 3D Lab" />
             <NavItem href="/terminal" icon={<SquareTerminal size={18} className="text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]" />} label="Terminal" />
