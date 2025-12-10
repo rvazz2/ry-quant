@@ -1,0 +1,16 @@
+{
+    "name": "QuantDash",
+    "short_name": "QuantDash",
+    "description": "Institutional-grade financial modeling and analytics for retail traders",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0a0e1a",
+    "theme_color": "#06b6d4",
+    "icons": [
+        {
+            "src": "/favicon.ico",
+            "sizes": "any",
+            "type": "image/x-icon"
+        }
+    ]
+}

@@ -245,9 +245,9 @@ export default function LandingPage() {
               { title: "Financial Literacy", icon: BookOpen, desc: "Learn the rules of the money game before you play.", link: "/planning", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "hover:border-emerald-500/50" },
               { title: "Algorithmic Tools", icon: Cpu, desc: "Tools to optimize your portfolio mathematically.", link: "/quant", color: "text-purple-400", bg: "bg-purple-500/10", border: "hover:border-purple-500/50" }
             ].map((feature, i) => (
-              <div
+              <Link
                 key={i}
-                onClick={() => router.push(feature.link)}
+                href={feature.link}
                 className={`bg-black/40 border border-white/5 p-8 rounded-3xl ${feature.border} transition-all cursor-pointer hover:-translate-y-3 hover:shadow-2xl group/card flex flex-col items-center text-center backdrop-blur-md`}
               >
                 <div className={`w-20 h-20 rounded-2xl bg-slate-900 flex items-center justify-center border border-white/10 ${feature.color} mb-6 group-hover/card:scale-110 group-hover/card:${feature.bg} transition-all duration-300 shadow-lg`}>
@@ -255,7 +255,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className={`font-bold text-white text-xl mb-3 group-hover/card:${feature.color} transition-colors`}>{feature.title}</h3>
                 <p className="text-slate-400 leading-relaxed font-light">{feature.desc}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

@@ -92,6 +92,7 @@ export interface NewsItem {
     link: string;
     publisher: string;
     providerPublishTime: number;
+    ticker: string;
 }
 
 export interface TechnicalIndicators {
