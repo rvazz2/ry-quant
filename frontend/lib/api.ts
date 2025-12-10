@@ -46,8 +46,10 @@ api.interceptors.response.use(undefined, async (err) => {
 
 export const checkBackendHealth = async (): Promise<boolean> => {
     try {
-        await api.get('/health', { timeout: 2000, retry: 0 } as any);
-        return true;
+        // Health endpoint is at root, not under /api
+        const baseUrl = API_URL.replace('/api', '');
+        const response = await axios.get(`${baseUrl}/health`, { timeout: 2000 });
+        return response.status === 200;
     } catch (e) {
         return false;
     }
