@@ -27,7 +27,7 @@ def timed_cache(seconds: int):
                 result = func(*args, **kwargs)
                 
                 # Only cache valid results
-                if result:
+                if result is not None:
                     cache.set(key, result, expire=seconds)
                 
                 return result
