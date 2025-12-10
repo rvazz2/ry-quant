@@ -17,11 +17,19 @@ const SocialHypeRadar = dynamic(() => import('@/components/behavioral/SocialHype
     loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
     ssr: false
 });
+const SuperinvestorRadar = dynamic(() => import('@/components/behavioral/SuperinvestorRadar'), {
+    loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
+    ssr: false
+});
+const MarketPsychologyCycle = dynamic(() => import('@/components/behavioral/MarketPsychologyCycle'), {
+    loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
+    ssr: false
+});
 
 export default function BehavioralPage() {
     return (
         <DashboardLayout>
-            <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+            <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 pb-20">
                 <header>
                     <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-purple-600 flex items-center gap-3">
                         <BrainCircuit className="text-yellow-400" />
@@ -32,15 +40,29 @@ export default function BehavioralPage() {
                     </p>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {/* Tool 1: Fear & Greed */}
-                    <SentimentTracker />
+                    <div className="lg:col-span-2">
+                        <SentimentTracker />
+                    </div>
 
-                    {/* Tool 2: Inverse Cramer */}
-                    <InverseCramer />
+                    {/* Tool 2: Superinvestor Radar (New) */}
+                    <div className="lg:col-span-1">
+                        <SuperinvestorRadar />
+                    </div>
 
-                    {/* Tool 3: Social Hype Radar */}
-                    <div className="md:col-span-2">
+                    {/* Tool 3: Inverse Cramer */}
+                    <div className="lg:col-span-1">
+                        <InverseCramer />
+                    </div>
+
+                    {/* Tool 4: Market Psychology Cycle (New) */}
+                    <div className="lg:col-span-2">
+                        <MarketPsychologyCycle />
+                    </div>
+
+                    {/* Tool 5: Social Hype Radar */}
+                    <div className="md:col-span-2 lg:col-span-3">
                         <SocialHypeRadar />
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from services.behavioral import get_sentiment_analysis, get_inverse_cramer_data, get_trending_tickers
+from services.behavioral import get_sentiment_analysis, get_inverse_cramer_data, get_trending_tickers, get_superinvestor_data
 
 router = APIRouter(prefix="/api/behavioral", tags=["behavioral"])
 
@@ -16,3 +16,7 @@ async def inverse_cramer():
 @router.get("/trending")
 async def trending():
     return await asyncio.to_thread(get_trending_tickers)
+
+@router.get("/whales")
+async def whales():
+    return await asyncio.to_thread(get_superinvestor_data)

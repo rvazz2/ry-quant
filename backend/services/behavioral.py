@@ -191,3 +191,61 @@ def get_trending_tickers():
         {"ticker": "GME", "name": "GameStop", "mentions": 5000, "sentiment": "Bearish", "change": "-0.5%"},
     ]
     return trending
+
+def get_superinvestor_data():
+    """
+    Returns mock data for 'Superinvestor' (Whale) trades.
+    """
+    investors = [
+        {
+            "name": "Warren Buffett",
+            "firm": "Berkshire Hathaway",
+            "action": "BUY",
+            "ticker": "OXY",
+            "company": "Occidental Petroleum",
+            "value": "$582M",
+            "date": "2024-05-15",
+            "confidence": "High"
+        },
+        {
+            "name": "Michael Burry",
+            "firm": "Scion Asset Mgmt",
+            "action": "SELL",
+            "ticker": "AMZN",
+            "company": "Amazon.com Inc",
+            "value": "$12M",
+            "date": "2024-05-14",
+            "confidence": "Medium"
+        },
+        {
+            "name": "Nancy Pelosi",
+            "firm": "US Congress",
+            "action": "BUY",
+            "ticker": "NVDA",
+            "company": "NVIDIA Corp",
+            "value": "$1.2M",
+            "date": "2024-05-10",
+            "confidence": "Very High"
+        },
+        {
+            "name": "Bill Ackman",
+            "firm": "Pershing Square",
+            "action": "HOLD",
+            "ticker": "CMG",
+            "company": "Chipotle Mexican Grill",
+            "value": "$250M",
+            "date": "2024-05-01",
+            "confidence": "High"
+        },
+        {
+            "name": "Cathie Wood",
+            "firm": "ARK Invest",
+            "action": "SELL",
+            "ticker": "COIN",
+            "company": "Coinbase Global",
+            "value": "$45M",
+            "date": "2024-05-12",
+            "confidence": "Medium"
+        }
+    ]
+    return investors

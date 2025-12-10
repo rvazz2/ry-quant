@@ -352,6 +352,13 @@ export const getTrendingTickers = async (): Promise<any[]> => {
     }, 120); // 2 min cache - trending updates moderately
 };
 
+export const getSuperinvestorData = async (): Promise<any[]> => {
+    return fetchWithCache('superinvestor_data', async () => {
+        const response = await api.get('/behavioral/whales');
+        return response.data;
+    }, 3600); // 1 hour cache
+};
+
 export const getCryptoTop = async (): Promise<any[]> => {
     return fetchWithCache('crypto_top', async () => {
         const response = await api.get('/crypto/top');
