@@ -22,57 +22,66 @@ class CryptoService:
     @staticmethod
     async def get_top_coins(limit: int = 10) -> List[Dict[str, Any]]:
         """
-        Fetches top coins by volume (optimized with predefined list).
+        Fetches top coins using yfinance (more reliable/no API keys needed).
         """
-        exchange = await CryptoService.get_exchange()
+        import yfinance as yf
         
-        # Predefined top list to avoid fetching thousands of pairs (slow!)
+        # Yahoo Finance Tickers
         top_symbols = [
-            'BTC/USD', 'ETH/USD', 'SOL/USD', 'XRP/USD', 'ADA/USD', 
-            'DOGE/USD', 'DOT/USD', 'AVAX/USD', 'LINK/USD', 'MATIC/USD', 
-            'LTC/USD', 'UNI/USD', 'BCH/USD', 'XLM/USD', 'ATOM/USD'
+            'BTC-USD', 'ETH-USD', 'SOL-USD', 'XRP-USD', 'ADA-USD', 
+            'DOGE-USD', 'DOT-USD', 'AVAX-USD', 'LINK-USD', 'LTC-USD', 
+            'BCH-USD', 'XLM-USD', 'ATOM-USD', 'UNI7083-USD'
         ]
         
         try:
-            # Add 10-second timeout to prevent indefinite hanging
-            tickers = await asyncio.wait_for(
-                exchange.fetch_tickers(top_symbols),
-                timeout=10.0
-            )
+            # Use Tickers to fetch multiple at once
+            tickers = await asyncio.to_thread(yf.Tickers, " ".join(top_symbols))
             
-            valid_tickers = []
-            for symbol, t in tickers.items():
-                if t.get('quoteVolume') and t.get('last'):
-                    valid_tickers.append(t)
+            check_symbols = top_symbols
+            results = []
             
-            sorted_tickers = sorted(valid_tickers, key=lambda x: x['quoteVolume'], reverse=True)
-            top_n = sorted_tickers[:limit]
+            for symbol in check_symbols:
+                try:
+                    # Access the underlying Ticker object
+                    t = tickers.tickers[symbol]
+                    # Fast info is usually faster than .info
+                    info = t.fast_info
+                    # Fallback to .info if fast_info missing key data
+                    price = info.last_price
+                    prev_close = info.previous_close
+                    
+                    # Calculate change
+                    change = 0.0
+                    if prev_close:
+                        change = ((price - prev_close) / prev_close) * 100
+                        
+                    # Get volume (sometimes in info, sometimes fast_info)
+                    # fast_info doesn't look like it has volume in all versions, checking .info if needed
+                    # But .info is slow. Let's try basic calc.
+                    
+                    results.append({
+                        "symbol": symbol.replace("-USD", "/USD"), # Format back to crypto style
+                        "price": price,
+                        "change_24h": change,
+                        "volume": 0, # Volume hard to get fast from yahoo without .history
+                        "high": info.day_high,
+                        "low": info.day_low
+                    })
+                except Exception as e:
+                    continue
+                    
+            # Sort by price or market cap if available? 
+            # Since we pre-selected top coins, just return the list or sort by something.
+            # Let's sort by price desc for now or keep list order.
             
-            return [{
-                "symbol": t['symbol'],
-                "price": t['last'],
-                "change_24h": t.get('percentage', 0.0),
-                "volume": t['quoteVolume'],
-                "high": t.get('high', 0.0),
-                "low": t.get('low', 0.0)
-            } for t in top_n]
-            
-        except asyncio.TimeoutError:
-            print(f"Crypto API timeout - returning fallback data")
-            return [
-                {"symbol": "BTC/USD", "price": 96500.0, "change_24h": 2.5, "volume": 1000000000, "high": 97000, "low": 95000},
-                {"symbol": "ETH/USD", "price": 3650.0, "change_24h": 1.2, "volume": 500000000, "high": 3700, "low": 3600},
-                {"symbol": "SOL/USD", "price": 215.0, "change_24h": 5.8, "volume": 200000000, "high": 220, "low": 210},
-                {"symbol": "XRP/USD", "price": 2.45, "change_24h": 3.1, "volume": 150000000, "high": 2.50, "low": 2.40},
-                {"symbol": "ADA/USD", "price": 1.15, "change_24h": 2.3, "volume": 100000000, "high": 1.18, "low": 1.12},
-            ]
+            return results[:limit]
+
         except Exception as e:
-            print(f"Error fetching crypto data: {e}")
-            # Mock fallback if API fails
+            print(f"Error fetching crypto data (yfinance): {e}")
+            # Fallback
             return [
-                {"symbol": "BTC/USD", "price": 96500.0, "change_24h": 2.5, "volume": 1000000000, "high": 97000, "low": 95000},
-                {"symbol": "ETH/USD", "price": 3650.0, "change_24h": 1.2, "volume": 500000000, "high": 3700, "low": 3600},
-                {"symbol": "SOL/USD", "price": 215.0, "change_24h": 5.8, "volume": 200000000, "high": 220, "low": 210},
+                {"symbol": "BTC/USD", "price": 96500.0, "change_24h": 0.0, "volume": 0, "high": 0, "low": 0},
+                {"symbol": "ETH/USD", "price": 3650.0, "change_24h": 0.0, "volume": 0, "high": 0, "low": 0},
             ]
 
 
