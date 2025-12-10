@@ -58,7 +58,6 @@ const LibraryContent = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredTopics.map((topic) => (
                     <motion.div
-                        layoutId={`topic-${topic.id}`}
                         key={topic.id}
                         onClick={() => setSelectedTopic(topic)}
                         className="group bg-slate-900/40 border border-slate-800/60 hover:border-cyan-500/30 rounded-xl p-5 cursor-pointer transition-all hover:bg-slate-800/60 hover:shadow-lg hover:shadow-cyan-900/10"
@@ -85,26 +84,28 @@ const LibraryContent = () => {
             {mounted && createPortal(
                 <AnimatePresence>
                     {selectedTopic && (
-                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <div className="fixed inset-0 z-[100] flex justify-end pointer-events-none">
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 onClick={() => setSelectedTopic(null)}
-                                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                                className="absolute inset-0 bg-black/40 backdrop-blur-[2px] pointer-events-auto"
                             />
                             <motion.div
-                                layoutId={`topic-${selectedTopic.id}`}
-                                className="relative w-full max-w-2xl bg-[#0f1115] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden max-h-[80vh] flex flex-col z-10"
+                                initial={{ x: "100%" }}
+                                animate={{ x: 0 }}
+                                exit={{ x: "100%" }}
+                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                className="relative w-full max-w-md h-full bg-[#0f1115] border-l border-slate-700 shadow-2xl overflow-hidden flex flex-col z-10 pointer-events-auto"
                             >
                                 <div className="p-6 border-b border-slate-800/60 bg-slate-900/50 flex items-start justify-between">
                                     <div className="flex items-center gap-4">
                                         <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400">
-                                            <selectedTopic.icon size={28} />
+                                            <selectedTopic.icon size={24} />
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-bold text-white">{selectedTopic.title}</h2>
-                                            <p className="text-slate-400 text-sm mt-1">{selectedTopic.description}</p>
+                                            <h2 className="text-xl font-bold text-white leading-tight">{selectedTopic.title}</h2>
                                         </div>
                                     </div>
                                     <button
@@ -115,21 +116,26 @@ const LibraryContent = () => {
                                     </button>
                                 </div>
 
-                                <div className="p-6 overflow-y-auto custom-scrollbar">
-                                    <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Key Terms & Concepts</h3>
+                                <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
+                                    <p className="text-slate-400 text-sm mb-6 leading-relaxed bg-slate-900/30 p-4 rounded-xl border border-slate-800/50">
+                                        {selectedTopic.description}
+                                    </p>
+
+                                    <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <BookOpen size={14} /> Key Terms
+                                    </h3>
                                     <div className="space-y-4">
                                         {selectedTopic.terms.map((term, idx) => (
                                             <div key={idx} className="bg-slate-900/30 border border-slate-800/50 rounded-xl p-4 hover:border-cyan-500/20 transition-colors">
                                                 <div className="flex items-baseline gap-2 mb-2">
-                                                    <h4 className="text-lg font-semibold text-cyan-100">{term.term}</h4>
-                                                    <div className="h-px bg-slate-800 flex-1 ml-2"></div>
+                                                    <h4 className="text-base font-semibold text-cyan-100">{term.term}</h4>
                                                 </div>
                                                 <p className="text-slate-300 leading-relaxed text-sm">
                                                     {term.definition}
                                                 </p>
                                                 {term.example && (
                                                     <div className="mt-3 p-3 bg-cyan-950/20 rounded border border-cyan-900/30 text-xs text-cyan-200/80 italic">
-                                                        Example: {term.example}
+                                                        "{term.example}"
                                                     </div>
                                                 )}
                                             </div>
@@ -137,8 +143,8 @@ const LibraryContent = () => {
                                     </div>
                                 </div>
 
-                                <div className="p-4 border-t border-slate-800/60 bg-slate-900/30 text-center text-xs text-slate-500">
-                                    Learning content provided by QuantDash Academy
+                                <div className="p-4 border-t border-slate-800/60 bg-slate-900/30 text-center text-xs text-slate-500 shrink-0">
+                                    QuantDash Academy
                                 </div>
                             </motion.div>
                         </div>
