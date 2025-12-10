@@ -88,14 +88,49 @@ class CryptoService:
     @staticmethod
     async def get_defi_yields() -> List[Dict[str, Any]]:
         """
-        Mock data for DeFi yields as fetching real on-chain data requires complex web3 setup or paid APIs (e.g. DefiLlama).
+        Fetches live DeFi yields from DefiLlama API.
+        Source: https://yields.llama.fi/pools
         """
-        return [
-            {"protocol": "Aave V3", "chain": "Ethereum", "asset": "USDC", "apy": 4.5, "tvl": "1.2B"},
-            {"protocol": "Compound", "chain": "Ethereum", "asset": "USDC", "apy": 3.8, "tvl": "800M"},
-            {"protocol": "Curve", "chain": "Ethereum", "asset": "3pool", "apy": 2.1, "tvl": "500M"},
-            {"protocol": "GMX", "chain": "Arbitrum", "asset": "ETH", "apy": 12.5, "tvl": "300M"},
-        ]
+        try:
+            import httpx
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.get("https://yields.llama.fi/pools", timeout=10.0)
+                if response.status_code == 200:
+                    data = response.json()
+                    pools = data.get('data', [])
+                    
+                    # Filter and sort by TVL
+                    # We want stablecoins and major assets, reasonable APY (not outliers > 1000%)
+                    valid_pools = [
+                        p for p in pools 
+                        if p.get('tvlUsd', 0) > 10000000 # > $10M TVL
+                        and 0 < p.get('apy', 0) < 500 # Reasonable APY
+                    ]
+                    
+                    # Sort by APY descending for "Top Yields" - but maybe mix of high TVL + APY?
+                    # Let's just sort by APY for now, but limit to top protocols
+                    valid_pools.sort(key=lambda x: x.get('apy', 0), reverse=True)
+                    
+                    results = []
+                    for p in valid_pools[:10]: # Top 10
+                        pool_data = {
+                            "protocol": p.get('project', 'Unknown').title(),
+                            "chain": p.get('chain', 'Unknown'),
+                            "asset": p.get('symbol', 'Unknown'),
+                            "apy": round(p.get('apy', 0), 2),
+                            "tvl": f"${p.get('tvlUsd', 0) / 1000000:.1f}M"
+                        }
+                        results.append(pool_data)
+                        
+                    return results
+                else:
+                    print(f"DefiLlama API error: {response.status_code}")
+                    return []
+        except Exception as e:
+            print(f"Error fetching DeFi yields: {e}")
+            # Fallback to empty or mock if live fails
+            return []
 
     @staticmethod
     async def get_whale_alerts(threshold_usd: int = 500000) -> List[Dict[str, Any]]:
@@ -143,6 +178,5 @@ class CryptoService:
             return []
 
     @staticmethod
-    async def close():
         if CryptoService._exchange:
             await CryptoService._exchange.close()
