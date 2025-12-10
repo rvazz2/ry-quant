@@ -8,6 +8,11 @@ const CryptoDashboard = dynamic(() => import('@/components/crypto/CryptoDashboar
     ssr: false
 });
 
+const ArbitrageScanner = dynamic(() => import('@/components/crypto/ArbitrageScanner'), {
+    loading: () => <div className="h-64 glass-panel animate-pulse" />,
+    ssr: false
+});
+
 import DashboardLayout from '@/components/DashboardLayout';
 
 export default function CryptoPage() {
@@ -28,6 +33,11 @@ export default function CryptoPage() {
                             ● BINANCE LIVE
                         </span>
                     </div>
+                </div>
+
+                {/* Arbitrage Scanner Section */}
+                <div className="h-[400px]">
+                    <ArbitrageScanner />
                 </div>
 
                 <CryptoDashboard />

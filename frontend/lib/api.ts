@@ -373,6 +373,13 @@ export const getCryptoWhaleAlerts = async (): Promise<any[]> => {
     }, 30); // 30s cache
 };
 
+export const getCryptoArbitrage = async (): Promise<any[]> => {
+    return fetchWithCache('crypto_arbitrage', async () => {
+        const response = await api.get('/crypto/arbitrage');
+        return response.data;
+    }, 15); // 15s cache
+};
+
 export const getBeneishScore = async (ticker: string) => {
     const response = await api.get(`/accounting/beneish/${ticker}`);
     return response.data;

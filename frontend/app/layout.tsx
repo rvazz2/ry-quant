@@ -3,9 +3,10 @@ import { Analytics } from "@vercel/analytics/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import GlobalWrappers from "@/components/GlobalWrappers";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import Providers from "../providers";
+import { ThemeProvider } from "next-themes";
+import { CommandMenu } from "@/components/CommandMenu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,15 +35,17 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Providers>
-          <SettingsProvider>
-            <ErrorBoundary>
-              {children}
-              <Analytics />
-            </ErrorBoundary>
-            {/* <GlobalWrappers /> */}
-          </SettingsProvider>
-        </Providers>
+        <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
+          <Providers>
+            <SettingsProvider>
+              <ErrorBoundary>
+                {children}
+                <CommandMenu />
+                <Analytics />
+              </ErrorBoundary>
+            </SettingsProvider>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

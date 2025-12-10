@@ -28,6 +28,14 @@ async def get_whale_alerts():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/arbitrage")
+async def get_arbitrage():
+    try:
+        data = await CryptoService.get_arbitrage_opportunities()
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Ensure connection is closed on shutdown
 @router.on_event("shutdown")
 async def shutdown_event():
