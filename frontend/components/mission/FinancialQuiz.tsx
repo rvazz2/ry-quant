@@ -13,6 +13,7 @@ interface Question {
 }
 
 const QUESTIONS: Question[] = [
+    // BASIC LEVEL (1-5)
     {
         id: 1,
         question: "You have a credit card with a $1,000 balance at 20% APR. If you only make the minimum payment ($25) each month, how long will it take to pay off?",
@@ -72,6 +73,192 @@ const QUESTIONS: Question[] = [
         ],
         correctAnswer: 1,
         explanation: "There is no such thing as high return with zero risk. If it sounds too good to be true, it's a scam. The S&P 500 averages ~10% historically with risk."
+    },
+
+    // MEDIUM LEVEL (6-10)
+    {
+        id: 6,
+        question: "What is Dollar-Cost Averaging (DCA)?",
+        options: [
+            "Buying stocks only when they're cheap",
+            "Investing a fixed amount regularly regardless of price",
+            "Selling stocks to lock in profits",
+            "Trading currencies for profit"
+        ],
+        correctAnswer: 1,
+        explanation: "DCA means investing the same amount at regular intervals (e.g., $100/month). This reduces risk from market timing and averages out your purchase price over time."
+    },
+    {
+        id: 7,
+        question: "You invest $10,000 at 7% annual return. Approximately how much will you have in 10 years with compound interest?",
+        options: [
+            "$17,000",
+            "$19,672",
+            "$20,000",
+            "$15,000"
+        ],
+        correctAnswer: 1,
+        explanation: "Using the Rule of 72 or compound interest formula: FV = 10,000 × (1.07)^10 ≈ $19,672. Compound interest creates exponential growth over time."
+    },
+    {
+        id: 8,
+        question: "What is a Roth IRA's main advantage?",
+        options: [
+            "Tax deduction now, pay taxes later",
+            "Tax-free withdrawals in retirement",
+            "No contribution limits",
+            "Guaranteed 10% returns"
+        ],
+        correctAnswer: 1,
+        explanation: "Roth IRA contributions are made with after-tax dollars, but ALL withdrawals in retirement are tax-free. This is powerful if you expect to be in a higher tax bracket later."
+    },
+    {
+        id: 9,
+        question: "What does a P/E ratio of 25 mean?",
+        options: [
+            "The stock price is $25",
+            "The company earns 25% profit",
+            "Investors pay $25 for every $1 of earnings",
+            "The stock has grown 25% this year"
+        ],
+        correctAnswer: 2,
+        explanation: "Price-to-Earnings ratio = Stock Price / Earnings Per Share. A P/E of 25 means you're paying $25 for every $1 the company earns annually. Higher P/E can signal growth expectations or overvaluation."
+    },
+    {
+        id: 10,
+        question: "What is the difference between a Traditional 401(k) and Roth 401(k)?",
+        options: [
+            "Traditional is employer-sponsored, Roth is not",
+            "Traditional = tax deduction now, Roth = tax-free withdrawals later",
+            "Roth has higher contribution limits",
+            "Traditional can only invest in bonds"
+        ],
+        correctAnswer: 1,
+        explanation: "Traditional 401(k) contributions are pre-tax (lower taxable income now, pay taxes on withdrawals). Roth 401(k) is after-tax (no deduction now, but tax-free withdrawals in retirement)."
+    },
+
+    // HARD LEVEL (11-15)
+    {
+        id: 11,
+        question: "What is the 'Greeks' concept in options trading primarily measuring?",
+        options: [
+            "International currency exchange rates",
+            "Risk sensitivities of options positions",
+            "Greek economy indicators",
+            "Historical stock performance"
+        ],
+        correctAnswer: 1,
+        explanation: "The Greeks (Delta, Gamma, Theta, Vega, Rho) measure different risk dimensions of options: Delta = price sensitivity, Theta = time decay, Vega = volatility sensitivity, etc."
+    },
+    {
+        id: 12,
+        question: "A company has a Beta of 1.5. If the market goes up 10%, the stock is expected to:",
+        options: [
+            "Go up 10%",
+            "Go up 15%",
+            "Go up 5%",
+            "Go down 10%"
+        ],
+        correctAnswer: 1,
+        explanation: "Beta measures volatility relative to the market. Beta > 1 means more volatile. Beta of 1.5 means the stock moves 1.5x the market: 10% × 1.5 = 15% expected increase."
+    },
+    {
+        id: 13,
+        question: "What is a covered call strategy?",
+        options: [
+            "Buying a stock and selling a call option on it",
+            "Selling a stock you don't own",
+            "Buying calls and puts simultaneously",
+            "Hiding your trades from the IRS"
+        ],
+        correctAnswer: 0,
+        explanation: "A covered call = own the stock + sell a call option. You collect premium income but cap your upside at the strike price. It's a conservative income strategy for stocks you already own."
+    },
+    {
+        id: 14,
+        question: "In DCF valuation, what does WACC represent?",
+        options: [
+            "Weighted Average Cost of Capital",
+            "Weekly Average Cash Collection",
+            "Worldwide Asset Classification Code",
+            "Wholesale Accounting Credit Check"
+        ],
+        correctAnswer: 0,
+        explanation: "WACC = the average rate a company pays to finance its assets, weighted by debt and equity. It's the discount rate used in DCF to calculate the present value of future cash flows."
+    },
+    {
+        id: 15,
+        question: "What does VIX measure?",
+        options: [
+            "Stock trading volume",
+            "Market volatility expectations (fear index)",
+            "Venture capital index",
+            "International exchange rates"
+        ],
+        correctAnswer: 1,
+        explanation: "The VIX (Volatility Index) measures expected 30-day volatility in the S&P 500 based on options prices. High VIX = high fear/uncertainty. Low VIX = market complacency."
+    },
+
+    // PhD LEVEL (16-20)
+    {
+        id: 16,
+        question: "In the Black-Scholes model, holding all else equal, what happens to a call option's value as time to expiration approaches zero?",
+        options: [
+            "Value increases exponentially",
+            "Value converges to intrinsic value (max(S-K, 0))",
+            "Value remains constant",
+            "Value becomes negative"
+        ],
+        correctAnswer: 1,
+        explanation: "As expiration approaches, time value decays to zero (Theta decay). The option value converges to intrinsic value: max(Stock Price - Strike Price, 0). This is a core concept in options pricing theory."
+    },
+    {
+        id: 17,
+        question: "What is the Sharpe Ratio measuring?",
+        options: [
+            "Total return over time",
+            "Risk-adjusted return (excess return per unit of volatility)",
+            "Dividend yield",
+            "Market correlation"
+        ],
+        correctAnswer: 1,
+        explanation: "Sharpe Ratio = (Portfolio Return - Risk-Free Rate) / Portfolio Standard Deviation. It measures excess return per unit of risk. Higher Sharpe = better risk-adjusted performance. Created by Nobel laureate William Sharpe."
+    },
+    {
+        id: 18,
+        question: "In the Arbitrage Pricing Theory (APT), what distinguishes it from CAPM?",
+        options: [
+            "APT uses multiple risk factors, CAPM uses only market risk (beta)",
+            "APT only applies to bonds",
+            "CAPM was developed more recently",
+            "APT ignores risk entirely"
+        ],
+        correctAnswer: 0,
+        explanation: "CAPM: return = risk-free rate + beta × market risk premium (single factor). APT: return depends on multiple macroeconomic factors (GDP, inflation, etc.). APT is more flexible but harder to implement."
+    },
+    {
+        id: 19,
+        question: "What is convexity in bond pricing?",
+        options: [
+            "The curvature of the price-yield relationship",
+            "The bond's credit rating",
+            "The bond's maturity date",
+            "The issuer's bankruptcy probability"
+        ],
+        correctAnswer: 0,
+        explanation: "Duration measures first-order price sensitivity to yield changes (linear). Convexity captures second-order effects (curvature). Positive convexity means bond prices rise MORE than they fall for equal yield changes—asymmetric risk/reward."
+    },
+    {
+        id: 20,
+        question: "According to Modigliani-Miller Theorem (with no taxes), what is the relationship between capital structure and firm value?",
+        options: [
+            "More debt always increases firm value",
+            "Capital structure is irrelevant to firm value",
+            "Equity financing is always superior",
+            "Debt decreases firm value proportionally"
+        ],
+        correctAnswer: 1,
+        explanation: "M&M Proposition I (no taxes): In perfect markets, firm value is determined by cash flows from assets, not how those assets are financed. Capital structure is irrelevant. In reality, taxes, bankruptcy costs, and agency costs DO matter. Nobel Prize 1990."
     }
 ];
 
@@ -270,8 +457,8 @@ export default function FinancialQuiz() {
                         {isAnswered ? (
                             <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                                 <div className={`p-4 rounded-xl border mb-6 flex gap-3 ${selectedOption === question.correctAnswer
-                                        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-200'
-                                        : 'bg-rose-500/10 border-rose-500/20 text-rose-200'
+                                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-200'
+                                    : 'bg-rose-500/10 border-rose-500/20 text-rose-200'
                                     }`}>
                                     <AlertCircle className="shrink-0 mt-0.5" size={20} />
                                     <div>
@@ -291,8 +478,8 @@ export default function FinancialQuiz() {
                                 onClick={handleSubmitAnswer}
                                 disabled={selectedOption === null}
                                 className={`w-full py-4 font-bold rounded-xl transition-all flex items-center justify-center gap-2 ${selectedOption !== null
-                                        ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-900 shadow-[0_0_20px_rgba(34,211,238,0.3)]'
-                                        : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                                    ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-900 shadow-[0_0_20px_rgba(34,211,238,0.3)]'
+                                    : 'bg-slate-800 text-slate-500 cursor-not-allowed'
                                     }`}
                             >
                                 Submit Answer
