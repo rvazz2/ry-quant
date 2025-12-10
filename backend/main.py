@@ -15,10 +15,12 @@ def refresh_market_data():
     """Refreshes market data in the background to keep cache warm."""
     import concurrent.futures
     try:
+        # Import sync versions to avoid async issues in background threads
+        from services.market_data import _get_market_news_sync
         # Run refreshes concurrently to save time
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.submit(get_market_overview)
-            executor.submit(get_market_news)
+            executor.submit(_get_market_news_sync)
     except Exception as e:
         print(f"Error refreshing market data: {e}")
 
