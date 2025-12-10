@@ -8,7 +8,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { createPortal } from 'react-dom';
 
-const LibraryContent = () => {
+interface LibraryContentProps {
+    isDrawer?: boolean;
+}
+
+const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedTopic, setSelectedTopic] = useState<LibraryTopic | null>(null);
     const [mounted, setMounted] = useState(false);
@@ -35,27 +39,42 @@ const LibraryContent = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-8">
-                <div>
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                        Knowledge Library
-                    </h1>
-                    <p className="text-slate-400 mt-1">Master financial concepts and terminology</p>
-                </div>
+            {!isDrawer && (
+                <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-8">
+                    <div>
+                        <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                            Knowledge Library
+                        </h1>
+                        <p className="text-slate-400 mt-1">Master financial concepts and terminology</p>
+                    </div>
 
-                <div className="relative w-full md:w-96">
+                    <div className="relative w-full md:w-96">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                        <input
+                            type="text"
+                            placeholder="Search topics or terms..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl py-2.5 pl-10 pr-4 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all"
+                        />
+                    </div>
+                </div>
+            )}
+
+            {isDrawer && (
+                <div className="relative w-full mb-4">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <input
                         type="text"
-                        placeholder="Search topics or terms..."
+                        placeholder="Search topics..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl py-2.5 pl-10 pr-4 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all"
+                        className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl py-2 pl-10 pr-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all"
                     />
                 </div>
-            </div>
+            )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className={`grid gap-4 ${isDrawer ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}>
                 {filteredTopics.map((topic) => (
                     <motion.div
                         key={topic.id}

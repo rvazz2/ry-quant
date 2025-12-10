@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
 import { Search, Monitor, Terminal, BarChart3, TrendingUp, Bitcoin, BookOpen, Calculator } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export function CommandMenu() {
     const [open, setOpen] = React.useState(false);
     const router = useRouter();
     const { setTheme } = useTheme();
+    const { setLibraryOpen } = useSettings();
 
     // Toggle with Ctrl+K or Cmd+K
     React.useEffect(() => {
@@ -76,11 +78,11 @@ export function CommandMenu() {
                             </Command.Item>
 
                             <Command.Item
-                                onSelect={() => runCommand(() => router.push("/mission"))}
+                                onSelect={() => runCommand(() => setLibraryOpen(true))}
                                 className="flex items-center gap-2 px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer aria-selected:bg-slate-800 aria-selected:text-white transition-colors"
                             >
                                 <BookOpen className="w-4 h-4 text-emerald-400" />
-                                <span>Mission & Quiz</span>
+                                <span>Knowledge Library</span>
                             </Command.Item>
                         </Command.Group>
 

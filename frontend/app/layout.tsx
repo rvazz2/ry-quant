@@ -7,6 +7,7 @@ import { SettingsProvider } from "@/contexts/SettingsContext";
 import Providers from "../providers";
 import { ThemeProvider } from "next-themes";
 import { CommandMenu } from "@/components/CommandMenu";
+import { LibraryDrawer } from "@/components/LibraryDrawer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +42,7 @@ export default function RootLayout({
               <ErrorBoundary>
                 {children}
                 <CommandMenu />
+                <LibraryDrawer />
                 <Analytics />
               </ErrorBoundary>
             </SettingsProvider>

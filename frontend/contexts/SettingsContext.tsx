@@ -47,6 +47,9 @@ interface SettingsContextType {
     triggerUpdate: () => void;
     registerUpdateHandler: (handler: () => void) => void;
     hasError: boolean;
+    // New UI States
+    isLibraryOpen: boolean;
+    setLibraryOpen: (open: boolean) => void;
 }
 
 const defaultSettings: Settings = {
@@ -93,6 +96,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     const [updateAvailable, setUpdateAvailable] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [updateHandler, setUpdateHandler] = useState<(() => void) | null>(null);
+    const [isLibraryOpen, setLibraryOpen] = useState(false);
     const saveTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
     // Load settings from localStorage on mount
@@ -179,8 +183,10 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
             if (updateHandler) updateHandler();
         },
         registerUpdateHandler,
-        hasError
-    }), [settings, updateSetting, resetSettings, updateAvailable, registerUpdateHandler, updateHandler, hasError]);
+        hasError,
+        isLibraryOpen,
+        setLibraryOpen
+    }), [settings, updateSetting, resetSettings, updateAvailable, registerUpdateHandler, updateHandler, hasError, isLibraryOpen]);
 
     return (
         <SettingsContext.Provider value={contextValue}>

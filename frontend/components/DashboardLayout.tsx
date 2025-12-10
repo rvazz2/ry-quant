@@ -15,7 +15,7 @@ interface DashboardLayoutProps {
 }
 
 const SidebarContent = () => {
-    const { updateAvailable } = useSettings();
+    const { updateAvailable, setLibraryOpen } = useSettings();
 
     return (
         <nav className="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar py-4">
@@ -34,7 +34,11 @@ const SidebarContent = () => {
                 <span>Education & Sim</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
             </div>
-            <NavItem href="/library" icon={<BookOpen size={18} className="text-lime-400" />} label="Library" />
+            <NavItem
+                onClick={() => setLibraryOpen(true)}
+                icon={<BookOpen size={18} className="text-lime-400" />}
+                label="Library"
+            />
             <NavItem href="/mission" icon={<GraduationCap size={18} className="text-yellow-400" />} label="Financial Quiz" />
             <NavItem href="/planning" icon={<BookOpen size={18} className="text-amber-400" />} label="Financial Planning" />
             <NavItem href="/simulator" icon={<Activity size={18} className="text-indigo-400" />} label="Trading Simulator" />
@@ -73,7 +77,7 @@ const SidebarContent = () => {
     );
 };
 
-const NavItem = React.memo(({ icon, label, href, view }: { icon: React.ReactNode, label: string, href?: string, view?: string }) => {
+const NavItem = React.memo(({ icon, label, href, view, onClick }: { icon: React.ReactNode, label: string, href?: string, view?: string, onClick?: () => void }) => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const [mounted, setMounted] = React.useState(false);
@@ -90,9 +94,13 @@ const NavItem = React.memo(({ icon, label, href, view }: { icon: React.ReactNode
         isActive = pathname === href;
     } else if (view) {
         isActive = pathname === '/dashboard' && currentView === view;
+    } else if (onClick && label === "Library") {
+        // Special case for Library drawer - maybe check if drawer is open? 
+        // For now, simpler to not show active state or just rely on 'onClick'
+        isActive = false;
     }
 
-    const linkHref = href ? href : `/?view=${view}`;
+    const linkHref = href ? href : view ? `/?view=${view}` : '#';
 
     // Fix active state logic for dashboard sub-views
     if (href?.includes('?view=')) {
@@ -104,6 +112,20 @@ const NavItem = React.memo(({ icon, label, href, view }: { icon: React.ReactNode
 
     // Safety: Only show active state on client after mount to prevent hydration mismatch
     const isActuallyActive = mounted && isActive;
+
+    if (onClick) {
+        return (
+            <button
+                onClick={onClick}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 relative overflow-hidden group text-slate-400 hover:bg-white/5 hover:text-slate-200 hover:translate-x-1 border border-transparent`}
+            >
+                <div className={`transition-transform duration-300 group-hover:scale-110`}>
+                    {icon}
+                </div>
+                <span className="font-medium tracking-wide text-sm">{label}</span>
+            </button>
+        );
+    }
 
     return (
         <Link
