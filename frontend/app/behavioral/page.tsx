@@ -26,6 +26,23 @@ const MarketPsychologyCycle = dynamic(() => import('@/components/behavioral/Mark
     ssr: false
 });
 
+const FearGreedIndex = dynamic(() => import('@/components/behavioral/FearGreedIndex'), {
+    loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
+    ssr: false
+});
+const CognitiveBiasExplorer = dynamic(() => import('@/components/behavioral/CognitiveBiasExplorer'), {
+    loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
+    ssr: false
+});
+const TraderPersonalityTest = dynamic(() => import('@/components/behavioral/TraderPersonalityTest'), {
+    loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
+    ssr: false
+});
+const BiasesCasino = dynamic(() => import('@/components/behavioral/BiasesCasino'), {
+    loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
+    ssr: false
+});
+
 export default function BehavioralPage() {
     return (
         <DashboardLayout>
@@ -40,30 +57,40 @@ export default function BehavioralPage() {
                     </p>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {/* Tool 1: Fear & Greed */}
-                    <div className="lg:col-span-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
+                    {/* Row 1: Sentiment & Fear/Greed */}
+                    <div className="lg:col-span-8">
                         <SentimentTracker />
                     </div>
+                    <div className="lg:col-span-4">
+                        <FearGreedIndex />
+                    </div>
 
-                    {/* Tool 2: Superinvestor Radar (New) */}
-                    <div className="lg:col-span-1">
+                    {/* Row 2: Personality & Biases */}
+                    <div className="lg:col-span-4">
+                        <TraderPersonalityTest />
+                    </div>
+                    <div className="lg:col-span-4">
+                        <CognitiveBiasExplorer />
+                    </div>
+                    <div className="lg:col-span-4">
+                        <BiasesCasino />
+                    </div>
+
+                    {/* Row 3: Technicals & Whales */}
+                    <div className="lg:col-span-8">
+                        <MarketPsychologyCycle />
+                    </div>
+                    <div className="lg:col-span-4">
                         <SuperinvestorRadar />
                     </div>
 
-                    {/* Tool 3: Inverse Cramer */}
-                    <div className="lg:col-span-1">
-                        <InverseCramer />
-                    </div>
-
-                    {/* Tool 4: Market Psychology Cycle (New) */}
-                    <div className="lg:col-span-2">
-                        <MarketPsychologyCycle />
-                    </div>
-
-                    {/* Tool 5: Social Hype Radar */}
-                    <div className="md:col-span-2 lg:col-span-3">
+                    {/* Row 4: Hype & Strategies */}
+                    <div className="lg:col-span-8">
                         <SocialHypeRadar />
+                    </div>
+                    <div className="lg:col-span-4">
+                        <InverseCramer />
                     </div>
                 </div>
             </div>
