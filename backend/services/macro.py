@@ -268,3 +268,21 @@ def get_fed_projections():
             "Longer Run": 2.5
         }
     }
+
+def get_global_macro_data():
+    """
+    Returns global macro data for the 3D Globe visualization.
+    Positions are approximate Lat/Lon.
+    """
+    return [
+        {"country": "United States", "lat": 37.0902, "lon": -95.7129, "gdp_growth": 2.5, "inflation": 3.4, "color": "green", "code": "USA"},
+        {"country": "China", "lat": 35.8617, "lon": 104.1954, "gdp_growth": 5.2, "inflation": 0.7, "color": "green", "code": "CHN"},
+        {"country": "Japan", "lat": 36.2048, "lon": 138.2529, "gdp_growth": 1.9, "inflation": 2.2, "color": "yellow", "code": "JPN"},
+        {"country": "Germany", "lat": 51.1657, "lon": 10.4515, "gdp_growth": -0.3, "inflation": 3.8, "color": "red", "code": "DEU"},
+        {"country": "India", "lat": 20.5937, "lon": 78.9629, "gdp_growth": 7.3, "inflation": 5.1, "color": "green", "code": "IND"},
+        {"country": "United Kingdom", "lat": 55.3781, "lon": -3.4360, "gdp_growth": 0.5, "inflation": 4.0, "color": "orange", "code": "GBR"},
+        {"country": "Brazil", "lat": -14.2350, "lon": -51.9253, "gdp_growth": 3.1, "inflation": 4.5, "color": "green", "code": "BRA"},
+        {"country": "Russia", "lat": 61.5240, "lon": 105.3188, "gdp_growth": 1.1, "inflation": 7.4, "color": "red", "code": "RUS"},
+        {"country": "Canada", "lat": 56.1304, "lon": -106.3468, "gdp_growth": 1.2, "inflation": 2.9, "color": "yellow", "code": "CAN"},
+        {"country": "Australia", "lat": -25.2744, "lon": 133.7751, "gdp_growth": 1.5, "inflation": 3.4, "color": "yellow", "code": "AUS"},
+    ]

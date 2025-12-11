@@ -11,7 +11,8 @@ const YieldCurveChart = dynamic(() => import('@/components/macro/YieldCurveChart
     loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
     ssr: false
 });
-const SupplyChainMap = dynamic(() => import('@/components/macro/SupplyChainMap'), {
+const MacroGlobe = dynamic(() => import('@/components/macro/MacroGlobe').then(mod => mod.MacroGlobe), {
+    loading: () => <div className="h-[500px] w-full bg-slate-900/50 animate-pulse rounded-xl" />,
     ssr: false
 });
 const EconomicCalendar = dynamic(() => import('@/components/macro/EconomicCalendar'), {
@@ -90,9 +91,9 @@ export default function MacroPage() {
                             <YieldCurveChart data={curves} />
                         </div>
 
-                        {/* Supply Chain Map */}
+                        {/* Macro Globe and Calendar */}
                         <div className="flex flex-col gap-8">
-                            <SupplyChainMap />
+                            <MacroGlobe />
                             <EconomicCalendar />
                         </div>
                     </div>

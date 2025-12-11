@@ -262,3 +262,5 @@ class CryptoService:
 
     @staticmethod
     async def close():
+        if CryptoService._exchange:
+            await CryptoService._exchange.close()

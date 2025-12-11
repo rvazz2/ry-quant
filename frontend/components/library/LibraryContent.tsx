@@ -83,6 +83,7 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                     >
                         <div className="flex items-start justify-between mb-4">
                             <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all duration-300">
+                                {/* @ts-ignore */}
                                 <topic.icon size={24} />
                             </div>
                             <div className="bg-slate-800/50 px-2 py-1 rounded text-xs font-mono text-slate-500 group-hover:text-cyan-400/70 transition-colors">
@@ -121,6 +122,7 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                                 <div className="p-6 border-b border-slate-800/60 bg-slate-900/50 flex items-start justify-between">
                                     <div className="flex items-center gap-4">
                                         <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400">
+                                            {/* @ts-ignore */}
                                             <selectedTopic.icon size={24} />
                                         </div>
                                         <div>

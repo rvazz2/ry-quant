@@ -33,3 +33,11 @@ async def fed_projections():
         return await asyncio.to_thread(get_fed_projections)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/globe")
+async def global_macro():
+    try:
+        from services.macro import get_global_macro_data
+        return await asyncio.to_thread(get_global_macro_data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
