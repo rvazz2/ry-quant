@@ -16,31 +16,32 @@ import { IndexDetails, MarketOverviewItem } from '@/lib/types';
 const IndexCard = React.memo(({ item, isLoading, onClick }: { item: MarketOverviewItem, isLoading: boolean, onClick: () => void }) => (
     <div
         onClick={onClick}
-        className="glass-panel glass-panel-hover p-5 flex flex-col justify-between h-36 cursor-pointer relative group"
+        className="glass-panel p-6 flex flex-col justify-between h-36 cursor-pointer relative group overflow-hidden border-t border-white/5 hover:border-cyan-500/30 transition-all duration-500"
     >
-        {/* Subtle background glow on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Animated Background Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-600/10 via-transparent to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <div className="absolute -right-10 -top-10 w-32 h-32 bg-cyan-500/20 blur-[60px] rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-500" />
 
-        <div className="flex justify-between items-start relative z-10">
-            <h3 className="label-text">{item.name}</h3>
-            <span className={`text-xs font-bold px-2 py-1 rounded-full border ${item.change >= 0
-                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                : 'bg-rose-500/10 border-rose-500/20 text-rose-400'}`}>
+        <div className="flex justify-between items-start relative z-10 w-full">
+            <h3 className="text-sm font-medium text-slate-400 tracking-wider uppercase group-hover:text-cyan-200 transition-colors">{item.name}</h3>
+            <span className={`text-xs font-bold px-2.5 py-1 rounded-full border backdrop-blur-md shadow-lg ${item.change >= 0
+                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300 shadow-emerald-900/20'
+                : 'bg-rose-500/10 border-rose-500/20 text-rose-300 shadow-rose-900/20'}`}>
                 {item.change >= 0 ? '+' : ''}{item.change.toFixed(2)}%
             </span>
         </div>
 
-        <div className="flex items-end gap-3 relative z-10">
-            <span className="text-3xl font-black text-white tracking-tight">{item.price.toFixed(2)}</span>
+        <div className="flex items-end gap-3 relative z-10 mt-auto">
+            <span className="text-3xl font-black bg-gradient-to-br from-white via-slate-200 to-slate-400 bg-clip-text text-transparent tracking-tight group-hover:from-white group-hover:to-cyan-200 transition-all">{item.price.toFixed(2)}</span>
             {item.change >= 0
-                ? <ArrowUp size={20} className="text-emerald-400 mb-1.5 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                : <ArrowDown size={20} className="text-rose-400 mb-1.5 drop-shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
+                ? <ArrowUp size={22} className="text-emerald-400 mb-1.5 drop-shadow-[0_0_10px_rgba(52,211,153,0.6)] animate-pulse-slow" />
+                : <ArrowDown size={22} className="text-rose-400 mb-1.5 drop-shadow-[0_0_10px_rgba(251,113,133,0.6)] animate-pulse-slow" />
             }
         </div>
 
         {isLoading && (
-            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center rounded-xl animate-fade-in-up">
-                <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center rounded-2xl animate-fade-in-up z-20">
+                <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
             </div>
         )}
     </div>

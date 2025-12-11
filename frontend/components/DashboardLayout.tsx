@@ -132,14 +132,14 @@ const NavItem = React.memo(({ icon, label, href, view, onClick }: { icon: React.
         <Link
             href={linkHref}
             prefetch={true}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 relative overflow-hidden group ${isActuallyActive
-                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 shadow-[0_0_20px_rgba(34,211,238,0.1)]'
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative overflow-hidden group/nav ${isActuallyActive
+                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.15)] ring-1 ring-cyan-400/20'
                 : 'text-slate-400 hover:bg-white/5 hover:text-slate-200 hover:translate-x-1 border border-transparent'
                 }`}>
             {isActuallyActive && (
-                <div className="absolute left-0 top-0 h-full w-[3px] bg-cyan-400 shadow-[0_0_10px_2px_rgba(34,211,238,0.6)]" />
+                <div className="absolute left-0 top-0 h-full w-[3px] bg-cyan-400 shadow-[0_0_15px_2px_rgba(6,182,212,0.8)]" />
             )}
-            <div className={`transition-transform duration-300 ${isActuallyActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]' : 'group-hover:scale-110'}`}>
+            <div className={`transition-transform duration-300 ${isActuallyActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]' : 'group-hover/nav:scale-110 group-hover/nav:text-cyan-400/80'}`}>
                 {icon}
             </div>
             <span className={`font-medium tracking-wide text-sm ${isActuallyActive ? 'text-cyan-100 font-semibold' : ''}`}>{label}</span>
@@ -230,26 +230,27 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             )}
 
             {/* Sidebar */}
-            <aside className="w-64 bg-[rgba(13,16,28,0.7)] backdrop-blur-2xl border-r border-white/5 hidden md:flex flex-col relative z-20 shadow-[5px_0_30px_rgba(0,0,0,0.3)] h-screen">
-                <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                    <Link href="/">
-                        <h1 className="text-2xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent cursor-pointer tracking-tighter hover:brightness-125 transition-all duration-300">
+            <aside className="w-72 bg-[rgba(11,14,20,0.4)] backdrop-blur-xl border-r border-white/5 hidden md:flex flex-col relative z-20 shadow-[5px_0_30px_rgba(0,0,0,0.5)] h-screen">
+                <div className="p-8 pb-4 border-b border-white/5 flex items-center justify-between relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <Link href="/" className="relative z-10">
+                        <h1 className="text-3xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent cursor-pointer tracking-tighter hover:brightness-125 transition-all duration-300 drop-shadow-[0_2px_10px_rgba(6,182,212,0.3)]">
                             QUANT<span className="font-light text-slate-100">DASH</span>
                         </h1>
                     </Link>
                 </div>
 
-                <div className="px-4 py-6">
+                <div className="px-5 py-6">
                     <button
                         onClick={() => setIsCmdKOpen(true)}
-                        className="w-full flex items-center justify-between px-3 py-2.5 bg-black/20 hover:bg-black/40 hover:shadow-[0_0_15px_rgba(6,182,212,0.1)] border border-white/5 hover:border-cyan-500/30 rounded-xl text-sm text-slate-400 transition-all group duration-300"
+                        className="w-full flex items-center justify-between px-4 py-3 bg-white/5 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] border border-white/10 hover:border-cyan-500/30 rounded-2xl text-sm text-slate-400 transition-all group duration-300"
                     >
-                        <span className="flex items-center gap-2 group-hover:text-cyan-300 transition-colors">
-                            <Search size={15} />
-                            Search...
+                        <span className="flex items-center gap-3 group-hover:text-cyan-300 transition-colors">
+                            <Search size={16} />
+                            <span>Quick Search...</span>
                         </span>
-                        <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border border-white/10 px-2 font-mono text-[10px] font-bold text-slate-500 group-hover:text-cyan-400 transition-colors">
-                            <span className="text-xs">Ctrl</span> K
+                        <kbd className="hidden md:inline-flex h-6 items-center gap-1 rounded bg-black/30 border border-white/10 px-2 font-mono text-[10px] font-bold text-slate-500 group-hover:text-cyan-400 transition-colors shadow-inner">
+                            <span className="text-xs">⌘</span> K
                         </kbd>
                     </button>
                 </div>
@@ -273,34 +274,38 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-y-auto h-screen relative z-10 scroll-smooth custom-scrollbar">
-                <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-[rgba(8,10,20,0.6)] backdrop-blur-xl sticky top-0 z-30 transition-all duration-300">
+            <main className="flex-1 overflow-y-auto h-screen relative z-10 scroll-smooth custom-scrollbar bg-gradient-to-br from-transparent to-black/20">
+                {/* Floating Glass Header */}
+                <header className="h-16 mt-4 mx-6 rounded-2xl border border-white/10 flex items-center justify-between px-6 bg-[rgba(11,14,20,0.5)] backdrop-blur-2xl shadow-lg shadow-black/20 sticky top-4 z-30 transition-all duration-300">
                     <div className="flex items-center gap-4">
                         {/* Mobile Menu Trigger */}
                         <button
-                            className="md:hidden mr-2 text-slate-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/5"
+                            className="md:hidden mr-2 text-slate-400 hover:text-white transition-colors p-2 rounded-xl hover:bg-white/5"
                             onClick={() => setIsMobileNavOpen(true)}
                         >
                             <Menu size={24} />
                         </button>
 
-                        <h2 className="text-sm font-medium text-slate-400 flex items-center gap-3 bg-black/20 px-3 py-1.5 rounded-full border border-white/5">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-[pulse_2s_infinite] shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
-                            <span className="bg-gradient-to-r from-slate-200 to-slate-400 bg-clip-text text-transparent font-semibold tracking-wide">Live Connection</span>
+                        <h2 className="text-sm font-medium text-slate-400 flex items-center gap-3 bg-white/5 px-4 py-1.5 rounded-full border border-white/5 hover:border-emerald-500/30 transition-colors cursor-default">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            <span className="bg-gradient-to-r from-slate-200 to-slate-400 bg-clip-text text-transparent font-semibold tracking-wide text-xs uppercase">Live Connection</span>
                         </h2>
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <Link href="/" className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-cyan-300 transition-colors group hidden sm:flex">
-                            <BookOpen size={16} className="group-hover:rotate-12 transition-transform" />
+                        <Link href="/" className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-cyan-300 transition-colors group hidden sm:flex px-4 py-2 rounded-full hover:bg-white/5">
+                            <BookOpen size={16} className="group-hover:-translate-y-0.5 transition-transform duration-300" />
                             <span>Mission Control</span>
                         </Link>
 
-                        <div className="h-6 w-[1px] bg-white/10 hidden sm:block"></div>
+                        <div className="h-8 w-[1px] bg-white/10 hidden sm:block"></div>
 
                         <div className="flex items-center gap-4">
                             <MarketStatus />
-                            <span className="text-xs text-cyan-500/90 font-mono bg-cyan-950/40 px-3 py-1.5 rounded-lg border border-cyan-500/20 shadow-[0_0_15px_-5px_rgba(34,211,238,0.3)]">
+                            <span className="text-xs text-cyan-400 font-mono bg-cyan-950/30 px-3 py-1.5 rounded-lg border border-cyan-500/20 shadow-[0_0_15px_-5px_rgba(6,182,212,0.3)]">
                                 {mounted && new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                             </span>
                         </div>

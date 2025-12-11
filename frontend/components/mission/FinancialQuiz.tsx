@@ -393,7 +393,7 @@ export default function FinancialQuiz() {
     // Render Question Screen
     return (
         <div className="w-full max-w-3xl mx-auto my-24 animate-in slide-in-from-bottom-8 duration-500">
-            <div className="bg-slate-900/80 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col min-h-[500px]">
+            <div className="glass-panel backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col min-h-[500px]">
 
                 {/* Progress Bar */}
                 <div className="w-full bg-slate-800 h-1.5">

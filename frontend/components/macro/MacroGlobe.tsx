@@ -4,7 +4,7 @@ import React, { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Html, Stars } from "@react-three/drei";
 import * as THREE from "three";
-import { Card } from "@/components/ui/card";
+// import { Card } from "@/components/ui/card"; // Removing unused
 import { Loader2 } from "lucide-react";
 
 interface MacroGlobeProps {
@@ -148,16 +148,16 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
 
     if (loading) {
         return (
-            <Card className={`h-[500px] flex items-center justify-center bg-slate-950 border-slate-800 ${className}`}>
-                <Loader2 className="animate-spin h-8 w-8 text-slate-500" />
-            </Card>
+            <div className={`glass-panel h-[500px] flex items-center justify-center ${className}`}>
+                <Loader2 className="animate-spin h-8 w-8 text-cyan-400" />
+            </div>
         );
     }
 
     return (
-        <Card className={`h-[500px] w-full bg-slate-950 border-slate-800 overflow-hidden relative ${className}`}>
+        <div className={`glass-panel h-[500px] w-full overflow-hidden relative ${className}`}>
             <div className="absolute top-4 left-4 z-10 pointer-events-none select-none">
-                <h3 className="text-xl font-bold text-white tracking-tight drop-shadow-md">Global Markets</h3>
+                <h3 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent tracking-tight drop-shadow-md">Global Markets</h3>
                 <p className="text-slate-400 text-sm">Real-time Index Performance & Inflation</p>
                 <div className="flex gap-2 mt-3">
                     <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded border border-slate-800">
@@ -197,7 +197,7 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
                     autoRotateSpeed={0.5}
                 />
             </Canvas>
-        </Card>
+        </div>
     );
 }
 

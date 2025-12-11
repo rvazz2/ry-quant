@@ -8,65 +8,64 @@
 }
 
 :root {
-  /* Premium Dark Theme Palette (Default "Modern") */
-  --bg-dark: 8, 10, 20;
-  /* Deep Blue-Black */
-  --bg-card: 13, 16, 28;
-  /* Slightly lighter */
+  /* --- COSMIC DARK THEME (Premium) --- */
+  /* Deep Void / Abyssal Blues */
+  --bg-dark: 11, 14, 20;
+  /* Richer, deeper blue-black */
+  --bg-card: 16, 20, 31;
+  /* Slightly lighter, cool tone */
 
-  --primary-rgb: 34, 211, 238;
-  /* Cyan-400 */
-  --secondary-rgb: 139, 92, 246;
-  /* Violet-500 */
+  /* Neon Accents - High Luminosity */
+  --primary-rgb: 6, 182, 212;
+  /* Cyan-500 (Electric) */
+  --secondary-rgb: 124, 58, 237;
+  /* Violet-600 (Deep Neon) */
   --accent-rgb: 16, 185, 129;
-  /* Emerald-500 */
+  /* Emerald-500 (Cyber Green) */
   --rose-rgb: 244, 63, 94;
-  /* Rose-500 */
+  /* Rose-500 (Laser Red) */
 
-  --foreground-rgb: 248, 250, 252;
+  --foreground-rgb: 241, 245, 249;
+  /* Slate-100 (Crisp White) */
   --font-family: 'Inter', sans-serif;
 
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-bg: rgba(13, 16, 28, 0.65);
+  /* Glassmorphism 4.0 Params */
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-bg: rgba(16, 20, 31, 0.65);
+  --glass-shine: rgba(255, 255, 255, 0.03);
 }
 
 [data-theme='hacker'] {
-  /* Hacker / Terminal Theme */
+  /* Hacker / Terminal Theme (Preserved) */
   --bg-dark: 0, 0, 0;
   --bg-card: 0, 20, 0;
-  /* Very dark green */
 
   --primary-rgb: 74, 222, 128;
-  /* Green-400 */
   --secondary-rgb: 34, 197, 94;
-  /* Green-500 */
   --accent-rgb: 74, 222, 128;
-  /* Green-400 */
   --rose-rgb: 74, 222, 128;
-  /* All green everything */
 
   --foreground-rgb: 74, 222, 128;
-  /* Terminal Green Text */
   --font-family: 'Geist Mono', monospace;
-  /* Monospace font */
 
   --glass-border: rgba(74, 222, 128, 0.3);
   --glass-bg: rgba(0, 10, 0, 0.9);
+  --glass-shine: rgba(74, 222, 128, 0.05);
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background-color: rgb(var(--bg-dark));
   background-image:
-    radial-gradient(circle at 15% 25%, rgba(var(--primary-rgb), 0.08), transparent 30%),
-    radial-gradient(circle at 85% 75%, rgba(var(--secondary-rgb), 0.08), transparent 30%),
-    radial-gradient(circle at 50% 50%, rgba(var(--accent-rgb), 0.04), transparent 50%);
+    radial-gradient(circle at 0% 0%, rgba(var(--secondary-rgb), 0.15), transparent 40%),
+    radial-gradient(circle at 100% 0%, rgba(var(--primary-rgb), 0.1), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(var(--accent-rgb), 0.05), transparent 60%);
   background-attachment: fixed;
   font-family: var(--font-family);
   transition: color 0.5s, background-color 0.5s;
 }
 
-/* Hacker Mode Scanline Effect */
+/* Hacker Mode Scanline Effect (Preserved) */
 [data-theme='hacker'] body::after {
   content: " ";
   display: block;
@@ -81,50 +80,57 @@ body {
   pointer-events: none;
 }
 
-/* --- Premium Glassmorphism 3.0 --- */
+/* --- Premium Glassmorphism 4.0 --- */
 
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(25px) saturate(140%);
+  /* Richer blur */
+  -webkit-backdrop-filter: blur(25px) saturate(140%);
   border: 1px solid var(--glass-border);
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  /* Inner light */
+  border-radius: 1.25rem;
+  /* Smoother corners */
   position: relative;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Hover Effect for Cards */
 .glass-panel-hover:hover {
-  transform: translateY(-4px);
-  background: rgba(13, 16, 28, 0.8);
-  border-color: rgba(34, 211, 238, 0.3);
-  /* Cyan hint on hover */
+  transform: translateY(-4px) scale(1.005);
+  background: rgba(20, 25, 40, 0.75);
+  border-color: rgba(var(--primary-rgb), 0.3);
   box-shadow:
-    0 15px 50px rgba(0, 0, 0, 0.5),
-    0 0 25px rgba(34, 211, 238, 0.15);
-  /* Glow */
+    0 20px 40px -5px rgba(0, 0, 0, 0.4),
+    0 0 15px -3px rgba(var(--primary-rgb), 0.2);
 }
 
 /* Focused "Active" Card */
 .glass-panel-active {
-  background: rgba(13, 16, 28, 0.9);
-  border-color: rgba(34, 211, 238, 0.5);
-  box-shadow: 0 0 30px rgba(34, 211, 238, 0.2);
+  background: rgba(20, 25, 40, 0.85);
+  border-color: rgba(var(--primary-rgb), 0.6);
+  box-shadow: 0 0 30px -5px rgba(var(--primary-rgb), 0.25);
 }
 
-/* Inner Glow/Sheen Effect */
+/* Inner Glow/Sheen Effect - Improved */
 .glass-panel::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  opacity: 0.6;
+  height: 100%;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.03) 0%,
+      rgba(255, 255, 255, 0) 40%,
+      rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* --- Typography Utilities --- */
