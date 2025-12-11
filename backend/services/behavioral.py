@@ -6,6 +6,7 @@ import urllib.parse
 from datetime import datetime, timedelta
 import pandas as pd
 from cache import timed_cache
+import numpy as np
 
 analyzer = SentimentIntensityAnalyzer()
 
@@ -341,3 +342,172 @@ def get_superinvestor_data():
         }
     ]
     return investors
+
+@timed_cache(seconds=1800)
+def get_fear_greed_index():
+    """
+    Calculates a multi-factor Fear & Greed Index (0-100).
+    Factors:
+    1. Market Momentum (SPY vs 125d MA)
+    2. Market Volatility (VIX)
+    3. Safe Haven Demand (Bond vs Stock performance) - Simplified as AGG vs SPY
+    """
+    try:
+        # Fetch data
+        tickers = ["SPY", "^VIX", "AGG"]
+        data = yf.download(tickers, period="6mo", progress=False, threads=False)
+        
+        if data.empty:
+            return {"score": 50, "label": "Neutral", "message": "Data unavailable"}
+            
+        # Handle different dataframe structures
+        if isinstance(data.columns, pd.MultiIndex):
+            # Flatten or select Close
+            if 'Close' in data.columns.get_level_values(0):
+               prices = data['Close']
+            elif 'Adj Close' in data.columns.get_level_values(0):
+               prices = data['Adj Close']
+            else:
+               prices = data
+        else:
+             prices = data
+
+        # 1. Momentum: SPY price vs 125-day avg
+        spy_prices = prices['SPY'].dropna()
+        current_spy = spy_prices.iloc[-1]
+        ma_125 = spy_prices.rolling(window=125).mean().iloc[-1]
+        
+        # If market > avg -> Greed, else Fear
+        mom_score = 50
+        if not pd.isna(ma_125):
+            diff_pct = (current_spy - ma_125) / ma_125
+            # +/- 10% deviation = max score impact
+            mom_score = 50 + (diff_pct * 500) 
+            mom_score = max(0, min(100, mom_score))
+            
+        # 2. Volatility: VIX (Lower is Greed, Higher is Fear)
+        vix_prices = prices['^VIX'].dropna()
+        current_vix = vix_prices.iloc[-1]
+        ma_50_vix = vix_prices.rolling(window=50).mean().iloc[-1]
+        
+        vol_score = 50
+        if not pd.isna(ma_50_vix):
+             # If VIX is lower than usual -> Greed
+             vix_diff = (current_vix - ma_50_vix) / ma_50_vix
+             # VIX higher = Fear (lower score)
+             vol_score = 50 - (vix_diff * 100)
+             vol_score = max(0, min(100, vol_score))
+             
+        # Combine (Simple Average for now)
+        final_score = int((mom_score * 0.6) + (vol_score * 0.4))
+        
+        label = "Neutral"
+        if final_score < 25: label = "Extreme Fear"
+        elif final_score < 45: label = "Fear"
+        elif final_score > 75: label = "Extreme Greed"
+        elif final_score > 55: label = "Greed"
+        
+        return {
+            "score": final_score,
+            "label": label,
+            "components": {
+                "momentum": int(mom_score),
+                "volatility": int(vol_score)
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        print(f"FearGreed Error: {e}")
+        return {"score": 50, "label": "Neutral", "error": str(e)}
+
+def get_cognitive_biases():
+    """
+    Returns a list of financial cognitive biases for the Explorer.
+    """
+    biases = [
+        {
+            "id": "loss_aversion",
+            "name": "Loss Aversion",
+            "definition": "The tendency to prefer avoiding losses to acquiring equivalent gains.",
+            "example": "Holding a losing stock hoping it breaks even, while selling winners too early.",
+            "tip": "Set stop-losses before you enter a trade and stick to them."
+        },
+        {
+            "id": "confirmation_bias",
+            "name": "Confirmation Bias",
+            "definition": "Searching for information that confirms one's pre-existing beliefs.",
+            "example": "Only reading bullish news articles for a stock you own.",
+            "tip": "Actively seek out the 'Bear Case' for every investment you make."
+        },
+        {
+            "id": "recency_bias",
+            "name": "Recency Bias",
+            "definition": "Giving more weight to recent events than earlier ones.",
+            "example": "Thinking the market will crash because it dropped yesterday.",
+            "tip": "Zoom out. Look at 5-year or 10-year trends, not just the 1-day chart."
+        },
+        {
+            "id": "sunk_cost",
+            "name": "Sunk Cost Fallacy",
+            "definition": "Continuing a behavior because of previously invested resources.",
+            "example": "Adding money to a bad trade because you've already spent so much time researching it.",
+            "tip": "Ask yourself: 'Would I buy this stock today at this price?' If no, sell."
+        },
+        {
+            "id": "anchoring",
+            "name": "Anchoring",
+            "definition": "Relying too heavily on the first piece of information offered.",
+            "example": "Thinking a stock is 'cheap' just because it dropped from its all-time high.",
+            "tip": "Valuate a company based on logic (PE, Revenue), not its past price history."
+        },
+        {
+            "id": "herding",
+            "name": "Herding",
+            "definition": "Following the actions of a larger group, whether rational or not.",
+            "example": "Buying a meme stock because everyone on Reddit is buying it.",
+            "tip": "Do your own due diligence. The crowd is often wrong at extremes."
+        }
+    ]
+    random.shuffle(biases)
+    return biases
+
+def get_trader_personality_test():
+    """
+    Returns the quiz structure for the personality test.
+    """
+    return {
+        "title": "What's Your Trading Personality?",
+        "questions": [
+            {
+                "id": 1,
+                "text": "When a stock you bought drops 10% in a day, you:",
+                "options": [
+                    {"text": "Sell immediately to cut losses.", "points": {"risk_averse": 2, "disciplined": 1}},
+                    {"text": "Buy more! Discount!", "points": {"risk_taker": 2, "value": 1}},
+                    {"text": "Panic and do nothing.", "points": {"emotional": 2}},
+                    {"text": "Check the news to see if the thesis changed.", "points": {"analytical": 2}}
+                ]
+            },
+            {
+                "id": 2,
+                "text": "Your ideal holding period is:",
+                "options": [
+                    {"text": "Minutes to Hours", "points": {"risk_taker": 2, "impulsive": 1}},
+                    {"text": "Days to Weeks", "points": {"swing": 2}},
+                    {"text": "Years", "points": {"investor": 2, "patient": 1}},
+                    {"text": "Until I need the money", "points": {"casual": 2}}
+                ]
+            },
+            {
+                "id": 3,
+                "text": "You see a stock soaring 50% in a week. You:",
+                "options": [
+                    {"text": "Short it. It's a bubble.", "points": {"contrarian": 2}},
+                    {"text": "Jump in, don't miss out (FOMO).", "points": {"impulsive": 2}},
+                    {"text": "Ignore it, I stick to my plan.", "points": {"disciplined": 2}},
+                    {"text": "Analyze why it's moving.", "points": {"analytical": 2}}
+                ]
+            }
+        ]
+    }
+

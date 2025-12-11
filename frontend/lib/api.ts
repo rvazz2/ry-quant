@@ -398,3 +398,24 @@ export const generatePDFReport = async (ticker: string) => {
     });
     return response.data;
 };
+
+export const getFearGreedIndex = async (): Promise<any> => {
+    return fetchWithCache('fear_greed', async () => {
+        const response = await api.get('/behavioral/fear-greed');
+        return response.data;
+    }, 1800); // 30 min cache
+};
+
+export const getCognitiveBiases = async (): Promise<any[]> => {
+    return fetchWithCache('biases', async () => {
+        const response = await api.get('/behavioral/biases');
+        return response.data;
+    }, 86400); // 24hr cache (static content)
+};
+
+export const getPersonalityTest = async (): Promise<any> => {
+    return fetchWithCache('personality_test', async () => {
+        const response = await api.get('/behavioral/personality');
+        return response.data;
+    }, 86400); // 24hr cache
+};

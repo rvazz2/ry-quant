@@ -2,9 +2,8 @@
 
 import React, { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Html, Stars } from "@react-three/drei";
+import { OrbitControls, Html, Stars, QuadraticBezierLine } from "@react-three/drei";
 import * as THREE from "three";
-// import { Card } from "@/components/ui/card"; // Removing unused
 import { Loader2 } from "lucide-react";
 
 interface MacroGlobeProps {
@@ -15,52 +14,79 @@ interface CountryData {
     country: string;
     lat: number;
     lon: number;
-    performance: number; // Market Perf (Renamed from gdp_growth)
+    performance: number;
     inflation: number;
     color: string;
     code: string;
 }
 
-function Marker({ data }: { data: CountryData }) {
-    const meshRef = useRef<THREE.Mesh>(null);
+// --- Visual Components ---
+
+function Beacon({ data }: { data: CountryData }) {
+    const meshRef = useRef<THREE.Group>(null);
     const [hovered, setHovered] = useState(false);
 
-    // Convert Lat/Lon to Vector3
+    // Position calc
     const position = useMemo(() => {
         const phi = (90 - data.lat) * (Math.PI / 180);
         const theta = (data.lon + 180) * (Math.PI / 180);
         const x = -(Math.sin(phi) * Math.cos(theta));
         const z = Math.sin(phi) * Math.sin(theta);
         const y = Math.cos(phi);
-        return new THREE.Vector3(x, y, z).multiplyScalar(1.02); // Radius slightly > 1
+        return new THREE.Vector3(x, y, z).multiplyScalar(1.0);
     }, [data.lat, data.lon]);
 
-    // Color logic
+    // Orientation to point outwards from center
+    const quaternion = useMemo(() => {
+        const dummy = new THREE.Object3D();
+        dummy.position.copy(position);
+        dummy.lookAt(0, 0, 0);
+        return dummy.quaternion;
+    }, [position]);
+
     const color = data.performance > 0.3 ? "#10b981" : data.performance < -0.3 ? "#ef4444" : "#fbbf24";
 
     useFrame((state) => {
         if (meshRef.current) {
-            // Pulse animation if hovered
-            const scale = hovered ? 1.5 : 1 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
-            meshRef.current.scale.set(scale, scale, scale);
+            // Gentle pulse
+            const s = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.05;
+            meshRef.current.scale.set(s, s, s);
         }
     });
 
     return (
-        <group position={position}>
+        <group position={position} quaternion={quaternion}>
             <mesh
-                ref={meshRef}
+                onPointerOver={() => { document.body.style.cursor = 'pointer'; setHovered(true); }}
+                onPointerOut={() => { document.body.style.cursor = 'auto'; setHovered(false); }}
+                rotation={[Math.PI / 2, 0, 0]} // Rotate cylinder to point out
+                position={[0, 0, 0.05]} // Offset so base is on surface
+            >
+                {/* The Beacon Pillar */}
+                <cylinderGeometry args={[0.006, 0.006, 0.15, 8]} />
+                <meshBasicMaterial color={color} toneMapped={false} transparent opacity={0.8} />
+            </mesh>
+
+            {/* Glowing Base Ring */}
+            <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.01]}>
+                <ringGeometry args={[0.015, 0.02, 16]} />
+                <meshBasicMaterial color={color} side={THREE.DoubleSide} transparent opacity={0.5} />
+            </mesh>
+
+            {/* Sensor / Hit Area */}
+            <mesh
+                visible={false}
                 onPointerOver={() => { document.body.style.cursor = 'pointer'; setHovered(true); }}
                 onPointerOut={() => { document.body.style.cursor = 'auto'; setHovered(false); }}
             >
-                <sphereGeometry args={[0.025, 16, 16]} />
-                <meshBasicMaterial color={color} toneMapped={false} />
+                <sphereGeometry args={[0.04, 8, 8]} />
             </mesh>
+
             {hovered && (
-                <Html distanceFactor={1.5}>
-                    <div className="bg-slate-900/95 text-white p-3 rounded-md border border-slate-700 text-xs w-48 backdrop-blur-md shadow-2xl pointer-events-none z-50 select-none">
+                <Html distanceFactor={1.5} position={[0, 0, 0.2]} style={{ pointerEvents: 'none' }}>
+                    <div className="bg-slate-900/95 text-white p-3 rounded-md border border-slate-700 text-xs w-48 backdrop-blur-md shadow-2xl z-50 select-none transform -translate-x-1/2 -translate-y-1/2">
                         <div className="font-bold mb-2 text-sm border-b border-slate-700 pb-1 flex justify-between items-center">
-                            <span>{data.country}</span>
+                            <span className="text-cyan-400">{data.country}</span>
                             <span className="text-[10px] text-slate-500">{data.code}</span>
                         </div>
                         <div className="flex justify-between mb-1">
@@ -70,7 +96,7 @@ function Marker({ data }: { data: CountryData }) {
                             </span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-slate-400">Inflation (Est):</span>
+                            <span className="text-slate-400">Inflation:</span>
                             <span className={data.inflation < 3 ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
                                 {data.inflation}%
                             </span>
@@ -82,42 +108,87 @@ function Marker({ data }: { data: CountryData }) {
     );
 }
 
+function DataArc({ startLat, startLon, endLat, endLon, color = "#0ea5e9" }: { startLat: number, startLon: number, endLat: number, endLon: number, color?: string }) {
+    // Helper to get vector
+    const getPos = (lat: number, lon: number) => {
+        const phi = (90 - lat) * (Math.PI / 180);
+        const theta = (lon + 180) * (Math.PI / 180);
+        const x = -(Math.sin(phi) * Math.cos(theta));
+        const z = Math.sin(phi) * Math.sin(theta);
+        const y = Math.cos(phi);
+        return new THREE.Vector3(x, y, z);
+    };
+
+    const start = getPos(startLat, startLon);
+    const end = getPos(endLat, endLon);
+
+    // Midpoint elevated
+    const mid = start.clone().add(end).multiplyScalar(0.5).normalize().multiplyScalar(1.25); // Arch height
+
+    return (
+        <QuadraticBezierLine
+            start={start}
+            end={end}
+            mid={mid}
+            color={color}
+            lineWidth={1}
+            dashed={true}
+            dashScale={5}
+            // @ts-ignore - types are finicky with drei sometimes
+            dashOffset={0}
+        >
+            {/* Animated Dashes handled by material prop if we want, straight clean line for now looks pro */}
+        </QuadraticBezierLine>
+    );
+}
+
 function Earth() {
     const earthRef = useRef<THREE.Mesh>(null);
+    const cloudsRef = useRef<THREE.Mesh>(null);
 
     useFrame((state) => {
         if (earthRef.current) {
-            earthRef.current.rotation.y += 0.0008; // Gentle rotation
+            earthRef.current.rotation.y += 0.0005;
+        }
+        if (cloudsRef.current) {
+            cloudsRef.current.rotation.y += 0.0006;
         }
     });
 
     return (
         <group>
-            {/* Wireframe Globe - Holographic Cyan */}
+            {/* Solid Core - Dark Tech Sphere */}
             <mesh ref={earthRef}>
                 <sphereGeometry args={[1, 64, 64]} />
-                <meshBasicMaterial
-                    color="#22d3ee" // Cyan-400
-                    wireframe={true}
-                    transparent={true}
-                    opacity={0.3}
+                <meshPhongMaterial
+                    color="#0f172a"
+                    emissive="#020617"
+                    specular="#22d3ee"
+                    shininess={10}
+                    transparent={false}
                 />
             </mesh>
 
-            {/* Solid Core - Dark Slate */}
+            {/* Wireframe Overlay - Cyber Grid */}
             <mesh>
-                <sphereGeometry args={[0.98, 64, 64]} />
-                <meshBasicMaterial color="#020617" />
+                <sphereGeometry args={[1.002, 32, 32]} />
+                <meshBasicMaterial
+                    color="#0ea5e9" // Cyan-500
+                    wireframe={true}
+                    transparent={true}
+                    opacity={0.15}
+                />
             </mesh>
 
             {/* Atmosphere Glow */}
-            <mesh scale={[1.15, 1.15, 1.15]}>
+            <mesh scale={[1.2, 1.2, 1.2]}>
                 <sphereGeometry args={[1, 64, 64]} />
                 <meshBasicMaterial
-                    color="#0ea5e9"
+                    color="#38bdf8"
                     transparent
-                    opacity={0.05}
+                    opacity={0.06}
                     side={THREE.BackSide}
+                    blending={THREE.AdditiveBlending}
                 />
             </mesh>
         </group>
@@ -175,24 +246,32 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
                 </div>
             </div>
 
-            <Canvas camera={{ position: [0, 0, 2.5], fov: 45 }}>
+            <Canvas camera={{ position: [0, 0, 2.6], fov: 45 }}>
                 <ambientLight intensity={1.5} />
-                <pointLight position={[10, 10, 10]} intensity={2.0} />
-                <pointLight position={[-10, 5, 2]} intensity={1.0} color="#38bdf8" />
+                <pointLight position={[10, 10, 10]} intensity={2.0} color="#38bdf8" />
+                <pointLight position={[-10, 5, 2]} intensity={1.0} color="#c084fc" />
 
                 <Stars radius={100} depth={50} count={3000} factor={3} saturation={0} fade speed={0.5} />
 
                 <Earth />
 
+                {/* Connectivity Arcs (Hardcoded Major Routes) */}
+                <DataArc startLat={37.09} startLon={-95.71} endLat={51.50} endLon={-0.12} color="#0ea5e9" /> {/* NY - London */}
+                <DataArc startLat={51.50} startLon={-0.12} endLat={35.67} endLon={139.65} color="#0ea5e9" /> {/* London - Tokyo */}
+                <DataArc startLat={37.09} startLon={-95.71} endLat={35.67} endLon={139.65} color="#0ea5e9" /> {/* NY - Tokyo */}
+                <DataArc startLat={55.37} startLon={-3.43} endLat={20.59} endLon={78.96} color="#6366f1" />  {/* UK - India */}
+                <DataArc startLat={35.86} startLon={104.19} endLat={-25.27} endLon={133.77} color="#6366f1" /> {/* China - Aus */}
+
+
                 {data.map((country) => (
-                    <Marker key={country.code} data={country} />
+                    <Beacon key={country.code} data={country} />
                 ))}
 
                 <OrbitControls
                     enablePan={false}
                     enableZoom={true}
                     minDistance={1.8}
-                    maxDistance={4.0}
+                    maxDistance={4.5}
                     autoRotate
                     autoRotateSpeed={0.5}
                 />
@@ -200,4 +279,3 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
         </div>
     );
 }
-
