@@ -332,7 +332,34 @@ def get_global_macro_data():
             
     except Exception as e:
         print(f"Global macro fetch failed: {e}")
-        # Return fallback data if fetch fails completely
-        return []
+        # FALLBACK: If API fails, return static data so the globe isn't empty
+        for code, meta in coords.items():
+             results.append({
+                "country": meta["country"],
+                "city": meta["city"],
+                "lat": meta["lat"],
+                "lon": meta["lon"],
+                "performance": 0.0, 
+                "inflation": meta["inflation"], 
+                "color": "neutral",
+                "code": code
+            })
+        return results
+        
+    # Check if results are empty (e.g. download succeeeded but returned no data)
+    if not results:
+         for code, meta in coords.items():
+             results.append({
+                "country": meta["country"],
+                "city": meta["city"],
+                "lat": meta["lat"],
+                "lon": meta["lon"],
+                "performance": 0.0, 
+                "inflation": meta["inflation"], 
+                "color": "neutral",
+                "code": code
+            })
+
+    return results
         
     return results
