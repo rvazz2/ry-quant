@@ -37,8 +37,8 @@ const MarketPsychologyCycle = () => {
                 </div>
             </div>
 
-            <div className="relative h-64 w-full bg-slate-950/50 rounded-xl border border-slate-800 p-4 overflow-hidden">
-                <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" preserveAspectRatio="none">
+            <div className="relative h-80 w-full bg-slate-950/50 rounded-xl border border-slate-800 p-6 overflow-hidden">
+                <svg viewBox="-10 -15 120 130" className="w-full h-full overflow-visible" preserveAspectRatio="none">
                     {/* The Market Line - Made Thinner and Glowy */}
                     <defs>
                         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -85,12 +85,12 @@ const MarketPsychologyCycle = () => {
                             {/* Label - Fixed colors for readability */}
                             <text
                                 x={stage.x}
-                                y={stage.y - 6}
-                                fontSize="3"
+                                y={stage.y - 8}
+                                fontSize="4.5"
                                 fill={activeStage === i ? "#ffffff" : "#cbd5e1"}
                                 textAnchor="middle"
                                 className={`transition-all duration-300 ${activeStage === i ? 'font-bold' : 'font-medium'}`}
-                                style={{ textShadow: '0px 1px 2px rgba(0,0,0,0.8)' }}
+                                style={{ textShadow: '0px 2px 4px rgba(0,0,0,0.9)' }}
                             >
                                 {stage.name}
                             </text>
