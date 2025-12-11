@@ -84,28 +84,37 @@ function Marker({ data }: { data: CountryData }) {
 function Earth() {
     const earthRef = useRef<THREE.Mesh>(null);
 
-    useFrame(() => {
+    useFrame((state) => {
         if (earthRef.current) {
-            earthRef.current.rotation.y += 0.0005; // Slow rotation
+            earthRef.current.rotation.y += 0.001; // Slightly faster rotation
         }
     });
 
     return (
-        <mesh ref={earthRef}>
-            <sphereGeometry args={[1, 64, 64]} />
-            <meshStandardMaterial
-                color="#1e293b" // Dark Slate
-                emissive="#0f172a"
-                emissiveIntensity={0.2}
-                wireframe={true}
-                transparent
-                opacity={0.15}
-            />
-            <mesh>
-                <sphereGeometry args={[0.99, 64, 64]} />
-                <meshBasicMaterial color="#020617" />
+        <group>
+            {/* Wireframe Globe - Holographic Cyan */}
+            <mesh ref={earthRef}>
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshBasicMaterial
+                    color="#22d3ee" // Cyan-400 (very bright)
+                    wireframe={true}
+                    transparent={true}
+                    opacity={0.35} // High opacity to be clearly visible
+                />
             </mesh>
-        </mesh>
+
+            {/* Solid Core to block stars - Dark Slate but visible */}
+            <mesh>
+                <sphereGeometry args={[0.98, 64, 64]} />
+                <meshBasicMaterial color="#020617" /> {/* Matches bg to look 'transparent' but blocks stars */}
+            </mesh>
+
+            {/* Inner Glow Sphere */}
+            <mesh scale={[0.95, 0.95, 0.95]}>
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshBasicMaterial color="#0ea5e9" transparent opacity={0.1} />
+            </mesh>
+        </group>
     );
 }
 
@@ -163,9 +172,9 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
             </div>
 
             <Canvas camera={{ position: [0, 0, 2.8], fov: 45 }}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} intensity={1.5} />
-                <pointLight position={[-10, -10, -10]} intensity={0.5} />
+                <ambientLight intensity={1.5} />
+                <pointLight position={[10, 10, 10]} intensity={2.0} />
+                <pointLight position={[-10, -10, -10]} intensity={1.0} />
 
                 <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 

@@ -4,7 +4,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getTrendingTickers } from '@/lib/api';
 import { ShimmerSkeleton } from '@/components/LoadingSkeleton';
-import { TrendingUp, MessageCircle, Twitter, Activity, Zap } from 'lucide-react';
+import { MessageCircle, Zap, Activity } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const SocialHypeRadar = () => {
@@ -18,7 +18,7 @@ const SocialHypeRadar = () => {
         return (
             <div className="glass-panel p-6">
                 <h3 className="text-xl font-bold text-slate-100 mb-6 flex items-center gap-2">
-                    <Zap className="text-yellow-400 fill-yellow-400" /> Hype Radar (WSB & Twitter)
+                    <Zap className="text-yellow-400 fill-yellow-400" /> Market Movers & Sentiment
                 </h3>
                 <div className="space-y-4">
                     {[1, 2, 3].map(i => <ShimmerSkeleton key={i} className="h-16 w-full" />)}
@@ -33,7 +33,7 @@ const SocialHypeRadar = () => {
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
 
             <h3 className="text-xl font-bold text-slate-100 mb-6 flex items-center gap-2 relative z-10">
-                <Zap className="text-yellow-400 fill-yellow-400" /> Hype Radar (WSB & Twitter)
+                <Zap className="text-yellow-400 fill-yellow-400" /> Market Movers & News Volume
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4 relative z-10">
@@ -61,14 +61,14 @@ const SocialHypeRadar = () => {
                         </div>
 
                         <div className="flex items-center gap-6 mt-3 text-xs text-slate-400">
-                            <div className="flex items-center gap-1.5" title="Social Mentions (24h)">
+                            <div className="flex items-center gap-1.5" title="News Importance Score">
                                 <MessageCircle size={14} className="text-orange-400" />
-                                <span className="font-mono">{item.mentions.toLocaleString()}</span>
+                                <span className="font-mono">Vol: {item.mentions.toLocaleString()}</span>
                             </div>
                             <div className="w-full bg-slate-700/50 h-1.5 rounded-full overflow-hidden">
                                 <div
                                     className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
-                                    style={{ width: `${Math.min(item.mentions / 200, 100)}%` }}
+                                    style={{ width: `${Math.min(item.mentions / 500, 100)}%` }}
                                 />
                             </div>
                         </div>
@@ -78,7 +78,7 @@ const SocialHypeRadar = () => {
 
             <div className="mt-6 pt-4 border-t border-slate-800 text-center">
                 <p className="text-xs text-slate-500 italic">
-                    AI analysis of 50k+ posts on r/WallStreetBets & Twitter Finance
+                    Real-time analysis of News Volume & Price Action
                 </p>
             </div>
         </div>
