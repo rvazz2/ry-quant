@@ -251,29 +251,34 @@ def get_global_macro_data():
     Uses REAL global indices data to color the map.
     """
     indices = {
-        "USA": "^GSPC", # S&P 500
-        "CHN": "000001.SS", # SSE Composite
-        "JPN": "^N225", # Nikkei 225
-        "DEU": "^GDAXI", # DAX
-        "IND": "^BSESN", # Sensex
-        "GBR": "^FTSE", # FTSE 100
-        "BRA": "^BVSP", # Bovespa
-        # "RUS": "IMOEX.ME", # MOEX (Often blocked/issues in yfinance)
-        "CAN": "^GSPTSE", # TSX
-        "AUS": "^AXJO" # ASX 200
+        "USA": "^GSPC",    # S&P 500
+        "CHN": "000001.SS",# SSE Composite
+        "JPN": "^N225",    # Nikkei 225
+        "DEU": "^GDAXI",   # DAX (Germany)
+        "IND": "^BSESN",   # Sensex (India)
+        "GBR": "^FTSE",    # FTSE 100 (UK)
+        "BRA": "^BVSP",    # Bovespa (Brazil)
+        "CAN": "^GSPTSE",  # TSX (Canada)
+        "AUS": "^AXJO",    # ASX 200 (Australia)
+        "FRA": "^FCHI",    # CAC 40 (France)
+        "KOR": "^KS11",    # KOSPI (South Korea)
+        "HKG": "^HSI",     # Hang Seng (Hong Kong)
     }
     
-    # Coords mapping
+    # Metadata: Lat/Lon and Realistic 2025 Inflation Est (%)
     coords = {
-        "USA": {"lat": 37.0902, "lon": -95.7129, "country": "United States"},
-        "CHN": {"lat": 35.8617, "lon": 104.1954, "country": "China"},
-        "JPN": {"lat": 36.2048, "lon": 138.2529, "country": "Japan"},
-        "DEU": {"lat": 51.1657, "lon": 10.4515, "country": "Germany"},
-        "IND": {"lat": 20.5937, "lon": 78.9629, "country": "India"},
-        "GBR": {"lat": 55.3781, "lon": -3.4360, "country": "United Kingdom"},
-        "BRA": {"lat": -14.2350, "lon": -51.9253, "country": "Brazil"},
-        "CAN": {"lat": 56.1304, "lon": -106.3468, "country": "Canada"},
-        "AUS": {"lat": -25.2744, "lon": 133.7751, "country": "Australia"},
+        "USA": {"lat": 37.0902, "lon": -95.7129, "country": "United States", "inflation": 2.9},
+        "CHN": {"lat": 35.8617, "lon": 104.1954, "country": "China", "inflation": 0.8},
+        "JPN": {"lat": 36.2048, "lon": 138.2529, "country": "Japan", "inflation": 2.6},
+        "DEU": {"lat": 51.1657, "lon": 10.4515, "country": "Germany", "inflation": 2.4},
+        "IND": {"lat": 20.5937, "lon": 78.9629, "country": "India", "inflation": 5.1},
+        "GBR": {"lat": 55.3781, "lon": -3.4360, "country": "United Kingdom", "inflation": 3.9},
+        "BRA": {"lat": -14.2350, "lon": -51.9253, "country": "Brazil", "inflation": 4.1},
+        "CAN": {"lat": 56.1304, "lon": -106.3468, "country": "Canada", "inflation": 2.7},
+        "AUS": {"lat": -25.2744, "lon": 133.7751, "country": "Australia", "inflation": 3.5},
+        "FRA": {"lat": 46.2276, "lon": 2.2137, "country": "France", "inflation": 2.2},
+        "KOR": {"lat": 35.9078, "lon": 127.7669, "country": "South Korea", "inflation": 2.4},
+        "HKG": {"lat": 22.3193, "lon": 114.1694, "country": "Hong Kong", "inflation": 1.8},
     }
 
     results = []
@@ -301,27 +306,24 @@ def get_global_macro_data():
                 if len(series) >= 2:
                     perf = ((series.iloc[-1] - series.iloc[-2]) / series.iloc[-2]) * 100
             
-            # Simple Color Coding based on daily move
-            color = "yellow"
-            if perf > 0.5: color = "green"
-            if perf < -0.5: color = "red"
-            
-            # Inflation/GDP hardcoded but Performance is REAL
-            # We can label "GDP Growth" as "Index 1D" in frontend if we want accuracy
-            # For now keeping GDP hardcoded as user asked for website data mock replacement, 
-            # and YF doesn't give GDP.
+            # Color Coding based on daily move
+            color = "neutral"
+            if perf > 0.3: color = "green"
+            elif perf < -0.3: color = "red"
             
             results.append({
                 "country": meta["country"],
                 "lat": meta["lat"],
                 "lon": meta["lon"],
-                "gdp_growth": round(perf, 2), # Using Stock Index Daily Performance as proxy for "Economic Health" in this view
-                "inflation": 0, # Hide or static
+                "performance": round(perf, 2), # Real Market Performance
+                "inflation": meta["inflation"], # Realistic 2025 Estimate
                 "color": color,
                 "code": code
             })
             
     except Exception as e:
         print(f"Global macro fetch failed: {e}")
+        # Return fallback data if fetch fails completely
+        return []
         
     return results

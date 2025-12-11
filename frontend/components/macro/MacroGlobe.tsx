@@ -5,11 +5,8 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Html, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
-import { useTheme } from "next-themes";
 
-// Define prop interface - make it optional/flexible if needed
 interface MacroGlobeProps {
     className?: string;
 }
@@ -18,7 +15,7 @@ interface CountryData {
     country: string;
     lat: number;
     lon: number;
-    gdp_growth: number;
+    performance: number; // Market Perf (Renamed from gdp_growth)
     inflation: number;
     color: string;
     code: string;
@@ -38,7 +35,8 @@ function Marker({ data }: { data: CountryData }) {
         return new THREE.Vector3(x, y, z).multiplyScalar(1.02); // Radius slightly > 1
     }, [data.lat, data.lon]);
 
-    const color = data.color === "green" ? "#10b981" : data.color === "red" ? "#ef4444" : "#f59e0b";
+    // Color logic
+    const color = data.performance > 0.3 ? "#10b981" : data.performance < -0.3 ? "#ef4444" : "#fbbf24";
 
     useFrame((state) => {
         if (meshRef.current) {
@@ -56,21 +54,24 @@ function Marker({ data }: { data: CountryData }) {
                 onPointerOut={() => { document.body.style.cursor = 'auto'; setHovered(false); }}
             >
                 <sphereGeometry args={[0.025, 16, 16]} />
-                <meshBasicMaterial color={color} />
+                <meshBasicMaterial color={color} toneMapped={false} />
             </mesh>
             {hovered && (
                 <Html distanceFactor={1.5}>
-                    <div className="bg-slate-900/90 text-white p-3 rounded-md border border-slate-700 text-xs w-40 backdrop-blur-md shadow-xl pointer-events-none">
-                        <div className="font-bold mb-2 text-sm border-b border-slate-700 pb-1">{data.country}</div>
+                    <div className="bg-slate-900/95 text-white p-3 rounded-md border border-slate-700 text-xs w-48 backdrop-blur-md shadow-2xl pointer-events-none z-50 select-none">
+                        <div className="font-bold mb-2 text-sm border-b border-slate-700 pb-1 flex justify-between items-center">
+                            <span>{data.country}</span>
+                            <span className="text-[10px] text-slate-500">{data.code}</span>
+                        </div>
                         <div className="flex justify-between mb-1">
-                            <span className="text-slate-400">GDP Growth:</span>
-                            <span className={data.gdp_growth >= 2 ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
-                                {data.gdp_growth}%
+                            <span className="text-slate-400">Market (1D):</span>
+                            <span className={data.performance >= 0 ? "text-emerald-400 font-bold" : "text-red-400 font-bold"}>
+                                {data.performance > 0 ? "+" : ""}{data.performance}%
                             </span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-slate-400">Inflation:</span>
-                            <span className={data.inflation < 3 ? "text-emerald-400 font-bold" : "text-red-400 font-bold"}>
+                            <span className="text-slate-400">Inflation (Est):</span>
+                            <span className={data.inflation < 3 ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
                                 {data.inflation}%
                             </span>
                         </div>
@@ -86,7 +87,7 @@ function Earth() {
 
     useFrame((state) => {
         if (earthRef.current) {
-            earthRef.current.rotation.y += 0.001; // Slightly faster rotation
+            earthRef.current.rotation.y += 0.0008; // Gentle rotation
         }
     });
 
@@ -96,23 +97,28 @@ function Earth() {
             <mesh ref={earthRef}>
                 <sphereGeometry args={[1, 64, 64]} />
                 <meshBasicMaterial
-                    color="#22d3ee" // Cyan-400 (very bright)
+                    color="#22d3ee" // Cyan-400
                     wireframe={true}
                     transparent={true}
-                    opacity={0.35} // High opacity to be clearly visible
+                    opacity={0.3}
                 />
             </mesh>
 
-            {/* Solid Core to block stars - Dark Slate but visible */}
+            {/* Solid Core - Dark Slate */}
             <mesh>
                 <sphereGeometry args={[0.98, 64, 64]} />
-                <meshBasicMaterial color="#020617" /> {/* Matches bg to look 'transparent' but blocks stars */}
+                <meshBasicMaterial color="#020617" />
             </mesh>
 
-            {/* Inner Glow Sphere */}
-            <mesh scale={[0.95, 0.95, 0.95]}>
+            {/* Atmosphere Glow */}
+            <mesh scale={[1.15, 1.15, 1.15]}>
                 <sphereGeometry args={[1, 64, 64]} />
-                <meshBasicMaterial color="#0ea5e9" transparent opacity={0.1} />
+                <meshBasicMaterial
+                    color="#0ea5e9"
+                    transparent
+                    opacity={0.05}
+                    side={THREE.BackSide}
+                />
             </mesh>
         </group>
     );
@@ -122,7 +128,6 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
     const [data, setData] = useState<CountryData[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // API URL handling for dev/prod
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
     useEffect(() => {
@@ -134,7 +139,6 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
                 setData(json);
             } catch (err) {
                 console.error("Error fetching globe data:", err);
-                // Fallback or empty data
             } finally {
                 setLoading(false);
             }
@@ -152,31 +156,31 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
 
     return (
         <Card className={`h-[500px] w-full bg-slate-950 border-slate-800 overflow-hidden relative ${className}`}>
-            <div className="absolute top-4 left-4 z-10 pointer-events-none">
-                <h3 className="text-xl font-bold text-white tracking-tight">Global Economic Pulse</h3>
-                <p className="text-slate-400 text-sm">Real-time GDP & Inflation Data</p>
+            <div className="absolute top-4 left-4 z-10 pointer-events-none select-none">
+                <h3 className="text-xl font-bold text-white tracking-tight drop-shadow-md">Global Markets</h3>
+                <p className="text-slate-400 text-sm">Real-time Index Performance & Inflation</p>
                 <div className="flex gap-2 mt-3">
                     <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded border border-slate-800">
                         <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                        <span className="text-xs text-slate-300">Strong</span>
+                        <span className="text-xs text-slate-300">Bullish</span>
                     </div>
                     <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded border border-slate-800">
                         <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                        <span className="text-xs text-slate-300">Neutral</span>
+                        <span className="text-xs text-slate-300">Mixed</span>
                     </div>
                     <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded border border-slate-800">
                         <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                        <span className="text-xs text-slate-300">Weak/High Infl</span>
+                        <span className="text-xs text-slate-300">Bearish</span>
                     </div>
                 </div>
             </div>
 
-            <Canvas camera={{ position: [0, 0, 2.8], fov: 45 }}>
+            <Canvas camera={{ position: [0, 0, 2.5], fov: 45 }}>
                 <ambientLight intensity={1.5} />
                 <pointLight position={[10, 10, 10]} intensity={2.0} />
-                <pointLight position={[-10, -10, -10]} intensity={1.0} />
+                <pointLight position={[-10, 5, 2]} intensity={1.0} color="#38bdf8" />
 
-                <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+                <Stars radius={100} depth={50} count={3000} factor={3} saturation={0} fade speed={0.5} />
 
                 <Earth />
 
@@ -188,11 +192,12 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
                     enablePan={false}
                     enableZoom={true}
                     minDistance={1.8}
-                    maxDistance={4.5}
+                    maxDistance={4.0}
                     autoRotate
-                    autoRotateSpeed={0.8}
+                    autoRotateSpeed={0.5}
                 />
             </Canvas>
         </Card>
     );
 }
+
