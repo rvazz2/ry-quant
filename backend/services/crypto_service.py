@@ -20,7 +20,7 @@ class CryptoService:
         return cls._exchange
 
     @staticmethod
-    async def get_top_coins(limit: int = 10) -> List[Dict[str, Any]]:
+    async def get_top_coins(limit: int = 15) -> List[Dict[str, Any]]:
         """
         Fetches top coins using yfinance (more reliable/no API keys needed).
         """
@@ -28,9 +28,9 @@ class CryptoService:
         
         # Yahoo Finance Tickers
         top_symbols = [
-            'BTC-USD', 'ETH-USD', 'SOL-USD', 'XRP-USD', 'ADA-USD', 
-            'DOGE-USD', 'DOT-USD', 'AVAX-USD', 'LINK-USD', 'LTC-USD', 
-            'BCH-USD', 'XLM-USD', 'ATOM-USD', 'UNI7083-USD'
+            'BTC-USD', 'ETH-USD', 'SOL-USD', 'BNB-USD', 'XRP-USD', 
+            'DOGE-USD', 'ADA-USD', 'TRX-USD', 'AVAX-USD', 'SHIB-USD', 
+            'DOT-USD', 'LINK-USD', 'BCH-USD', 'LTC-USD', 'UNI-USD'
         ]
         
         try:
@@ -74,6 +74,7 @@ class CryptoService:
             # Since we pre-selected top coins, just return the list or sort by something.
             # Let's sort by price desc for now or keep list order.
             
+            results.sort(key=lambda x: x['price'], reverse=True)
             return results[:limit]
 
         except Exception as e:

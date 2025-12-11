@@ -64,7 +64,7 @@ export default function CryptoDashboard() {
             <div className="col-span-1 lg:col-span-2 space-y-6">
                 <Card className="bg-[#111] border-[#222]">
                     <CardHeader>
-                        <CardTitle className="text-gray-200">Top Assets (24h)</CardTitle>
+                        <CardTitle className="text-gray-200">Top 15 Assets (Live)</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
