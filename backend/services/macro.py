@@ -263,22 +263,30 @@ def get_global_macro_data():
         "FRA": "^FCHI",    # CAC 40 (France)
         "KOR": "^KS11",    # KOSPI (South Korea)
         "HKG": "^HSI",     # Hang Seng (Hong Kong)
+        "CHE": "^SSMI",    # SMI (Zurich)
+        "NLD": "^AEX",     # AEX (Amsterdam)
+        "SGP": "^STI",     # STI (Singapore)
+        "TWN": "^TWII",    # TAIEX (Taipei)
     }
     
-    # Metadata: Lat/Lon and Realistic 2025 Inflation Est (%)
+    # Metadata: Lat/Lon, City Name, and Realistic 2025 Inflation Est (%)
     coords = {
-        "USA": {"lat": 37.0902, "lon": -95.7129, "country": "United States", "inflation": 2.9},
-        "CHN": {"lat": 35.8617, "lon": 104.1954, "country": "China", "inflation": 0.8},
-        "JPN": {"lat": 36.2048, "lon": 138.2529, "country": "Japan", "inflation": 2.6},
-        "DEU": {"lat": 51.1657, "lon": 10.4515, "country": "Germany", "inflation": 2.4},
-        "IND": {"lat": 20.5937, "lon": 78.9629, "country": "India", "inflation": 5.1},
-        "GBR": {"lat": 55.3781, "lon": -3.4360, "country": "United Kingdom", "inflation": 3.9},
-        "BRA": {"lat": -14.2350, "lon": -51.9253, "country": "Brazil", "inflation": 4.1},
-        "CAN": {"lat": 56.1304, "lon": -106.3468, "country": "Canada", "inflation": 2.7},
-        "AUS": {"lat": -25.2744, "lon": 133.7751, "country": "Australia", "inflation": 3.5},
-        "FRA": {"lat": 46.2276, "lon": 2.2137, "country": "France", "inflation": 2.2},
-        "KOR": {"lat": 35.9078, "lon": 127.7669, "country": "South Korea", "inflation": 2.4},
-        "HKG": {"lat": 22.3193, "lon": 114.1694, "country": "Hong Kong", "inflation": 1.8},
+        "USA": {"lat": 40.7128, "lon": -74.0060, "country": "United States", "city": "New York", "inflation": 2.9}, # Moved to NYC
+        "CHN": {"lat": 31.2304, "lon": 121.4737, "country": "China", "city": "Shanghai", "inflation": 0.8}, # Moved to Shanghai
+        "JPN": {"lat": 35.6762, "lon": 139.6503, "country": "Japan", "city": "Tokyo", "inflation": 2.6},
+        "DEU": {"lat": 50.1109, "lon": 8.6821, "country": "Germany", "city": "Frankfurt", "inflation": 2.4},
+        "IND": {"lat": 19.0760, "lon": 72.8777, "country": "India", "city": "Mumbai", "inflation": 5.1},
+        "GBR": {"lat": 51.5074, "lon": -0.1278, "country": "United Kingdom", "city": "London", "inflation": 3.9},
+        "BRA": {"lat": -23.5505, "lon": -46.6333, "country": "Brazil", "city": "Sao Paulo", "inflation": 4.1},
+        "CAN": {"lat": 43.65107, "lon": -79.347015, "country": "Canada", "city": "Toronto", "inflation": 2.7},
+        "AUS": {"lat": -33.8688, "lon": 151.2093, "country": "Australia", "city": "Sydney", "inflation": 3.5},
+        "FRA": {"lat": 48.8566, "lon": 2.3522, "country": "France", "city": "Paris", "inflation": 2.2},
+        "KOR": {"lat": 37.5665, "lon": 126.9780, "country": "South Korea", "city": "Seoul", "inflation": 2.4},
+        "HKG": {"lat": 22.3193, "lon": 114.1694, "country": "Hong Kong", "city": "Hong Kong", "inflation": 1.8},
+        "CHE": {"lat": 47.3769, "lon": 8.5417, "country": "Switzerland", "city": "Zurich", "inflation": 1.6},
+        "NLD": {"lat": 52.3676, "lon": 4.9041, "country": "Netherlands", "city": "Amsterdam", "inflation": 2.3},
+        "SGP": {"lat": 1.3521, "lon": 103.8198, "country": "Singapore", "city": "Singapore", "inflation": 2.9},
+        "TWN": {"lat": 25.0330, "lon": 121.5654, "country": "Taiwan", "city": "Taipei", "inflation": 2.1},
     }
 
     results = []
@@ -313,6 +321,7 @@ def get_global_macro_data():
             
             results.append({
                 "country": meta["country"],
+                "city": meta["city"],
                 "lat": meta["lat"],
                 "lon": meta["lon"],
                 "performance": round(perf, 2), # Real Market Performance

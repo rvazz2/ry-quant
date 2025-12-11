@@ -12,6 +12,7 @@ interface MacroGlobeProps {
 
 interface CountryData {
     country: string;
+    city: string; // Added City Name
     lat: number;
     lon: number;
     performance: number;
@@ -73,21 +74,21 @@ function Beacon({ data }: { data: CountryData }) {
                 <meshBasicMaterial color={color} side={THREE.DoubleSide} transparent opacity={0.5} />
             </mesh>
 
-            {/* Sensor / Hit Area */}
-            <mesh
-                visible={false}
-                onPointerOver={() => { document.body.style.cursor = 'pointer'; setHovered(true); }}
-                onPointerOut={() => { document.body.style.cursor = 'auto'; setHovered(false); }}
-            >
-                <sphereGeometry args={[0.04, 8, 8]} />
-            </mesh>
+            {/* City Label (Persistent) */}
+            <Html position={[0, 0.18, 0]} center transform sprite distanceFactor={10}>
+                <div className={`text-[6px] font-bold tracking-widest uppercase pointer-events-none select-none text-center whitespace-nowrap ${hovered ? 'text-white' : 'text-slate-400 opacity-60'}`}
+                    style={{ textShadow: "0px 1px 2px rgba(0,0,0,0.8)" }}>
+                    {data.city}
+                </div>
+            </Html>
 
+            {/* Hover Tooltip */}
             {hovered && (
                 <Html distanceFactor={1.5} position={[0, 0, 0.2]} style={{ pointerEvents: 'none' }}>
                     <div className="bg-slate-900/95 text-white p-3 rounded-md border border-slate-700 text-xs w-48 backdrop-blur-md shadow-2xl z-50 select-none transform -translate-x-1/2 -translate-y-1/2">
                         <div className="font-bold mb-2 text-sm border-b border-slate-700 pb-1 flex justify-between items-center">
-                            <span className="text-cyan-400">{data.country}</span>
-                            <span className="text-[10px] text-slate-500">{data.code}</span>
+                            <span className="text-cyan-400">{data.city}, {data.code}</span>
+                            <span className="text-[10px] text-slate-500">{data.country}</span>
                         </div>
                         <div className="flex justify-between mb-1">
                             <span className="text-slate-400">Market (1D):</span>
@@ -137,21 +138,16 @@ function DataArc({ startLat, startLon, endLat, endLon, color = "#0ea5e9" }: { st
             // @ts-ignore - types are finicky with drei sometimes
             dashOffset={0}
         >
-            {/* Animated Dashes handled by material prop if we want, straight clean line for now looks pro */}
         </QuadraticBezierLine>
     );
 }
 
 function Earth() {
     const earthRef = useRef<THREE.Mesh>(null);
-    const cloudsRef = useRef<THREE.Mesh>(null);
 
     useFrame((state) => {
         if (earthRef.current) {
             earthRef.current.rotation.y += 0.0005;
-        }
-        if (cloudsRef.current) {
-            cloudsRef.current.rotation.y += 0.0006;
         }
     });
 
@@ -256,11 +252,11 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
                 <Earth />
 
                 {/* Connectivity Arcs (Hardcoded Major Routes) */}
-                <DataArc startLat={37.09} startLon={-95.71} endLat={51.50} endLon={-0.12} color="#0ea5e9" /> {/* NY - London */}
+                <DataArc startLat={40.71} startLon={-74.00} endLat={51.50} endLon={-0.12} color="#0ea5e9" /> {/* NY - London */}
                 <DataArc startLat={51.50} startLon={-0.12} endLat={35.67} endLon={139.65} color="#0ea5e9" /> {/* London - Tokyo */}
-                <DataArc startLat={37.09} startLon={-95.71} endLat={35.67} endLon={139.65} color="#0ea5e9" /> {/* NY - Tokyo */}
-                <DataArc startLat={55.37} startLon={-3.43} endLat={20.59} endLon={78.96} color="#6366f1" />  {/* UK - India */}
-                <DataArc startLat={35.86} startLon={104.19} endLat={-25.27} endLon={133.77} color="#6366f1" /> {/* China - Aus */}
+                <DataArc startLat={40.71} startLon={-74.00} endLat={35.67} endLon={139.65} color="#0ea5e9" /> {/* NY - Tokyo */}
+                <DataArc startLat={51.50} startLon={-0.12} endLat={47.37} endLon={8.54} color="#6366f1" />   {/* London - Zurich */}
+                <DataArc startLat={35.86} startLon={104.19} endLat={1.35} endLon={103.81} color="#6366f1" />  {/* China - Singapore */}
 
 
                 {data.map((country) => (
