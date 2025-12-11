@@ -4,7 +4,8 @@ import React, { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Html, Stars, QuadraticBezierLine } from "@react-three/drei";
 import * as THREE from "three";
-import { Loader2 } from "lucide-react";
+import { Loader2, Maximize2, X, Minimize2, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MacroGlobeProps {
     className?: string;
@@ -12,7 +13,7 @@ interface MacroGlobeProps {
 
 interface CountryData {
     country: string;
-    city: string; // Added City Name
+    city: string;
     lat: number;
     lon: number;
     performance: number;
@@ -194,6 +195,7 @@ function Earth() {
 export function MacroGlobe({ className }: MacroGlobeProps) {
     const [data, setData] = useState<CountryData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -213,6 +215,21 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
         fetchData();
     }, [API_URL]);
 
+    // Handle ESC key to exit full screen
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                setIsFullScreen(false);
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
+
+    const toggleFullScreen = () => {
+        setIsFullScreen(!isFullScreen);
+    };
+
     if (loading) {
         return (
             <div className={`glass-panel h-[500px] flex items-center justify-center ${className}`}>
@@ -221,10 +238,18 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
         );
     }
 
+    const containerClass = isFullScreen
+        ? "fixed inset-0 z-[100] w-screen h-screen bg-slate-950/95 backdrop-blur-md"
+        : `glass-panel h-[500px] w-full overflow-hidden relative ${className}`;
+
     return (
-        <div className={`glass-panel h-[500px] w-full overflow-hidden relative ${className}`}>
-            <div className="absolute top-4 left-4 z-10 pointer-events-none select-none">
-                <h3 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent tracking-tight drop-shadow-md">Global Markets</h3>
+        <div className={containerClass}>
+            {/* Header / HUD Overlay */}
+            <div className={`absolute top-4 left-4 z-10 pointer-events-none select-none transition-all duration-500 ${isFullScreen ? 'top-8 left-8 scale-110 origin-top-left' : ''}`}>
+                <h3 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent tracking-tight drop-shadow-md flex items-center gap-2">
+                    <Globe className="w-5 h-5 text-cyan-400" />
+                    Global Markets
+                </h3>
                 <p className="text-slate-400 text-sm">Real-time Index Performance & Inflation</p>
                 <div className="flex gap-2 mt-3">
                     <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded border border-slate-800">
@@ -242,12 +267,39 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
                 </div>
             </div>
 
-            <Canvas camera={{ position: [0, 0, 2.6], fov: 45 }}>
+            {/* View Controls */}
+            <div className="absolute bottom-4 right-4 z-20 flex gap-2">
+                <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={toggleFullScreen}
+                    className="bg-slate-900/80 border-slate-700 hover:bg-cyan-500/20 text-cyan-400 hover:text-cyan-300 backdrop-blur-sm"
+                >
+                    {isFullScreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
+                </Button>
+            </div>
+
+            {/* Full Screen Exit Button (Top Right) */}
+            {isFullScreen && (
+                <div className="absolute top-8 right-8 z-20">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setIsFullScreen(false)}
+                        className="text-slate-400 hover:text-white hover:bg-slate-800/50"
+                    >
+                        <X className="w-8 h-8" />
+                    </Button>
+                    <div className="text-xs text-slate-500 text-center mt-1">ESC</div>
+                </div>
+            )}
+
+            <Canvas camera={{ position: [0, 0, isFullScreen ? 3.2 : 2.6], fov: 45 }}>
                 <ambientLight intensity={1.5} />
                 <pointLight position={[10, 10, 10]} intensity={2.0} color="#38bdf8" />
                 <pointLight position={[-10, 5, 2]} intensity={1.0} color="#c084fc" />
 
-                <Stars radius={100} depth={50} count={3000} factor={3} saturation={0} fade speed={0.5} />
+                <Stars radius={100} depth={50} count={isFullScreen ? 5000 : 3000} factor={3} saturation={0} fade speed={0.5} />
 
                 <Earth />
 
@@ -267,7 +319,7 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
                     enablePan={false}
                     enableZoom={true}
                     minDistance={1.8}
-                    maxDistance={4.5}
+                    maxDistance={6.0}
                     autoRotate
                     autoRotateSpeed={0.5}
                 />
