@@ -6,15 +6,15 @@ import { Info } from 'lucide-react';
 
 const stages = [
     { name: "Disbelief", x: 10, y: 80, color: "#94a3b8", desc: "This rally will fail like the others." },
-    { name: "Hope", x: 25, y: 65, color: "#22c55e", desc: "A recovery is possible." },
-    { name: "Optimism", x: 40, y: 45, color: "#22c55e", desc: "This performance is real." },
-    { name: "Belief", x: 55, y: 30, color: "#22c55e", desc: "Time to buy the dip." },
-    { name: "Thrilling", x: 70, y: 15, color: "#22c55e", desc: "I will buy more on margin." },
-    { name: "Euphoria", x: 80, y: 5, color: "#10b981", desc: "I am a genius! We are all gonna be rich!" },
+    { name: "Hope", x: 25, y: 65, color: "#4ade80", desc: "A recovery is possible." },
+    { name: "Optimism", x: 40, y: 45, color: "#4ade80", desc: "This performance is real." },
+    { name: "Belief", x: 55, y: 30, color: "#4ade80", desc: "Time to buy the dip." },
+    { name: "Thrilling", x: 70, y: 15, color: "#4ade80", desc: "I will buy more on margin." },
+    { name: "Euphoria", x: 80, y: 5, color: "#34d399", desc: "I am a genius! We are all gonna be rich!" },
     { name: "Complacency", x: 85, y: 25, color: "#facc15", desc: "We just need to cool off." },
-    { name: "Anxiety", x: 90, y: 50, color: "#f59e0b", desc: "Why am I getting margin calls?" },
-    { name: "Denial", x: 92, y: 70, color: "#ef4444", desc: "My investments are with good companies." },
-    { name: "Panic", x: 95, y: 90, color: "#dc2626", desc: "Sell everything! Get me out!" },
+    { name: "Anxiety", x: 90, y: 50, color: "#fbbf24", desc: "Why am I getting margin calls?" },
+    { name: "Denial", x: 92, y: 70, color: "#f87171", desc: "My investments are with good companies." },
+    { name: "Panic", x: 95, y: 90, color: "#fca5a5", desc: "Sell everything! Get me out!" },
 ];
 
 const MarketPsychologyCycle = () => {
@@ -37,26 +37,34 @@ const MarketPsychologyCycle = () => {
                 </div>
             </div>
 
-            <div className="relative h-64 w-full bg-slate-900/50 rounded-xl border border-slate-800 p-4 overflow-hidden">
+            <div className="relative h-64 w-full bg-slate-950/50 rounded-xl border border-slate-800 p-4 overflow-hidden">
                 <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" preserveAspectRatio="none">
-                    {/* The Market Line */}
-                    <motion.path
-                        d={pathD}
-                        fill="none"
-                        stroke="url(#gradient)"
-                        strokeWidth="3"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 2, ease: "easeInOut" }}
-                    />
-
+                    {/* The Market Line - Made Thinner and Glowy */}
                     <defs>
                         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="#94a3b8" />
                             <stop offset="50%" stopColor="#22c55e" />
                             <stop offset="100%" stopColor="#ef4444" />
                         </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+                            <feMerge>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
                     </defs>
+
+                    <motion.path
+                        d={pathD}
+                        fill="none"
+                        stroke="url(#gradient)"
+                        strokeWidth="1.5"
+                        filter="url(#glow)"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 2, ease: "easeInOut" }}
+                    />
 
                     {/* Nodes */}
                     {stages.map((stage, i) => (
@@ -68,18 +76,21 @@ const MarketPsychologyCycle = () => {
                             <circle
                                 cx={stage.x}
                                 cy={stage.y}
-                                r={activeStage === i ? 3 : 1.5}
+                                r={activeStage === i ? 4 : 2}
                                 fill={stage.color}
-                                className="transition-all duration-300"
+                                className="transition-all duration-300 drop-shadow-lg"
+                                stroke="#0f172a"
+                                strokeWidth="0.5"
                             />
-                            {/* Label */}
+                            {/* Label - Fixed colors for readability */}
                             <text
                                 x={stage.x}
-                                y={stage.y - 5}
+                                y={stage.y - 6}
                                 fontSize="3"
-                                fill={activeStage === i ? "#fff" : stage.color}
+                                fill={activeStage === i ? "#ffffff" : "#cbd5e1"}
                                 textAnchor="middle"
-                                className={`transition-all duration-300 ${activeStage === i ? 'font-bold' : 'font-normal opacity-70'}`}
+                                className={`transition-all duration-300 ${activeStage === i ? 'font-bold' : 'font-medium'}`}
+                                style={{ textShadow: '0px 1px 2px rgba(0,0,0,0.8)' }}
                             >
                                 {stage.name}
                             </text>
