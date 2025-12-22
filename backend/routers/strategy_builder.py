@@ -4,6 +4,8 @@ from typing import Dict, Any, List
 from services.strategy_compiler import StrategyCompiler
 import asyncio
 
+from services.store import set_user_data
+
 router = APIRouter(prefix="/api/strategy", tags=["strategy"])
 
 class StrategyGraph(BaseModel):
@@ -25,5 +27,11 @@ async def compile_strategy(request: CompileRequest):
 
 @router.post("/save")
 async def save_strategy(request: CompileRequest):
-    # TODO: Save to database
-    return {"status": "success", "message": "Strategy saved (mock)"}
+    try:
+        # Save to store
+        graph_dict = request.graph.dict()
+        # In a real app we might want to save by ID or user, for now we overwrite "current_strategy"
+        set_user_data("current_strategy", graph_dict)
+        return {"status": "success", "message": "Strategy saved successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

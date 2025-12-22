@@ -13,6 +13,9 @@ export default function PlanningPage() {
     // Shared Data State
     const [salary, setSalary] = useState(65000);
     const [filingStatus, setFilingStatus] = useState<'single' | 'married'>('single');
+    const [age, setAge] = useState(25);
+    const [retirementAge, setRetirementAge] = useState(65);
+    const [savingsRate, setSavingsRate] = useState(20);
     const [isLoaded, setIsLoaded] = useState(false);
 
     // Fetch Profile
@@ -23,6 +26,9 @@ export default function PlanningPage() {
                 if (res.data) {
                     setSalary(res.data.salary);
                     setFilingStatus(res.data.filing_status);
+                    if (res.data.age) setAge(res.data.age);
+                    if (res.data.retirement_age) setRetirementAge(res.data.retirement_age);
+                    if (res.data.savings_rate) setSavingsRate(res.data.savings_rate);
                 }
             } catch (e) {
                 console.error("Failed to load profile", e);
@@ -40,13 +46,13 @@ export default function PlanningPage() {
             api.post('/planning/profile', {
                 salary,
                 filing_status: filingStatus,
-                age: 25, // TODO: Add to UI
-                retirement_age: 65, // TODO: Add to UI
-                savings_rate: 20 // TODO: Link to component state
+                age,
+                retirement_age: retirementAge,
+                savings_rate: savingsRate
             }).catch(e => console.error("Auto-save failed", e));
         }, 1000); // 1s debounce
         return () => clearTimeout(saveTimer);
-    }, [salary, filingStatus, isLoaded]);
+    }, [salary, filingStatus, age, retirementAge, savingsRate, isLoaded]);
 
     const renderTab = () => {
         switch (activeTab) {
@@ -55,7 +61,7 @@ export default function PlanningPage() {
             case 'level2':
                 return <LifeTab />;
             case 'level3':
-                return <RetirementTab salary={salary} />;
+                return <RetirementTab salary={salary} />; // TODO: Pass age/retirementAge if needed by component
             case 'level4':
                 return <TaxTab salary={salary} filingStatus={filingStatus} setSalary={setSalary} />;
             default:
@@ -73,6 +79,52 @@ export default function PlanningPage() {
                         Financial Freedom Academy
                     </h1>
                     <p className="text-slate-400">The class you should have taken instead of Organic Chemistry.</p>
+                </div>
+
+                {/* Profile Settings */}
+                <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 mb-8 backdrop-blur-sm">
+                    <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                        <Target className="text-cyan-400" size={20} />
+                        Your Strategy Profile
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label className="block text-slate-400 text-sm font-medium mb-1">Current Age</label>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    value={age}
+                                    onChange={(e) => setAge(Number(e.target.value))}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                                />
+                                <span className="absolute right-4 top-2 text-slate-500 text-sm">years</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-slate-400 text-sm font-medium mb-1">Retirement Age</label>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    value={retirementAge}
+                                    onChange={(e) => setRetirementAge(Number(e.target.value))}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                                />
+                                <span className="absolute right-4 top-2 text-slate-500 text-sm">years</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-slate-400 text-sm font-medium mb-1">Savings Rate</label>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    value={savingsRate}
+                                    onChange={(e) => setSavingsRate(Number(e.target.value))}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                                />
+                                <span className="absolute right-4 top-2 text-slate-500 text-sm">%</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Tab Navigation (Pills) */}
