@@ -83,6 +83,64 @@ export default function MissionPage() {
                     <FinancialQuiz />
                 </div>
 
+                {/* Wise Quotes Section */}
+                <div className="mb-32">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-bold text-white mb-4">Words of Wisdom</h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto">
+                            The principles of wealth creation haven't changed in centuries.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[
+                            {
+                                quote: "Compound interest is the eighth wonder of the world. He who understands it, earns it... he who doesn't... pays it.",
+                                author: "Albert Einstein",
+                                role: "Theoretical Physicist"
+                            },
+                            {
+                                quote: "The stock market is a device for transferring money from the impatient to the patient.",
+                                author: "Warren Buffett",
+                                role: "Chairman, Berkshire Hathaway"
+                            },
+                            {
+                                quote: "The big money is not in the buying and the selling, but in the waiting.",
+                                author: "Charlie Munger",
+                                role: "Vice Chairman, Berkshire Hathaway"
+                            },
+                            {
+                                quote: "Know what you own, and know why you own it.",
+                                author: "Peter Lynch",
+                                role: "Legendary Investor"
+                            },
+                            {
+                                quote: "An investment in knowledge pays the best interest.",
+                                author: "Benjamin Franklin",
+                                role: "Founding Father"
+                            },
+                            {
+                                quote: "It’s not how much money you make, but how much money you keep, how hard it works for you, and how many generations you keep it for.",
+                                author: "Robert Kiyosaki",
+                                role: "Author, Rich Dad Poor Dad"
+                            }
+                        ].map((item, i) => (
+                            <div key={i} className="glass-panel p-8 rounded-2xl border border-white/5 bg-slate-900/40 hover:bg-slate-900/60 transition-all hover:-translate-y-1 relative group">
+                                <div className="absolute top-6 left-6 text-cyan-500/20 text-6xl font-serif leading-none select-none group-hover:text-cyan-500/30 transition-colors">"</div>
+                                <div className="relative z-10 pt-6">
+                                    <p className="text-slate-300 text-lg leading-relaxed mb-6 italic">
+                                        {item.quote}
+                                    </p>
+                                    <div>
+                                        <h4 className="text-white font-bold">{item.author}</h4>
+                                        <p className="text-cyan-500 text-xs uppercase tracking-wider font-bold mt-1">{item.role}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
                 {/* The Solution / Section */}
                 <div className="bg-gradient-to-b from-slate-900 to-slate-950 rounded-[3rem] p-8 md:p-20 border border-white/5 relative overflow-hidden mb-24">
                     <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-cyan-500/5 via-transparent to-transparent" />
