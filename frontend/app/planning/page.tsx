@@ -81,51 +81,50 @@ export default function PlanningPage() {
                     <p className="text-slate-400">The class you should have taken instead of Organic Chemistry.</p>
                 </div>
 
+                import PremiumInput from '../../components/ui/premium/PremiumInput';
+                import PremiumSlider from '../../components/ui/premium/PremiumSlider';
+                import PremiumCard from '../../components/ui/premium/PremiumCard';
+
+                // ...
+
                 {/* Profile Settings */}
-                <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 mb-8 backdrop-blur-sm">
-                    <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <PremiumCard className="p-8 mb-8">
+                    <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
                         <Target className="text-cyan-400" size={20} />
                         Your Strategy Profile
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div>
-                            <label className="block text-slate-400 text-sm font-medium mb-1">Current Age</label>
-                            <div className="relative">
-                                <input
-                                    type="number"
-                                    value={age}
-                                    onChange={(e) => setAge(Number(e.target.value))}
-                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                                />
-                                <span className="absolute right-4 top-2 text-slate-500 text-sm">years</span>
-                            </div>
+                            <PremiumInput
+                                label="Current Age"
+                                type="number"
+                                value={age}
+                                onChange={(e) => setAge(Number(e.target.value))}
+                                suffix="years"
+                            />
                         </div>
                         <div>
-                            <label className="block text-slate-400 text-sm font-medium mb-1">Retirement Age</label>
-                            <div className="relative">
-                                <input
-                                    type="number"
-                                    value={retirementAge}
-                                    onChange={(e) => setRetirementAge(Number(e.target.value))}
-                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                                />
-                                <span className="absolute right-4 top-2 text-slate-500 text-sm">years</span>
-                            </div>
+                            <PremiumInput
+                                label="Retirement Age"
+                                type="number"
+                                value={retirementAge}
+                                onChange={(e) => setRetirementAge(Number(e.target.value))}
+                                suffix="years"
+                            />
                         </div>
                         <div>
-                            <label className="block text-slate-400 text-sm font-medium mb-1">Savings Rate</label>
-                            <div className="relative">
-                                <input
-                                    type="number"
-                                    value={savingsRate}
-                                    onChange={(e) => setSavingsRate(Number(e.target.value))}
-                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                                />
-                                <span className="absolute right-4 top-2 text-slate-500 text-sm">%</span>
-                            </div>
+                            <PremiumSlider
+                                label="Savings Rate"
+                                value={savingsRate}
+                                min={0}
+                                max={100}
+                                step={1}
+                                onChange={setSavingsRate}
+                                suffix="%"
+                            />
                         </div>
                     </div>
-                </div>
+                </PremiumCard>
 
                 {/* Tab Navigation (Pills) */}
                 <div className="flex flex-wrap gap-4 mb-8 border-b border-slate-800 pb-4">

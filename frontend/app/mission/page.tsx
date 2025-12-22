@@ -47,9 +47,14 @@ export default function MissionPage() {
                     </p>
                 </div>
 
+                import PremiumCard from '../../components/ui/premium/PremiumCard';
+                import PremiumButton from '../../components/ui/premium/PremiumButton';
+
+                // ... (inside component)
+
                 {/* The Reality Check */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
-                    <div className="glass-panel p-8 rounded-2xl border border-white/5 bg-slate-900/50 hover:border-red-500/30 transition-all group">
+                    <PremiumCard className="p-8 group hover:border-red-500/30">
                         <div className="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center mb-6 text-red-400 group-hover:scale-110 transition-transform">
                             <ShieldAlert size={24} />
                         </div>
@@ -57,8 +62,8 @@ export default function MissionPage() {
                         <p className="text-slate-400 leading-relaxed">
                             Applying for a $100k non-bankruptable student loan is easier than getting a business loan. The system profits when you are in debt.
                         </p>
-                    </div>
-                    <div className="glass-panel p-8 rounded-2xl border border-white/5 bg-slate-900/50 hover:border-amber-500/30 transition-all group">
+                    </PremiumCard>
+                    <PremiumCard className="p-8 group hover:border-amber-500/30">
                         <div className="w-12 h-12 bg-amber-500/10 rounded-lg flex items-center justify-center mb-6 text-amber-400 group-hover:scale-110 transition-transform">
                             <Clock size={24} />
                         </div>
@@ -66,8 +71,8 @@ export default function MissionPage() {
                         <p className="text-slate-400 leading-relaxed">
                             Every year you wait to start investing costs you tens of thousands in future compound interest. Time is the one asset you have more of than billionaires.
                         </p>
-                    </div>
-                    <div className="glass-panel p-8 rounded-2xl border border-white/5 bg-slate-900/50 hover:border-cyan-500/30 transition-all group">
+                    </PremiumCard>
+                    <PremiumCard className="p-8 group hover:border-cyan-500/30">
                         <div className="w-12 h-12 bg-cyan-500/10 rounded-lg flex items-center justify-center mb-6 text-cyan-400 group-hover:scale-110 transition-transform">
                             <GraduationCap size={24} />
                         </div>
@@ -75,13 +80,10 @@ export default function MissionPage() {
                         <p className="text-slate-400 leading-relaxed">
                             You know vector calculus but not how to read a 10-K. We bridge the gap between academic theory and real-world wealth generation.
                         </p>
-                    </div>
+                    </PremiumCard>
                 </div>
 
-                {/* Financial Quiz Section - Moved for Visibility */}
-                <div className="mb-32 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-                    <FinancialQuiz />
-                </div>
+                {/* ... (quiz section) ... */}
 
                 {/* Wise Quotes Section */}
                 <div className="mb-32">
@@ -125,7 +127,7 @@ export default function MissionPage() {
                                 role: "Author, Rich Dad Poor Dad"
                             }
                         ].map((item, i) => (
-                            <div key={i} className="glass-panel p-8 rounded-2xl border border-white/5 bg-slate-900/40 hover:bg-slate-900/60 transition-all hover:-translate-y-1 relative group">
+                            <PremiumCard key={i} className="p-8 hover:bg-slate-900/60 transition-all hover:-translate-y-1 relative group">
                                 <div className="absolute top-6 left-6 text-cyan-500/20 text-6xl font-serif leading-none select-none group-hover:text-cyan-500/30 transition-colors">"</div>
                                 <div className="relative z-10 pt-6">
                                     <p className="text-slate-300 text-lg leading-relaxed mb-6 italic">
@@ -136,7 +138,7 @@ export default function MissionPage() {
                                         <p className="text-cyan-500 text-xs uppercase tracking-wider font-bold mt-1">{item.role}</p>
                                     </div>
                                 </div>
-                            </div>
+                            </PremiumCard>
                         ))}
                     </div>
                 </div>
