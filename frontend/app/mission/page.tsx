@@ -4,6 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { TrendingUp, ArrowRight, ShieldAlert, Clock, Wallet, GraduationCap, Zap } from 'lucide-react';
 import FinancialQuiz from '../../components/mission/FinancialQuiz';
+import PremiumCard from '../../components/ui/premium/PremiumCard';
+import PremiumButton from '../../components/ui/premium/PremiumButton';
 
 export default function MissionPage() {
     return (
@@ -47,8 +49,7 @@ export default function MissionPage() {
                     </p>
                 </div>
 
-                import PremiumCard from '../../components/ui/premium/PremiumCard';
-                import PremiumButton from '../../components/ui/premium/PremiumButton';
+// ... imports moved to top
 
                 // ... (inside component)
 

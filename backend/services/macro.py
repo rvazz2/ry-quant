@@ -361,5 +361,3 @@ def get_global_macro_data():
             })
 
     return results
-        
-    return results

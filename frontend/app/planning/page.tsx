@@ -5,6 +5,9 @@ import { api } from '@/lib/api';
 import DashboardLayout from '@/components/DashboardLayout';
 import { GraduationCap, Wallet, PiggyBank, Calculator, Target, Home } from 'lucide-react';
 import { BudgetTab, RetirementTab, TaxTab, LifeTab } from '@/components/planning';
+import PremiumInput from '@/components/ui/premium/PremiumInput';
+import PremiumSlider from '@/components/ui/premium/PremiumSlider';
+import PremiumCard from '@/components/ui/premium/PremiumCard';
 
 // Force Rebuild: v3
 export default function PlanningPage() {
@@ -81,13 +84,7 @@ export default function PlanningPage() {
                     <p className="text-slate-400">The class you should have taken instead of Organic Chemistry.</p>
                 </div>
 
-                import PremiumInput from '../../components/ui/premium/PremiumInput';
-                import PremiumSlider from '../../components/ui/premium/PremiumSlider';
-                import PremiumCard from '../../components/ui/premium/PremiumCard';
-
-                // ...
-
-                {/* Profile Settings */}
+// ... imports moved to top of file
                 <PremiumCard className="p-8 mb-8">
                     <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
                         <Target className="text-cyan-400" size={20} />
