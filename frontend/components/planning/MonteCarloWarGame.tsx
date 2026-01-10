@@ -41,7 +41,7 @@ const SimulationChart = React.memo(({ result, chartData }: { result: any, chartD
             </div>
 
             <div className="h-64 w-full bg-slate-900/30 rounded-xl p-4 border border-slate-800">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <AreaChart data={chartData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
                         <XAxis dataKey="year" stroke="#94a3b8" tick={{ fontSize: 10 }} />

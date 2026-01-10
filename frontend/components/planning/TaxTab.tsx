@@ -90,7 +90,7 @@ const TaxWaterfall = ({ salary, filingStatus }: { salary: number, filingStatus: 
             </div>
 
             <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <BarChart data={taxBuckets} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
                         <XAxis dataKey="rate" tick={{ fill: '#94a3b8' }} label={{ value: 'Tax Bracket', position: 'bottom', fill: '#64748b' }} />

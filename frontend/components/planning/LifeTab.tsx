@@ -99,7 +99,7 @@ const RentVsBuy = React.memo(() => {
                     </div>
                 </div>
                 <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                         <BarChart data={chartData} layout="vertical">
                             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false} />
                             <XAxis type="number" hide />
