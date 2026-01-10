@@ -51,11 +51,14 @@ const DCFWidget = ({ ticker }: { ticker: string }) => {
             if (info) {
                 setCompany(info);
                 // Auto-fill assumptions based on real data if possible, or reasonable defaults
-                setBaseRevenue(info.total_revenue || 0);
-                setCurrentPrice(info.current_price || 0);
-
+                setBaseRevenue(info.total_revenue || 50000000000); // Default $50B if missing
+                setCurrentPrice(info.current_price || 150); // Default $150
                 // Estimate shares if needed
-                setSharesOutstanding(info.market_cap && info.current_price ? info.market_cap / info.current_price : 0);
+                if (info.market_cap && info.current_price) {
+                    setSharesOutstanding(info.market_cap / info.current_price);
+                } else {
+                    setSharesOutstanding(1000000000); // Default 1B shares
+                }
 
                 if (info.revenue_growth) setRevenueGrowth(Math.round(info.revenue_growth * 100));
                 if (info.ebitda_margins) setEbitMargin(Math.round(info.ebitda_margins * 100)); // Proxy for EBIT

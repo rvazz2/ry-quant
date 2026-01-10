@@ -98,7 +98,7 @@ const MatchVisualizer = React.memo(({ salary }: { salary: number }) => {
                         <div className="text-slate-500 text-xs uppercase tracking-widest">Total Annual Investment</div>
                         <div className="text-3xl font-black text-white">${totalInvested.toLocaleString()}</div>
                     </div>
-                    <div className="h-40">
+                    <div className="h-40 w-full relative">
                         <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                             <BarChart data={[
                                 { name: 'Total', user: myContribution, match: employerContribution }
@@ -177,7 +177,7 @@ const RothVsTrad = React.memo(() => {
                 </div>
             </div>
 
-            <div className="h-64 mt-4">
+            <div className="h-64 mt-4 w-full relative">
                 <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <AreaChart data={chartData}>
                         <defs>
