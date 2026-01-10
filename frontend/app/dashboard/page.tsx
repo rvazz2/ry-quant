@@ -6,22 +6,28 @@ import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import { DashboardProvider } from '@/contexts/DashboardContext';
+import { ShimmerSkeleton } from '@/components/LoadingSkeleton';
 
 // Lazy load heavy components
 const MarketOverview = dynamic(() => import('@/components/MarketOverview'), {
-    loading: () => <div className="h-96 flex items-center justify-center text-slate-500">Loading Market Overview...</div>
+    loading: () => <div className="h-36 grid grid-cols-1 md:grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map(i => <ShimmerSkeleton key={i} className="h-full rounded-xl" />)}
+    </div>
 });
 const PortfolioBuilder = dynamic(() => import('@/components/PortfolioBuilder'), {
-    loading: () => <div className="h-96 flex items-center justify-center text-slate-500">Loading Optimizer...</div>
+    loading: () => <ShimmerSkeleton className="h-[600px] w-full rounded-xl" />
 });
 const Backtester = dynamic(() => import('@/components/Backtester'), {
-    loading: () => <div className="h-96 flex items-center justify-center text-slate-500">Loading Backtester...</div>
+    loading: () => <ShimmerSkeleton className="h-[600px] w-full rounded-xl" />
 });
 const OptionCalculator = dynamic(() => import('@/components/OptionCalculator'), {
-    loading: () => <div className="h-96 flex items-center justify-center text-slate-500">Loading Options Lab...</div>
+    loading: () => <ShimmerSkeleton className="h-[600px] w-full rounded-xl" />
 });
 const QuantDashboard = dynamic(() => import('@/components/QuantDashboard'), {
-    loading: () => <div className="h-96 flex items-center justify-center text-slate-500">Loading Quant Lab...</div>
+    loading: () => <ShimmerSkeleton className="h-[600px] w-full rounded-xl" />
+});
+const SectorPerformance = dynamic(() => import('@/components/SectorPerformance'), {
+    loading: () => <ShimmerSkeleton className="h-96 w-full rounded-xl" />
 });
 
 import { AnimatedContent } from '@/components/AnimatedContent';
@@ -52,6 +58,9 @@ function DashboardContent() {
                                     </div>
                                 </div>
                                 <MarketOverview />
+                                <div className="mt-6">
+                                    <SectorPerformance />
+                                </div>
                             </section>
                         )}
 

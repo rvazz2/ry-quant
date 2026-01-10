@@ -419,3 +419,11 @@ export const getPersonalityTest = async (): Promise<any> => {
         return response.data;
     }, 86400); // 24hr cache
 };
+
+export const getSectorPerformance = async (): Promise<any[]> => {
+    return fetchWithCache('sector_performance', async () => {
+        const response = await api.get('/market/sectors');
+        return response.data;
+    }, 300); // 5 min cache
+};
+

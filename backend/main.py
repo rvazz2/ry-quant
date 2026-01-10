@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from routers import market, quant, research, macro, mergers, planning, accounting, behavioral, ai, strategy_builder, stress, crypto, reports, simulator, system
+from routers import market, quant, research, macro, mergers, planning, accounting, behavioral, ai, strategy_builder, stress, crypto, reports, simulator, system, sectors
 from contextlib import asynccontextmanager
 import asyncio
 from services.market_data import get_market_overview, get_market_news
@@ -120,6 +120,7 @@ app.include_router(crypto.router)
 app.include_router(reports.router)
 app.include_router(simulator.router) # New Simulator Router
 app.include_router(system.router)
+app.include_router(sectors.router)
 
 @app.get("/")
 def read_root():

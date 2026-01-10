@@ -3,11 +3,12 @@ import React from 'react';
 
 interface SkeletonProps {
     className?: string;
+    style?: React.CSSProperties;
 }
 
-export const ShimmerSkeleton = ({ className }: SkeletonProps) => {
+export const ShimmerSkeleton = ({ className, style }: SkeletonProps) => {
     return (
-        <div className={`relative overflow-hidden bg-slate-800/50 rounded ${className}`}>
+        <div className={`relative overflow-hidden bg-slate-800/50 rounded ${className}`} style={style}>
             <div className="absolute inset-0 animate-[shimmer-slide_1.5s_infinite] bg-gradient-to-r from-transparent via-slate-700/30 to-transparent" />
         </div>
     );
