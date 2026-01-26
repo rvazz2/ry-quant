@@ -235,7 +235,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 <div className="p-8 pb-4 border-b border-white/5 flex items-center justify-between relative overflow-hidden group">
                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                     <Link href="/" className="block hover:opacity-80 transition-opacity relative z-10">
-                        <img src="/quantdash_logo.png" alt="QuantDash" className="h-8 w-auto object-contain" />
+                        <img src="/quantdash_logo.png" alt="QuantDash" className="h-12 w-auto object-contain" />
                     </Link>
                 </div>
 

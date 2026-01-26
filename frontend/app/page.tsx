@@ -1,8 +1,27 @@
-"use client";
+import Image from 'next/image';
 
-import React, { useState, useMemo } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+// ... existing imports ...
+
+// --- BioModal Component ---
+interface Student {
+  name: string;
+  role: string;
+  education: string;
+  college: string;
+  bio: string;
+  icon: React.ReactNode;
+}
+
+const BioModal = React.memo(({ student, isOpen, onClose }: { student: Student, isOpen: boolean, onClose: () => void }) => {
+  // ... existing code ...
+});
+
+// ... inside LandingPage ...
+<div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+  <div className="relative h-10 w-40">
+    <Image src="/quantdash_logo.png" alt="QuantDash" fill className="object-contain hover:brightness-110 transition-all" priority />
+  </div>
+</div>
 import { TrendingUp, ArrowRight, BookOpen, LineChart, Cpu, Activity, Zap, ShieldAlert, Bitcoin, PlayCircle } from 'lucide-react';
 
 // --- Bio Modal Component ---
@@ -89,12 +108,7 @@ export default function LandingPage() {
       <nav className="relative z-50 border-b border-white/5 bg-[rgba(8,10,20,0.7)] backdrop-blur-xl sticky top-0 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="w-11 h-11 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.4)] group-hover:scale-105 transition-transform duration-300">
-              <TrendingUp className="text-white" size={26} />
-            </div>
-            <span className="text-2xl font-bold tracking-tight text-white group-hover:text-cyan-100 transition-colors">
-              Quant<span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">Dash</span>
-            </span>
+            <img src="/quantdash_logo.png" alt="QuantDash" className="h-10 w-auto object-contain hover:brightness-110 transition-all" />
           </div>
           <div className="hidden md:flex items-center gap-10">
             <a href="#features" className="text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors tracking-wide">Features</a>
