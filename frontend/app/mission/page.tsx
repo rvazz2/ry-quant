@@ -84,7 +84,10 @@ export default function MissionPage() {
                     </PremiumCard>
                 </div>
 
-                {/* ... (quiz section) ... */}
+                {/* Financial Quiz Section */}
+                <div id="quiz" className="mb-32 scroll-mt-24">
+                    <FinancialQuiz />
+                </div>
 
                 {/* Wise Quotes Section */}
                 <div className="mb-32">
