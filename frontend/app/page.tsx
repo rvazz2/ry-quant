@@ -99,7 +99,7 @@ export default function LandingPage() {
       <nav className="relative z-50 border-b border-white/5 bg-[rgba(8,10,20,0.7)] backdrop-blur-xl sticky top-0 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <img src="/quantdash_logo.png" alt="QuantDash" className="h-12 w-auto object-contain mix-blend-screen drop-shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:brightness-110 transition-all" />
+            <img src="/quantdash_logo.png" alt="QuantDash" className="h-16 w-auto object-contain mix-blend-screen hover:brightness-110 transition-all" />
           </div>
           <div className="hidden md:flex items-center gap-10">
             <a href="#features" className="text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors tracking-wide">Features</a>
