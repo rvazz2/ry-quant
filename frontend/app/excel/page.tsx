@@ -186,10 +186,11 @@ export default function ExcelDashboard() {
   const currentLevelData = roadmapData.find(d => d.id === activeTab) || roadmapData[0];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-emerald-100 selection:text-emerald-900">
+    // Main Container
+    <div className="min-h-screen bg-[#0b0e14] text-slate-200 font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
 
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+      <header className="bg-[#0b0e14]/80 backdrop-blur-md border-b border-white/10 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Link href="/" className="mr-6 hover:opacity-80 transition-opacity">
@@ -197,15 +198,15 @@ export default function ExcelDashboard() {
                 QUANT<span className="font-light text-slate-400">DASH</span>
               </h1>
             </Link>
-            <div className="h-8 w-px bg-slate-200 mx-2"></div>
-            <div className="bg-emerald-600 p-2 rounded-lg">
-              <FileSpreadsheet className="w-6 h-6 text-white" />
+            <div className="h-8 w-px bg-white/10 mx-2"></div>
+            <div className="bg-emerald-500/20 p-2 rounded-lg border border-emerald-500/30">
+              <FileSpreadsheet className="w-6 h-6 text-emerald-400" />
             </div>
-            <h1 className="text-xl font-bold text-slate-800 tracking-tight">Excel Mastery Roadmap</h1>
+            <h1 className="text-xl font-bold text-slate-100 tracking-tight">Excel Mastery Roadmap</h1>
           </div>
           <div className="hidden md:flex items-center gap-4 text-sm text-slate-500">
             <span>v1.0.0</span>
-            <span className="w-px h-4 bg-slate-300"></span>
+            <span className="w-px h-4 bg-slate-700"></span>
             <span>Dashboard</span>
           </div>
         </div>
@@ -215,15 +216,15 @@ export default function ExcelDashboard() {
 
         {/* Intro Section */}
         <div className="mb-10 text-center max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold text-slate-900 mb-3">Master Excel, Step by Step</h2>
-          <p className="text-slate-600 text-lg">
+          <h2 className="text-3xl font-bold text-white mb-3">Master Excel, Step by Step</h2>
+          <p className="text-slate-400 text-lg">
             A comprehensive curriculum designed to take you from data entry basics to advanced automation and modeling.
           </p>
         </div>
 
         {/* Tab Navigation */}
         <nav className="flex justify-center mb-12">
-          <div className="bg-white p-1.5 rounded-xl shadow-sm border border-slate-200 inline-flex">
+          <div className="bg-white/5 p-1.5 rounded-xl border border-white/10 inline-flex">
             {roadmapData.map((level) => (
               <button
                 key={level.id}
@@ -231,8 +232,8 @@ export default function ExcelDashboard() {
                 className={clsx(
                   "px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2",
                   activeTab === level.id
-                    ? "bg-slate-900 text-white shadow-md scale-[1.02]"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    ? "bg-emerald-500/20 text-emerald-300 shadow-sm border border-emerald-500/30"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
                 )}
               >
                 {activeTab === level.id && (
@@ -259,18 +260,29 @@ export default function ExcelDashboard() {
           >
             {/* Level Description Card */}
             <div className={clsx(
-              "col-span-full mb-4 p-8 rounded-2xl bg-gradient-to-br border border-slate-100 shadow-sm",
-              currentLevelData.bgStart,
-              currentLevelData.bgEnd
+              "col-span-full mb-4 p-8 rounded-2xl bg-gradient-to-br border border-white/10 shadow-sm",
+              // We need to update these gradient classes in the data object or map them here. 
+              // Since the data object has 'bgStart' and 'bgEnd', we should override them for dark mode or just use inline styles/conditional classes that work with dark mode.
+              // For now, let's just make generic dark mode gradients based on the level color.
+              "from-white/5 to-transparent backdrop-blur-sm"
             )}>
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className={clsx("text-2xl font-bold mb-2", currentLevelData.color)}>
-                    {currentLevelData.id} Level
+                  <h3 className={clsx("text-2xl font-bold mb-2", currentLevelData.color.replace('text-', 'text-'))}>
+                    {/* We might need to adjust text colors if they are too dark for dark mode. emerald-600 is okay, but emerald-400 is better on dark. */}
+                    <span className={clsx(
+                      currentLevelData.id === 'Beginner' ? 'text-emerald-400' :
+                        currentLevelData.id === 'Intermediate' ? 'text-blue-400' : 'text-purple-400'
+                    )}>
+                      {currentLevelData.id} Level
+                    </span>
                   </h3>
-                  <p className="text-slate-700 text-lg">{currentLevelData.description}</p>
+                  <p className="text-slate-300 text-lg">{currentLevelData.description}</p>
                 </div>
-                <div className={clsx("p-3 rounded-full bg-white/50 backdrop-blur-sm", currentLevelData.color)}>
+                <div className={clsx("p-3 rounded-full bg-white/5 border border-white/10",
+                  currentLevelData.id === 'Beginner' ? 'text-emerald-400' :
+                    currentLevelData.id === 'Intermediate' ? 'text-blue-400' : 'text-purple-400'
+                )}>
                   <CheckIconForLevel level={currentLevelData.id} />
                 </div>
               </div>
@@ -283,31 +295,31 @@ export default function ExcelDashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="group bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all duration-300 relative overflow-hidden"
+                className="group bg-white/5 rounded-xl p-6 border border-white/10 shadow-sm hover:shadow-md hover:border-emerald-500/50 hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
               >
-                <div className="absolute top-0 right-0 p-4 opacity-50 text-slate-300 group-hover:text-emerald-100 group-hover:scale-110 transition-transform duration-500">
-                  {React.cloneElement(skill.icon, { className: "w-16 h-16" } as any)}
+                <div className="absolute top-0 right-0 p-4 opacity-10 text-emerald-500 group-hover:text-emerald-400 group-hover:scale-110 group-hover:opacity-20 transition-all duration-500">
+                  {React.cloneElement(skill.icon, { className: "w-24 h-24" } as any)}
                 </div>
 
                 <div className="relative z-10">
                   <div className={clsx(
                     "w-10 h-10 rounded-lg flex items-center justify-center mb-4 transition-colors duration-300",
-                    "bg-slate-50 text-slate-500 group-hover:bg-emerald-50 group-hover:text-emerald-600"
+                    "bg-white/5 text-slate-400 group-hover:bg-emerald-500/20 group-hover:text-emerald-400 border border-white/5 group-hover:border-emerald-500/30"
                   )}>
                     {skill.icon}
                   </div>
 
-                  <h4 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors">
+                  <h4 className="text-lg font-semibold text-slate-200 mb-2 group-hover:text-emerald-300 transition-colors">
                     {skill.title}
                   </h4>
-                  <p className="text-slate-500 text-sm mb-4 line-clamp-2">
+                  <p className="text-slate-400 text-sm mb-4 line-clamp-2">
                     {skill.description}
                   </p>
 
                   <div className="space-y-2">
                     {skill.details?.map((detail, i) => (
-                      <div key={i} className="flex items-start gap-2 text-sm text-slate-600">
-                        <ArrowRight className="w-3 h-3 mt-1 text-emerald-400 flex-shrink-0" />
+                      <div key={i} className="flex items-start gap-2 text-sm text-slate-500 group-hover:text-slate-300 transition-colors">
+                        <ArrowRight className="w-3 h-3 mt-1 text-emerald-500/70 group-hover:text-emerald-400 flex-shrink-0" />
                         <span>{detail}</span>
                       </div>
                     ))}
@@ -320,12 +332,12 @@ export default function ExcelDashboard() {
 
       </main>
 
-      <footer className="max-w-7xl mx-auto px-4 py-8 border-t border-slate-200 mt-12">
-        <div className="flex justify-between items-center text-sm text-slate-500">
+      <footer className="max-w-7xl mx-auto px-4 py-8 border-t border-white/10 mt-12">
+        <div className="flex justify-between items-center text-sm text-slate-600">
           <p>© {new Date().getFullYear()} Excel Mastery Roadmap by Ry Quant</p>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-emerald-600 transition-colors">Documentation</a>
-            <a href="#" className="hover:text-emerald-600 transition-colors">Support</a>
+            <a href="#" className="hover:text-emerald-400 transition-colors">Documentation</a>
+            <a href="#" className="hover:text-emerald-400 transition-colors">Support</a>
           </div>
         </div>
       </footer>
