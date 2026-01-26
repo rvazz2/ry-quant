@@ -15,8 +15,10 @@ import {
   TrendingUp,
   LayoutGrid,
   CheckCircle2,
+  ArrowLeft,
   ArrowRight
 } from 'lucide-react';
+import Link from 'next/link';
 import clsx from 'clsx';
 
 type Level = 'Beginner' | 'Intermediate' | 'Advanced';
@@ -190,6 +192,9 @@ export default function ExcelDashboard() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
+            <Link href="/" className="mr-4 p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500 hover:text-slate-800">
+              <ArrowLeft className="w-6 h-6" />
+            </Link>
             <div className="bg-emerald-600 p-2 rounded-lg">
               <FileSpreadsheet className="w-6 h-6 text-white" />
             </div>
