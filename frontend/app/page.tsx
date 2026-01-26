@@ -1,6 +1,10 @@
-import Image from 'next/image';
+"use client";
 
-// ... existing imports ...
+import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { TrendingUp, ArrowRight, BookOpen, LineChart, Cpu, Activity, Zap, ShieldAlert, Bitcoin, PlayCircle } from 'lucide-react';
 
 // --- BioModal Component ---
 interface Student {
@@ -13,19 +17,6 @@ interface Student {
 }
 
 const BioModal = React.memo(({ student, isOpen, onClose }: { student: Student, isOpen: boolean, onClose: () => void }) => {
-  // ... existing code ...
-});
-
-// ... inside LandingPage ...
-<div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-  <div className="relative h-10 w-40">
-    <Image src="/quantdash_logo.png" alt="QuantDash" fill className="object-contain hover:brightness-110 transition-all" priority />
-  </div>
-</div>
-import { TrendingUp, ArrowRight, BookOpen, LineChart, Cpu, Activity, Zap, ShieldAlert, Bitcoin, PlayCircle } from 'lucide-react';
-
-// --- Bio Modal Component ---
-const BioModal = React.memo(({ student, isOpen, onClose }: { student: any, isOpen: boolean, onClose: () => void }) => {
   if (!isOpen) return null;
 
   return (
@@ -248,7 +239,7 @@ export default function LandingPage() {
             <div className="inline-block px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-cyan-400 text-sm font-bold uppercase tracking-[0.2em] mb-8 shadow-[0_0_15px_rgba(34,211,238,0.2)]">The Antidote</div>
             <h2 className="text-5xl md:text-7xl font-black text-white mb-8">The Solution: <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 neon-text-cyan">QuantDash</span></h2>
             <p className="text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto font-light leading-relaxed">
-              This isn't just a stock tracker. It's your cheat sheet for the real world. We provide the institutional-grade tools usually reserved for Wall Street, simplified for your dorm room.
+              This isn&apos;t just a stock tracker. It&apos;s your cheat sheet for the real world. We provide the institutional-grade tools usually reserved for Wall Street, simplified for your dorm room.
             </p>
           </div>
 
@@ -280,7 +271,7 @@ export default function LandingPage() {
 
           <h2 className="text-3xl font-bold text-slate-400 mb-10 tracking-[0.2em] uppercase">Our Goal for You</h2>
           <p className="text-4xl md:text-6xl text-slate-200 font-thin mb-16 max-w-5xl mx-auto leading-tight">
-            Turn <span className="text-rose-400 font-bold decoration-wavy underline decoration-rose-500/30">"Broke Student"</span> into <span className="text-emerald-400 font-bold decoration-wavy underline decoration-emerald-500/30">"Wealthy Adult"</span>.
+            Turn <span className="text-rose-400 font-bold decoration-wavy underline decoration-rose-500/30">&quot;Broke Student&quot;</span> into <span className="text-emerald-400 font-bold decoration-wavy underline decoration-emerald-500/30">&quot;Wealthy Adult&quot;</span>.
           </p>
           <Link href="/planning" className="inline-flex px-8 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cyan-500/30 text-cyan-400 hover:text-cyan-300 font-bold text-lg items-center gap-3 transition-all hover:scale-105 shadow-[0_0_20px_rgba(0,0,0,0.2)]">
             See how we do it <ArrowRight size={20} />
