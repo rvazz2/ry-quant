@@ -3,8 +3,9 @@
 import React, { useState, useCallback, useMemo, lazy, Suspense } from "react";
 import { useSettings } from "@/contexts/SettingsContext";
 import Link from "next/link";
+import Image from "next/image";
 import {
-    ArrowLeft, Shield, Globe, Cpu, Bell, Lock, Layout,
+    Shield, Globe, Cpu, Bell, Lock, Layout,
     Save, RefreshCw, AlertTriangle, Activity, HelpCircle, Download, Upload
 } from "lucide-react";
 import Tooltip from "@/components/ui/Tooltip";
@@ -20,9 +21,9 @@ export default function SettingsPage() {
     const [helpSidebarOpen, setHelpSidebarOpen] = useState(false);
 
     // Memoize handler to prevent recreation on every render
-    const handleChange = useCallback((key: any, value: any) => {
+    const handleChange = useCallback((key: keyof typeof settings, value: string | number | boolean) => {
         updateSetting(key, value);
-    }, [updateSetting]);
+    }, [updateSetting, settings]);
 
     // Memoize tabs to prevent recreation
     const tabs = useMemo(() => [
@@ -668,9 +669,10 @@ export default function SettingsPage() {
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center justify-between mb-8">
                     <div>
-                        <Link href="/" className="inline-flex items-center text-slate-400 hover:text-white transition-colors mb-2 text-sm">
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Back to Dashboard
+                        <Link href="/" className="inline-flex items-center hover:opacity-80 transition-opacity mb-4">
+                            <div className="relative h-8 w-40">
+                                <Image src="/quantdash_logo.png" alt="Back to Dashboard" fill className="object-contain" />
+                            </div>
                         </Link>
                         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
                             Command Center
