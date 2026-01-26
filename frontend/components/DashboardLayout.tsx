@@ -3,7 +3,7 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { LayoutDashboard, TrendingUp, Activity, Calculator, Search, Settings, Terminal, SquareTerminal, BookOpen, BrainCircuit, Command, Bitcoin, Menu, X, GraduationCap, HardDrive } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Activity, Calculator, Search, Settings, Terminal, SquareTerminal, BookOpen, BrainCircuit, Command, Bitcoin, Menu, X, GraduationCap, HardDrive, FileSpreadsheet } from 'lucide-react';
 import { SearchResult } from '@/lib/types';
 import MarketStatus from './MarketStatus';
 import ErrorBoundary from './ErrorBoundary';
@@ -40,6 +40,7 @@ const SidebarContent = () => {
                 label="Library"
             />
             <NavItem href="/mission" icon={<GraduationCap size={18} className="text-yellow-400" />} label="Financial Quiz" />
+            <NavItem href="/excel" icon={<FileSpreadsheet size={18} className="text-emerald-400" />} label="Excel Skills" />
             <NavItem href="/planning" icon={<BookOpen size={18} className="text-amber-400" />} label="Financial Planning" />
             <NavItem href="/simulator" icon={<Activity size={18} className="text-indigo-400" />} label="Trading Simulator" />
 
