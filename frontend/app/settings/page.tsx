@@ -669,9 +669,9 @@ export default function SettingsPage() {
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center justify-between mb-8">
                     <div>
-                        <Link href="/" className="inline-flex items-center hover:opacity-80 transition-opacity mb-4">
-                            <div className="relative h-8 w-40">
-                                <Image src="/quantdash_logo.png" alt="Back to Dashboard" fill className="object-contain" />
+                        <Link href="/" className="inline-flex items-center hover:opacity-100 hover:scale-105 transition-all mb-4">
+                            <div className="relative h-12 w-48">
+                                <Image src="/quantdash_logo.png" alt="Back to Dashboard" fill className="object-contain drop-shadow-[0_0_10px_rgba(6,182,212,0.2)]" />
                             </div>
                         </Link>
                         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
