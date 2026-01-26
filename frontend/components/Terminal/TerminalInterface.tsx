@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Terminal as TerminalIcon, X } from 'lucide-react';
+import { Terminal as TerminalIcon, X, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { getCompanyInfo, getMarketOverview } from '@/lib/api';
 import dynamic from 'next/dynamic';
 
@@ -256,6 +257,9 @@ export default function TerminalInterface() {
             {/* Bloomberg Header */}
             <div className="flex justify-between items-center bg-slate-900 border-b border-slate-700 p-1 select-none text-xs shrink-0">
                 <div className="flex items-center gap-4">
+                    <Link href="/" className="flex items-center justify-center p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-white transition-colors" title="Exit Terminal">
+                        <ArrowLeft size={16} />
+                    </Link>
                     <span className="bg-amber-600 text-black font-bold px-2 rounded-sm">1-BLOOMBERG</span>
                     <span className="text-cyan-400">QUANTDASH TERMINAL</span>
                 </div>
