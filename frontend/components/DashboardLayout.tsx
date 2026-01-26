@@ -234,10 +234,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <aside className="w-72 bg-[rgba(11,14,20,0.4)] backdrop-blur-xl border-r border-white/5 hidden md:flex flex-col relative z-20 shadow-[5px_0_30px_rgba(0,0,0,0.5)] h-screen">
                 <div className="p-8 pb-4 border-b border-white/5 flex items-center justify-between relative overflow-hidden group">
                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                    <Link href="/" className="relative z-10">
-                        <h1 className="text-3xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent cursor-pointer tracking-tighter hover:brightness-125 transition-all duration-300 drop-shadow-[0_2px_10px_rgba(6,182,212,0.3)]">
-                            QUANT<span className="font-light text-slate-100">DASH</span>
-                        </h1>
+                    <Link href="/" className="block hover:opacity-80 transition-opacity relative z-10">
+                        <img src="/quantdash_logo.png" alt="QuantDash" className="h-8 w-auto object-contain" />
                     </Link>
                 </div>
 

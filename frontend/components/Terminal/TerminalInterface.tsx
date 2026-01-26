@@ -267,9 +267,7 @@ export default function TerminalInterface() {
             <div className="flex justify-between items-center bg-slate-900 border-b border-slate-700 p-1 select-none text-xs shrink-0">
                 <div className="flex items-center gap-4">
                     <Link href="/" className="mr-2 hover:brightness-125 transition-all">
-                        <h1 className="text-lg font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent cursor-pointer tracking-tighter">
-                            QUANT<span className="font-light text-slate-100">DASH</span>
-                        </h1>
+                        <img src="/quantdash_logo.png" alt="QuantDash" className="h-8 w-auto object-contain" />
                     </Link>
                     <span className="bg-amber-600 text-black font-bold px-2 rounded-sm">1-BLOOMBERG</span>
                     <span className="text-cyan-400">QUANTDASH TERMINAL</span>
