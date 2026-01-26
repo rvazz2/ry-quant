@@ -192,9 +192,12 @@ export default function ExcelDashboard() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Link href="/" className="mr-4 p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500 hover:text-slate-800">
-              <ArrowLeft className="w-6 h-6" />
+            <Link href="/" className="mr-6 hover:opacity-80 transition-opacity">
+              <h1 className="text-2xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent cursor-pointer tracking-tighter drop-shadow-[0_2px_10px_rgba(6,182,212,0.3)]">
+                QUANT<span className="font-light text-slate-400">DASH</span>
+              </h1>
             </Link>
+            <div className="h-8 w-px bg-slate-200 mx-2"></div>
             <div className="bg-emerald-600 p-2 rounded-lg">
               <FileSpreadsheet className="w-6 h-6 text-white" />
             </div>
