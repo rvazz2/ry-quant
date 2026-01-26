@@ -671,7 +671,7 @@ export default function SettingsPage() {
                     <div>
                         <Link href="/" className="inline-flex items-center hover:opacity-100 hover:scale-105 transition-all mb-4">
                             <div className="relative h-12 w-48">
-                                <Image src="/quantdash_logo.png" alt="Back to Dashboard" fill className="object-contain drop-shadow-[0_0_10px_rgba(6,182,212,0.2)]" />
+                                <Image src="/quantdash_logo.png" alt="Back to Dashboard" fill className="object-contain mix-blend-screen drop-shadow-[0_0_15px_rgba(6,182,212,0.3)]" />
                             </div>
                         </Link>
                         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">

@@ -232,9 +232,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
             {/* Sidebar */}
             <aside className="w-72 bg-[rgba(11,14,20,0.4)] backdrop-blur-xl border-r border-white/5 hidden md:flex flex-col relative z-20 shadow-[5px_0_30px_rgba(0,0,0,0.5)] h-screen">
-                <div className="p-8 pb-4 flex items-center justify-center relative overflow-visible group">
+                <div className="pt-8 pb-6 px-6 flex items-center justify-center relative overflow-visible group">
                     <Link href="/" className="block hover:opacity-100 hover:scale-105 transition-all duration-300 relative z-10 w-full flex justify-center">
-                        <img src="/quantdash_logo.png" alt="QuantDash" className="h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(6,182,212,0.3)]" />
+                        <img
+                            src="/quantdash_logo.png"
+                            alt="QuantDash"
+                            className="h-20 w-auto object-contain mix-blend-screen drop-shadow-[0_0_20px_rgba(6,182,212,0.4)]"
+                        />
                     </Link>
                 </div>
 
