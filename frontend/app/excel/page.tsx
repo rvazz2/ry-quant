@@ -26,7 +26,7 @@ type Level = 'Beginner' | 'Intermediate' | 'Advanced';
 interface SkillItem {
   title: string;
   description: string;
-  icon: React.ReactElement;
+  icon: React.ReactElement<{ className?: string }>;
   details?: string[];
 }
 
@@ -298,7 +298,7 @@ export default function ExcelDashboard() {
                 className="group bg-white/5 rounded-xl p-6 border border-white/10 shadow-sm hover:shadow-md hover:border-emerald-500/50 hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 p-4 opacity-10 text-emerald-500 group-hover:text-emerald-400 group-hover:scale-110 group-hover:opacity-20 transition-all duration-500">
-                  {React.cloneElement(skill.icon, { className: "w-24 h-24" } as any)}
+                  {React.cloneElement(skill.icon, { className: "w-24 h-24" })}
                 </div>
 
                 <div className="relative z-10">

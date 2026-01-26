@@ -390,7 +390,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                                             />
                                         ))
                                     ) : (
-                                        <div className="px-4 py-12 text-center text-slate-500 text-sm">No results found for "{searchQuery}".</div>
+                                        <div className="px-4 py-12 text-center text-slate-500 text-sm">No results found for &quot;{searchQuery}&quot;.</div>
                                     )}
                                 </div>
                             )}

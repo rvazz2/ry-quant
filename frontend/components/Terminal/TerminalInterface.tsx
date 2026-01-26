@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Terminal as TerminalIcon, X, ArrowLeft } from 'lucide-react';
+import { Terminal as TerminalIcon, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getCompanyInfo, getMarketOverview } from '@/lib/api';
@@ -67,9 +67,9 @@ export default function TerminalInterface() {
                                 <div className="grid grid-cols-[80px_1fr] gap-2">
                                     <span className="text-green-400">TOP</span>     <span className="text-white">Top Market News & Headlines</span>
                                     <span className="text-green-400">WEI</span>     <span className="text-white">World Equity Indices (Global Dashboard)</span>
-                                    <span className="text-green-400">GP</span>      <span className="text-white">Graph Price (e.g. "GP AAPL")</span>
-                                    <span className="text-green-400">DES</span>     <span className="text-white">Security Description (e.g. "NVDA" or "DES NVDA")</span>
-                                    <span className="text-green-400">CN</span>      <span className="text-white">Company News (e.g. "CN TSLA")</span>
+                                    <span className="text-green-400">GP</span>      <span className="text-white">Graph Price (e.g. &quot;GP AAPL&quot;)</span>
+                                    <span className="text-green-400">DES</span>     <span className="text-white">Security Description (e.g. &quot;NVDA&quot; or &quot;DES NVDA&quot;)</span>
+                                    <span className="text-green-400">CN</span>      <span className="text-white">Company News (e.g. &quot;CN TSLA&quot;)</span>
                                     <span className="text-green-400">CLEAR</span>   <span className="text-white">Clear Screen</span>
                                     <span className="text-green-400">EXIT</span>    <span className="text-white">Logout / Return to GUI</span>
                                 </div>
@@ -106,7 +106,7 @@ export default function TerminalInterface() {
                                     <div className="text-right">%CHG</div>
                                 </div>
                                 <div className="divide-y divide-slate-800">
-                                    {overview.map((item: any, i: number) => (
+                                    {overview.map((item: { symbol: string; name: string; price: number; change: number }, i: number) => (
                                         <div key={item.symbol || i} className="grid grid-cols-4 p-1 text-xs hover:bg-slate-800/50 font-mono cursor-default">
                                             <div className="text-green-400">{item.name.substring(0, 15)}</div>
                                             <div className="text-right text-white">{item.price.toFixed(2)}</div>
@@ -196,6 +196,14 @@ export default function TerminalInterface() {
                     setLines(prev => [...prev, { type: 'system', content: `FETCHING WIRES FOR ${tickerNews}...`, timestamp: new Date().toLocaleTimeString() }]);
                     const dataNews = await getCompanyInfo(tickerNews);
 
+                    interface NewsItem {
+                        title: string;
+                        link: string;
+                        providerPublishTime: number;
+                        publisher: string;
+                    }
+
+
                     if (!dataNews?.news || dataNews.news.length === 0) {
                         throw new Error("NO HEADLINES FOUND - CHECK CONNECTION");
                     }
@@ -208,7 +216,7 @@ export default function TerminalInterface() {
                                     {command === 'TOP' ? 'TOP - TOP BREAKING NEWS' : `CN - COMPANY NEWS: ${tickerNews}`}
                                 </div>
                                 <div className="divide-y divide-slate-800">
-                                    {(dataNews.news as any[]).map((news, i) => (
+                                    {(dataNews.news as NewsItem[]).map((news, i) => (
                                         <div key={i} className="p-2 hover:bg-slate-800 cursor-pointer flex gap-4 group">
                                             <div className="text-amber-500 whitespace-nowrap hidden sm:block w-20">
                                                 {new Date(news.providerPublishTime * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -238,8 +246,9 @@ export default function TerminalInterface() {
                 commandPromise(),
                 new Promise((_, reject) => setTimeout(() => reject(new Error("REQUEST TIMED OUT - DATA SOURCE UNRESPONSIVE")), 15000))
             ]);
-        } catch (e: any) {
-            setLines(prev => [...prev, { type: 'error', content: e.message || "SYSTEM ERROR", timestamp: new Date().toLocaleTimeString() }]);
+        } catch (e: unknown) {
+            const errorMessage = e instanceof Error ? e.message : "SYSTEM ERROR";
+            setLines(prev => [...prev, { type: 'error', content: errorMessage, timestamp: new Date().toLocaleTimeString() }]);
         } finally {
             setIsProcessing(false);
         }
