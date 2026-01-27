@@ -28,6 +28,7 @@ const QuantDashboard = () => {
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLastUpdated(new Date());
     }, []);
 

@@ -25,7 +25,7 @@ const CopilotContext = createContext<CopilotContextType | undefined>(undefined);
 
 export function CopilotProvider({ children }: { children: ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
+    const [messages, setMessages] = useState<Message[]>(() => [
         {
             id: '1',
             role: 'assistant',
@@ -36,6 +36,10 @@ export function CopilotProvider({ children }: { children: ReactNode }) {
     const [isLoading, setIsLoading] = useState(false);
     const [currentContext, setCurrentContext] = useState<any>({});
     const pathname = usePathname();
+
+    const setContext = (context: any) => {
+        setCurrentContext((prev: any) => ({ ...prev, ...context }));
+    };
 
     // Auto-update context based on route (basic implementation)
     useEffect(() => {
@@ -53,9 +57,6 @@ export function CopilotProvider({ children }: { children: ReactNode }) {
         }]);
     };
 
-    const setContext = (context: any) => {
-        setCurrentContext((prev: any) => ({ ...prev, ...context }));
-    };
 
     return (
         <CopilotContext.Provider value={{

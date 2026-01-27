@@ -104,6 +104,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
         const saved = localStorage.getItem('userSettings');
         if (saved) {
             try {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setSettings({ ...defaultSettings, ...JSON.parse(saved) });
             } catch (e) {
                 console.error("Failed to parse settings", e);

@@ -19,6 +19,7 @@ const PWAUpdater = () => {
             window.workbox !== undefined
         ) {
             const workbox = window.workbox;
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setWb(workbox);
 
             // Listen for waiting state

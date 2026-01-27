@@ -21,7 +21,9 @@ const EconomicCalendar = dynamic(() => import('@/components/macro/EconomicCalend
 });
 
 export default function MacroPage() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [summary, setSummary] = useState<any[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [curves, setCurves] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
@@ -29,8 +31,8 @@ export default function MacroPage() {
         setLoading(true);
         try {
             // Fetch independently so one failure doesn't block the other
-            const summaryPromise = getMacroSummary().catch(e => []);
-            const curvesPromise = getYieldCurves().catch(e => null);
+            const summaryPromise = getMacroSummary().catch(() => []);
+            const curvesPromise = getYieldCurves().catch(() => null);
 
             const [summaryData, curvesData] = await Promise.all([
                 summaryPromise,

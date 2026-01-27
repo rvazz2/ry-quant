@@ -3,6 +3,12 @@
 > eslint
 
 
+C:\Users\18729\Desktop\Ry Website\frontend\app\macro\page.tsx
+  24:44  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  25:42  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  32:60  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+  33:58  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+
 C:\Users\18729\Desktop\Ry Website\frontend\app\mission\page.tsx
    8:8   warning  'PremiumButton' is defined but never used                               @typescript-eslint/no-unused-vars
   50:23  error    Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
@@ -169,6 +175,24 @@ C:\Users\18729\Desktop\Ry Website\frontend\components\MarketOverview.tsx
   7:30  warning  'Activity' is defined but never used  @typescript-eslint/no-unused-vars
   7:40  warning  'PieChart' is defined but never used  @typescript-eslint/no-unused-vars
 
+C:\Users\18729\Desktop\Ry Website\frontend\components\MarketStatus.tsx
+  13:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\18729\Desktop\Ry Website\frontend\components\MarketStatus.tsx:13:9
+  11 |
+  12 |     useEffect(() => {
+> 13 |         setMounted(true);
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  14 |         const checkStatus = () => {
+  15 |             const now = new Date();
+  16 |             // Convert to EST for Market Logic (Market Rules are based on ET)  react-hooks/set-state-in-effect
+
 C:\Users\18729\Desktop\Ry Website\frontend\components\NewsFeed.tsx
   4:8  warning  'axios' is defined but never used  @typescript-eslint/no-unused-vars
 
@@ -184,7 +208,23 @@ C:\Users\18729\Desktop\Ry Website\frontend\components\OptionsChain.tsx
   135:8    warning  React Hook useEffect has a missing dependency: 'fetchDates'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 C:\Users\18729\Desktop\Ry Website\frontend\components\PWAUpdater.tsx
-  13:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  13:34  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  22:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\18729\Desktop\Ry Website\frontend\components\PWAUpdater.tsx:22:13
+  20 |         ) {
+  21 |             const workbox = window.workbox;
+> 22 |             setWb(workbox);
+     |             ^^^^^ Avoid calling setState() directly within an effect
+  23 |
+  24 |             // Listen for waiting state
+  25 |             workbox.addEventListener("waiting", () => {  react-hooks/set-state-in-effect
 
 C:\Users\18729\Desktop\Ry Website\frontend\components\PortfolioBuilder.tsx
    14:38  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
@@ -206,7 +246,23 @@ C:\Users\18729\Desktop\Ry Website\frontend\components\PriceChart.tsx
   175:52  error    Unexpected any. Specify a different type                                                                        @typescript-eslint/no-explicit-any
 
 C:\Users\18729\Desktop\Ry Website\frontend\components\QuantDashboard.tsx
-  3:17  warning  'Suspense' is defined but never used  @typescript-eslint/no-unused-vars
+   3:17  warning  'Suspense' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  31:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\18729\Desktop\Ry Website\frontend\components\QuantDashboard.tsx:31:9
+  29 |
+  30 |     useEffect(() => {
+> 31 |         setLastUpdated(new Date());
+     |         ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |     }, []);
+  33 |
+  34 |     const handleRefresh = () => {  react-hooks/set-state-in-effect
 
 C:\Users\18729\Desktop\Ry Website\frontend\components\Research.tsx
     7:90  warning  'Flame' is defined but never used                         @typescript-eslint/no-unused-vars
@@ -225,12 +281,42 @@ C:\Users\18729\Desktop\Ry Website\frontend\components\Terminal\TerminalInterface
     4:36  warning  'X' is defined but never used                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
   270:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
 
+C:\Users\18729\Desktop\Ry Website\frontend\components\ThemeToggle.tsx
+  13:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\18729\Desktop\Ry Website\frontend\components\ThemeToggle.tsx:13:9
+  11 |     // useEffect only runs on the client, so now we can safely show the UI
+  12 |     useEffect(() => {
+> 13 |         setMounted(true);
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  14 |     }, []);
+  15 |
+  16 |     if (!mounted) {  react-hooks/set-state-in-effect
+
 C:\Users\18729\Desktop\Ry Website\frontend\components\UpdateManager.tsx
    3:8   warning  'React' is defined but never used         @typescript-eslint/no-unused-vars
   65:18  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
 C:\Users\18729\Desktop\Ry Website\frontend\components\VersionControl.tsx
-  4:30  warning  'AlertTriangle' is defined but never used  @typescript-eslint/no-unused-vars
+   4:30  warning  'AlertTriangle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+  37:13  error    Error: This value cannot be modified
+
+Modifying a variable defined outside a component or hook is not allowed. Consider using an effect.
+
+C:\Users\18729\Desktop\Ry Website\frontend\components\VersionControl.tsx:37:13
+  35 |             )
+  36 |         ) {
+> 37 |             window.location.href = targetUrl;
+     |             ^^^^^^^^^^^^^^^ value cannot be modified
+  38 |         }
+  39 |     };
+  40 |  react-hooks/immutability
 
 C:\Users\18729\Desktop\Ry Website\frontend\components\accounting\DuPontTree.tsx
   7:38  error    Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
@@ -257,24 +343,70 @@ C:\Users\18729\Desktop\Ry Website\frontend\components\behavioral\CasinoGuide.tsx
     32:50   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
     32:82   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
    151:19   warning  'setHours' is assigned a value but never used                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+   284:143  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   284:155  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   465:103  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
    474:157  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
    474:174  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   511:25   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   511:38   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   511:228  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   511:243  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   521:160  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   521:170  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
    525:107  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
    525:130  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
    530:77   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
    532:44   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
    534:77   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   594:96   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   594:107  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   627:41   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   627:217  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
    704:45   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   709:49   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   709:66   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   709:170  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   760:53   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   760:137  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
    798:37   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-  1084:13   error    'dHand' is never reassigned. Use 'const' instead                                                                                                                                                                                                                                         prefer-const
-  1678:91   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
-  1678:95   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
-  1678:139  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
-  1678:143  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
-  1689:12   warning  'matches' is assigned a value but never used                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
-  1715:13   error    'drawResults' is never reassigned. Use 'const' instead                                                                                                                                                                                                                                   prefer-const
-  1790:178  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
-  1790:187  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   854:44   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   859:41   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   859:102  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   915:102  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   915:198  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   930:68   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  1023:32   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1023:44   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1030:72   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  1078:13   error    'dHand' is never reassigned. Use 'const' instead                                                                                                                                                                                                                                         prefer-const
+  1113:113  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1157:63   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1157:81   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1164:71   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  1259:121  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1259:134  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1266:68   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  1380:99   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1380:109  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1387:71   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  1508:70   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1508:82   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1508:169  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1508:175  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1515:69   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  1585:86   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1585:93   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1592:73   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  1672:91   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1672:95   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1672:139  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1672:143  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1679:67   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  1683:12   warning  'matches' is assigned a value but never used                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  1709:13   error    'drawResults' is never reassigned. Use 'const' instead                                                                                                                                                                                                                                   prefer-const
+  1784:178  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1784:187  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
 
 C:\Users\18729\Desktop\Ry Website\frontend\components\behavioral\CognitiveBiasExplorer.tsx
    7:42   error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
@@ -426,8 +558,24 @@ C:\Users\18729\Desktop\Ry Website\frontend\components\planning\TaxTab.tsx
   313:56  warning  'setSalary' is defined but never used     @typescript-eslint/no-unused-vars
 
 C:\Users\18729\Desktop\Ry Website\frontend\components\quant\EfficientFrontier.tsx
-   78:8   warning  React Hook useEffect has a missing dependency: 'runSimulation'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
-  162:83  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+   76:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\18729\Desktop\Ry Website\frontend\components\quant\EfficientFrontier.tsx:76:9
+  74 |
+  75 |     useEffect(() => {
+> 76 |         runSimulation();
+     |         ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  77 |     }, []);
+  78 |
+  79 |     // Find Max Sharpe Portfolio  react-hooks/set-state-in-effect
+   77:8   warning  React Hook useEffect has a missing dependency: 'runSimulation'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+  161:83  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-explicit-any
 
 C:\Users\18729\Desktop\Ry Website\frontend\components\quant\PairsTrading.tsx
    5:60   warning  'Legend' is defined but never used        @typescript-eslint/no-unused-vars
@@ -461,6 +609,32 @@ C:\Users\18729\Desktop\Ry Website\frontend\components\settings\SettingsErrorBoun
   71:102  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                        react/no-unescaped-entities
   94:37   error  Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
 
+C:\Users\18729\Desktop\Ry Website\frontend\components\settings\SystemMonitor.tsx
+  29:33  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\18729\Desktop\Ry Website\frontend\components\settings\SystemMonitor.tsx:29:33
+  27 |
+  28 |     const animationFrameRef = useRef<number | undefined>(undefined);
+> 29 |     const startTimeRef = useRef(Date.now());
+     |                                 ^^^^^^^^^^ Cannot call impure function
+  30 |     const lastUpdateRef = useRef(Date.now());
+  31 |     const frameCountRef = useRef(0);
+  32 |                                                         react-hooks/purity
+  30:34  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\18729\Desktop\Ry Website\frontend\components\settings\SystemMonitor.tsx:30:34
+  28 |     const animationFrameRef = useRef<number | undefined>(undefined);
+  29 |     const startTimeRef = useRef(Date.now());
+> 30 |     const lastUpdateRef = useRef(Date.now());
+     |                                  ^^^^^^^^^^ Cannot call impure function
+  31 |     const frameCountRef = useRef(0);
+  32 |
+  33 |     const formatUptime = useCallback((s: number) => {  react-hooks/purity
+
 C:\Users\18729\Desktop\Ry Website\frontend\components\strategy\StrategyCanvas.tsx
   3:17  warning  'useState' is defined but never used  @typescript-eslint/no-unused-vars
 
@@ -493,12 +667,53 @@ C:\Users\18729\Desktop\Ry Website\frontend\components\valuation\DCFWidget.tsx
   85:13  error    'proj' is never reassigned. Use 'const' instead                                                                  prefer-const
 
 C:\Users\18729\Desktop\Ry Website\frontend\contexts\CopilotContext.tsx
-  20:21  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
-  21:27  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
-  37:58  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
-  40:34  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
-  41:34  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
-  46:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+  20:21  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  21:27  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  33:24  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\18729\Desktop\Ry Website\frontend\contexts\CopilotContext.tsx:33:24
+  31 |             role: 'assistant',
+  32 |             content: "Hello! I'm The Wise Luc ≡ƒ¬Ö. I see what you verify. Ask me anything about the markets or this page!",
+> 33 |             timestamp: Date.now()
+     |                        ^^^^^^^^^^ Cannot call impure function
+  34 |         }
+  35 |     ]);
+  36 |     const [isLoading, setIsLoading] = useState(false);                                                                                                                                                                                                                                                                                                                         react-hooks/purity
+  37:58  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  42:9   error    Error: Cannot access variable before it is declared
+
+`setContext` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\18729\Desktop\Ry Website\frontend\contexts\CopilotContext.tsx:42:9
+  40 |     // Auto-update context based on route (basic implementation)
+  41 |     useEffect(() => {
+> 42 |         setContext({ ...currentContext, path: pathname });
+     |         ^^^^^^^^^^ `setContext` accessed before it is declared
+  43 |     }, [pathname]);
+  44 |
+  45 |     const toggleOpen = () => setIsOpen(prev => !prev);
+
+C:\Users\18729\Desktop\Ry Website\frontend\contexts\CopilotContext.tsx:56:5
+  54 |     };
+  55 |
+> 56 |     const setContext = (context: any) => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 57 |         setCurrentContext((prev: any) => ({ ...prev, ...context }));
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 58 |     };
+     | ^^^^^^^ `setContext` is declared here
+  59 |
+  60 |     return (
+  61 |         <CopilotContext.Provider value={{  react-hooks/immutability
+  43:8   warning  React Hook useEffect has a missing dependency: 'currentContext'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+  56:34  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  57:34  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+
+C:\Users\18729\Desktop\Ry Website\frontend\contexts\SettingsContext.tsx
+   43:49  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  107:17  error    Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -506,20 +721,16 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-C:\Users\18729\Desktop\Ry Website\frontend\contexts\CopilotContext.tsx:46:9
-  44 |     // Auto-update context based on route (basic implementation)
-  45 |     useEffect(() => {
-> 46 |         setContext({ ...currentContext, path: pathname });
-     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
-  47 |     }, [pathname]);
-  48 |
-  49 |     const toggleOpen = () => setIsOpen(prev => !prev);  react-hooks/set-state-in-effect
-  47:8   warning  React Hook useEffect has a missing dependency: 'currentContext'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react-hooks/exhaustive-deps
-
-C:\Users\18729\Desktop\Ry Website\frontend\contexts\SettingsContext.tsx
-   43:49  error    Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
-  149:68  error    Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
-  161:11  warning  'triggerUpdate' is assigned a value but never used  @typescript-eslint/no-unused-vars
+C:\Users\18729\Desktop\Ry Website\frontend\contexts\SettingsContext.tsx:107:17
+  105 |         if (saved) {
+  106 |             try {
+> 107 |                 setSettings({ ...defaultSettings, ...JSON.parse(saved) });
+      |                 ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  108 |             } catch (e) {
+  109 |                 console.error("Failed to parse settings", e);
+  110 |             }  react-hooks/set-state-in-effect
+  148:68  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  160:11  warning  'triggerUpdate' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
 
 C:\Users\18729\Desktop\Ry Website\frontend\hooks\useDebounce.ts
   31:58  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
@@ -556,6 +767,100 @@ C:\Users\18729\Desktop\Ry Website\frontend\lib\api.ts
   416:53   error    Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
   423:55   error    Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
 
-Γ£û 382 problems (220 errors, 162 warnings)
+C:\Users\18729\Desktop\Ry Website\frontend\public\sw.js
+  1:156  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:209  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:626  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+C:\Users\18729\Desktop\Ry Website\frontend\public\workbox-f1770938.js
+  1:49     warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:87     warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:211    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:257    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:298    warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:381    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:642    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:813    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:989    warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:1093   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:1738   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:2263   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:3058   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:3102   warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:3598   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:3727   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:7052   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:7234   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:7954   warning  'i' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:7962   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:8066   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:8368   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:9440   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:9550   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:9566   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:9627   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:9962   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:10038  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:10065  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:10081  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:10163  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:10963  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:11007  warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:11122  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:11194  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:11301  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:11382  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:11623  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:11941  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:12060  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:12464  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:12684  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:13012  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:13272  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:13319  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:13367  warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:14423  warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:14555  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:14599  warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:15097  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:15191  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:15404  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:15514  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:16025  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:16057  warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:16165  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:16591  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:16958  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:17076  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:17178  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:17458  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:17719  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:17903  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:19089  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20040  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20129  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20260  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20317  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20514  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20635  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20768  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:20988  warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:21080  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:21657  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:21768  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:21988  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:22227  warning  'e' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:22385  warning  's' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:22450  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:22748  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:22962  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  1:23349  warning  't' is defined but never used                                          @typescript-eslint/no-unused-vars
+  1:23479  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+C:\Users\18729\Desktop\Ry Website\frontend\scripts\verify-command-center.js
+  8:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  9:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+Γ£û 530 problems (280 errors, 250 warnings)
   3 errors and 0 warnings potentially fixable with the `--fix` option.
 

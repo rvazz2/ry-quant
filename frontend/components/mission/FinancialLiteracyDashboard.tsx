@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { TrendingUp, ArrowRight, ShieldAlert, Clock, Wallet, GraduationCap, Zap, LineChart } from 'lucide-react';
+import { TrendingUp, ArrowRight, ShieldAlert, Clock, Wallet, GraduationCap, Zap } from 'lucide-react';
 import FinancialQuiz from './FinancialQuiz';
 import PremiumCard from '../ui/premium/PremiumCard';
 
@@ -20,7 +20,7 @@ export default function FinancialLiteracyDashboard() {
                 </h1>
                 <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-light">
                     Colleges teach you how to work for money. We teach you how to make money work for you.
-                    It's time to level the playing field.
+                    It&apos;s time to level the playing field.
                 </p>
             </div>
 
@@ -65,14 +65,14 @@ export default function FinancialLiteracyDashboard() {
                 <div className="text-center mb-16">
                     <h2 className="text-4xl font-bold text-white mb-4">Words of Wisdom</h2>
                     <p className="text-slate-400 max-w-2xl mx-auto">
-                        The principles of wealth creation haven't changed in centuries.
+                        The principles of wealth creation haven&apos;t changed in centuries.
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[
                         {
-                            quote: "Compound interest is the eighth wonder of the world. He who understands it, earns it... he who doesn't... pays it.",
+                            quote: "Compound interest is the eighth wonder of the world. He who understands it, earns it... he who doesn&apos;t... pays it.",
                             author: "Albert Einstein",
                             role: "Theoretical Physicist"
                         },
@@ -103,7 +103,7 @@ export default function FinancialLiteracyDashboard() {
                         }
                     ].map((item, i) => (
                         <PremiumCard key={i} className="p-8 hover:bg-slate-900/60 transition-all hover:-translate-y-1 relative group">
-                            <div className="absolute top-6 left-6 text-cyan-500/20 text-6xl font-serif leading-none select-none group-hover:text-cyan-500/30 transition-colors">"</div>
+                            <div className="absolute top-6 left-6 text-cyan-500/20 text-6xl font-serif leading-none select-none group-hover:text-cyan-500/30 transition-colors">&quot;</div>
                             <div className="relative z-10 pt-6">
                                 <p className="text-slate-300 text-lg leading-relaxed mb-6 italic">
                                     {item.quote}
@@ -127,13 +127,13 @@ export default function FinancialLiteracyDashboard() {
                         <h2 className="text-4xl font-bold text-white">Compound Interest: <br />The 8th Wonder</h2>
                         <div className="space-y-6 text-lg text-slate-300 font-light">
                             <p>
-                                If you invest <span className="text-white font-bold">$100/month</span> starting at age 20 (assuming 8% return), you'll have <span className="text-emerald-400 font-bold">~$500,000</span> by retirement.
+                                If you invest <span className="text-white font-bold">$100/month</span> starting at age 20 (assuming 8% return), you&apos;ll have <span className="text-emerald-400 font-bold">~$500,000</span> by retirement.
                             </p>
                             <p>
-                                Wait until age 30, and you'd need to invest <span className="text-rose-400 font-bold">$220/month</span> to reach the same goal.
+                                Wait until age 30, and you&apos;d need to invest <span className="text-rose-400 font-bold">$220/month</span> to reach the same goal.
                             </p>
                             <p>
-                                The "poor student" mindset is expensive. Even small habits now create massive freedom later.
+                                The &quot;poor student&quot; mindset is expensive. Even small habits now create massive freedom later.
                             </p>
                         </div>
                         <Link href="/planning" className="inline-flex items-center gap-2 text-cyan-400 font-bold hover:gap-4 transition-all">

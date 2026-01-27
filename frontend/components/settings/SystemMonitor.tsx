@@ -26,8 +26,8 @@ export default function SystemMonitor() {
     });
 
     const animationFrameRef = useRef<number | undefined>(undefined);
-    const startTimeRef = useRef(Date.now());
-    const lastUpdateRef = useRef(Date.now());
+    const startTimeRef = useRef(0);
+    const lastUpdateRef = useRef(0);
     const frameCountRef = useRef(0);
 
     const formatUptime = useCallback((s: number) => {
@@ -44,6 +44,8 @@ export default function SystemMonitor() {
     }, []);
 
     useEffect(() => {
+        if (startTimeRef.current === 0) startTimeRef.current = Date.now();
+        if (lastUpdateRef.current === 0) lastUpdateRef.current = Date.now();
         let isActive = true;
 
         const updateStats = () => {

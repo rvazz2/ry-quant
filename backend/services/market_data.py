@@ -312,7 +312,7 @@ def _get_market_news_sync():
                         
                         # Handle link
                         link = item.get('link')
-                        if not link and 'clickThroughUrl' in content:
+                        if not link and 'clickThroughUrl' in content and content['clickThroughUrl']:
                              link = content['clickThroughUrl'].get('url')
                         if not link:
                              link = '#'

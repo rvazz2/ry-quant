@@ -15,7 +15,6 @@ import {
   TrendingUp,
   LayoutGrid,
   CheckCircle2,
-  ArrowLeft,
   ArrowRight,
   Code2,
   Lightbulb,
@@ -23,6 +22,7 @@ import {
   Keyboard
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import clsx from 'clsx';
 
 type Level = 'Beginner' | 'Intermediate' | 'Advanced';
@@ -264,7 +264,7 @@ export default function ExcelDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Link href="/" className="mr-6 hover:opacity-80 transition-opacity">
-              <img src="/quantdash_logo.png" alt="QuantDash" className="h-16 w-auto object-contain mix-blend-lighten" style={{ filter: 'contrast(1.5)' }} />
+              <Image src="/quantdash_logo.png" alt="QuantDash" width={200} height={64} className="h-16 w-auto object-contain mix-blend-lighten" style={{ filter: 'contrast(1.5)' }} />
             </Link>
             <div className="h-8 w-px bg-white/10 mx-2"></div>
             <div className="bg-emerald-500/20 p-2 rounded-lg border border-emerald-500/30">

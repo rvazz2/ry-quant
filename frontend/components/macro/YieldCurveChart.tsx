@@ -114,6 +114,7 @@ const YieldCurveChart = React.memo(({ data, isLoading }: YieldCurveProps & { isL
             riskColors: colors,
             chartData: cData
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
 
     if (isLoading) {

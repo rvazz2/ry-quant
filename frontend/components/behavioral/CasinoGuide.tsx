@@ -281,7 +281,7 @@ export function CasinoGuide() {
                 </div>
                 <div>
                     <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">The Floor Anchors</h4>
-                    <p className="text-slate-400 text-sm font-medium tracking-wide">High-energy machines engineered for maximum psychological "stickiness."</p>
+                    <p className="text-slate-400 text-sm font-medium tracking-wide">High-energy machines engineered for maximum psychological &quot;stickiness.&quot;</p>
                 </div>
             </div>
 
@@ -462,7 +462,7 @@ export function CasinoGuide() {
                                 <div className="text-5xl font-black text-white font-mono tracking-tighter">
                                     ${calculation.remaining.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                 </div>
-                                <p className="mt-4 text-xs text-slate-600 font-medium">The house doesn't need to steal; they just wait for the math to work.</p>
+                                <p className="mt-4 text-xs text-slate-600 font-medium">The house doesn&apos;t need to steal; they just wait for the math to work.</p>
                             </div>
                         </div>
                     </div>
@@ -508,7 +508,7 @@ export function CasinoGuide() {
 
                 <div className="space-y-8 mb-16">
                     <p className="text-lg md:text-2xl font-medium text-zinc-400 leading-relaxed italic">
-                        "Rigged loops" are the ultimate test of discipline. Being here is a failure of <span className="text-white font-black underline decoration-rose-600">Opportunity Cost</span>. Every second spent trying to "beat the house" is a second stolen from your actual compounding growth.
+                        &quot;Rigged loops&quot; are the ultimate test of discipline. Being here is a failure of <span className="text-white font-black underline decoration-rose-600">Opportunity Cost</span>. Every second spent trying to &quot;beat the house&quot; is a second stolen from your actual compounding growth.
                     </p>
 
                     <div className="grid md:grid-cols-3 gap-6 text-left">
@@ -518,7 +518,7 @@ export function CasinoGuide() {
                         </div>
                         <div className="p-6 bg-zinc-900/50 border border-white/5 rounded-3xl">
                             <h3 className="text-xs font-black text-rose-500 uppercase tracking-widest mb-3">Discipline Leakage</h3>
-                            <p className="text-xs text-zinc-500 leading-relaxed italic">Entering the loop suggests a crack in the <span className="text-white">"Stay Hard"</span> mentality.</p>
+                            <p className="text-xs text-zinc-500 leading-relaxed italic">Entering the loop suggests a crack in the <span className="text-white">&quot;Stay Hard&quot;</span> mentality.</p>
                         </div>
                         <div className="p-6 bg-zinc-900/50 border border-white/5 rounded-3xl">
                             <h3 className="text-xs font-black text-rose-500 uppercase tracking-widest mb-3">The Trap</h3>
@@ -591,7 +591,7 @@ export function CasinoGuide() {
                                 <Dices className="text-yellow-500" size={32} />
                             </div>
                             <h2 className="text-5xl font-black text-white tracking-tight mb-2 italic">Ryans Casino</h2>
-                            <p className="text-2xl font-bold text-yellow-500/80 tracking-wide">"Good Luck,"</p>
+                            <p className="text-2xl font-bold text-yellow-500/80 tracking-wide">&quot;Good Luck,&quot;</p>
                         </div>
 
                         <div className="flex flex-col lg:flex-row gap-8">
@@ -624,7 +624,7 @@ export function CasinoGuide() {
                                 <div className="mt-10 p-6 bg-slate-950 border border-slate-800 rounded-3xl hidden lg:block relative">
                                     <p className="text-xs text-slate-500 font-bold mb-4 uppercase tracking-tighter">Pro Tip</p>
                                     <p className="text-sm text-slate-400 leading-relaxed italic">
-                                        "Many hotels like The Venetian offer free lessons at 10:00 AM. They teach you the rules because they know once you know how to play, you’re more likely to give them your money."
+                                        &quot;Many hotels like The Venetian offer free lessons at 10:00 AM. They teach you the rules because they know once you know how to play, you&rsquo;re more likely to give them your money.&quot;
                                     </p>
                                 </div>
                             </div>
@@ -706,7 +706,7 @@ export function CasinoGuide() {
                                         <div className="max-w-xl text-center md:text-left">
                                             <h2 className="text-2xl md:text-4xl font-black text-rose-600 italic tracking-tighter uppercase mb-3">Stay Hard.</h2>
                                             <p className="text-xs md:text-sm text-slate-400 font-bold uppercase tracking-[0.2em] leading-relaxed">
-                                                "Rigged loops don't care about your logic. The house edge is a mathematical certainty. Explain the failure of being here."
+                                                &quot;Rigged loops don&apos;t care about your logic. The house edge is a mathematical certainty. Explain the failure of being here.&quot;
                                             </p>
                                         </div>
                                     </div>
@@ -757,7 +757,7 @@ export function CasinoGuide() {
                                             <div className="mt-20 p-8 bg-zinc-900/50 border border-white/5 rounded-[2.5rem] opacity-40">
                                                 <p className="text-[10px] font-black text-slate-500 uppercase mb-4 tracking-widest">Mathematical Alert</p>
                                                 <p className="text-xs text-slate-400 italic leading-relaxed">
-                                                    "The house edge is 1.25% blended. There is no precision in luck. Return to the data."
+                                                    &quot;The house edge is 1.25% blended. There is no precision in luck. Return to the data.&quot;
                                                 </p>
                                             </div>
                                         </div>
@@ -851,12 +851,12 @@ export function CasinoGuide() {
                                     </div>
                                     <h3 className="text-2xl font-black text-white mb-2 uppercase">Reality Check</h3>
                                     <p className="text-slate-400 mb-6 font-medium">
-                                        You've executed <span className="text-red-500 font-bold">{actionCount}</span> actions.
+                                        You&apos;ve executed <span className="text-red-500 font-bold">{actionCount}</span> actions.
                                         Mathematical erosion in progress: <span className="text-red-500 font-bold">-${totalLost.toLocaleString()}</span>.
                                     </p>
 
                                     <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-8 text-sm italic text-red-400">
-                                        "The only way to win is to not play the Law of Large Numbers."
+                                        &quot;The only way to win is to not play the Law of Large Numbers.&quot;
                                     </div>
 
                                     <div className="flex flex-col gap-3">
@@ -912,7 +912,7 @@ export function CasinoGuide() {
                                         <div className="text-center max-w-lg">
                                             <Skull size={100} className="mx-auto mb-8 text-slate-800 opacity-20" />
                                             <h4 className="text-4xl font-black text-slate-700 uppercase italic tracking-tighter mb-4">Under Construction</h4>
-                                            <p className="text-slate-500 text-lg font-medium italic">"The psychology of the PVP room is being mapped. Data indicates the house always finds the rake."</p>
+                                            <p className="text-slate-500 text-lg font-medium italic">&quot;The psychology of the PVP room is being mapped. Data indicates the house always finds the rake.&quot;</p>
                                         </div>
                                     )}
                                 </div>
@@ -926,8 +926,14 @@ export function CasinoGuide() {
 }
 
 // --- GAME ENGINES ---
+interface GameEngineProps {
+    onAction: (amount: number) => void;
+    balance: number;
+    setBalance: React.Dispatch<React.SetStateAction<number>>;
+    playSound: (type: 'spin' | 'win' | 'loss' | 'deal' | 'click' | 'bell' | 'chip') => void;
+}
 
-function SlotsEngine({ onAction, balance, setBalance, playSound }: any) {
+function SlotsEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     const symbols = ['🍒', '🍋', '🔔', '💎', '7️⃣', '🎰'];
     const [reels, setReels] = useState(['🎰', '🎰', '🎰']);
     const [isSpinning, setIsSpinning] = useState(false);
@@ -1020,14 +1026,14 @@ function SlotsEngine({ onAction, balance, setBalance, playSound }: any) {
 
             <div className="mt-12 text-center">
                 <p className="text-[10px] text-slate-500 leading-relaxed max-w-xs mx-auto italic">
-                    Notice the "Near Misses"? They are mathematically tuned to keep you clicking while your balance trends to zero.
+                    Notice the &quot;Near Misses&quot;? They are mathematically tuned to keep you clicking while your balance trends to zero.
                 </p>
             </div>
         </div>
     );
 }
 
-function BlackjackEngine({ onAction, balance, setBalance, playSound }: any) {
+function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     const [gameState, setGameState] = useState<'betting' | 'playing' | 'result'>('betting');
     const [playerHand, setPlayerHand] = useState<number[]>([]);
     const [dealerHand, setDealerHand] = useState<number[]>([]);
@@ -1110,7 +1116,7 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: any) {
         <div className="max-w-2xl w-full text-center">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                 <div className="p-6 bg-slate-900 outline outline-2 outline-emerald-500/20 rounded-3xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Dealer's Hand</div>
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Dealer&apos;s Hand</div>
                     <div className="flex justify-center gap-2 h-24 items-center">
                         {dealerHand.map((c, i) => (
                             <div key={i} className="w-12 h-16 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold text-xl shadow-lg border-2 border-emerald-500/30">{c}</div>
@@ -1154,14 +1160,14 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: any) {
 
             <div className="mt-12 p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/10 max-w-sm mx-auto">
                 <p className="text-xs text-slate-400">
-                    <strong>The 0.5% Trap:</strong> Even with "perfect strategy," you are statically guaranteed to hit $0 if you stay at this table long enough.
+                    <strong>The 0.5% Trap:</strong> Even with &quot;perfect strategy,&quot; you are statically guaranteed to hit $0 if you stay at this table long enough.
                 </p>
             </div>
         </div>
     );
 }
 
-function RouletteEngine({ onAction, balance, setBalance, playSound }: any) {
+function RouletteEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     const [isSpinning, setIsSpinning] = useState(false);
     const [lastNumber, setLastNumber] = useState<number | null>(null);
     const [bet, setBet] = useState<'red' | 'black' | null>(null);
@@ -1256,14 +1262,14 @@ function RouletteEngine({ onAction, balance, setBalance, playSound }: any) {
 
             <div className="mt-12 p-4 bg-slate-900 rounded-xl border border-slate-800">
                 <p className="text-xs text-slate-500">
-                    <strong>The Green Advantage:</strong> American Roulette has two green slots (0 and 00). This is why "Red or Black" is never a 50/50 bet—the house always has a 5.26% edge.
+                    <strong>The Green Advantage:</strong> American Roulette has two green slots (0 and 00). This is why &quot;Red or Black&quot; is never a 50/50 bet—the house always has a 5.26% edge.
                 </p>
             </div>
         </div>
     );
 }
 
-function CrapsEngine({ onAction, balance, setBalance, playSound }: any) {
+function CrapsEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     const [gameState, setGameState] = useState<'comeout' | 'point'>('comeout');
     const [point, setPoint] = useState<number | null>(null);
     const [lastRoll, setLastRoll] = useState<number[]>([1, 1]);
@@ -1377,14 +1383,14 @@ function CrapsEngine({ onAction, balance, setBalance, playSound }: any) {
 
             <div className="mt-12 p-5 bg-indigo-500/5 rounded-2xl border border-indigo-500/10">
                 <p className="text-xs text-slate-500 leading-relaxed italic">
-                    <strong>The Complexity Trap:</strong> Craps energy hides the drain. While the "Pass Line" is okay, the side bets are pure math suicide for your bankroll.
+                    <strong>The Complexity Trap:</strong> Craps energy hides the drain. While the &quot;Pass Line&quot; is okay, the side bets are pure math suicide for your bankroll.
                 </p>
             </div>
         </div>
     );
 }
 
-function BaccaratEngine({ onAction, balance, setBalance, playSound }: any) {
+function BaccaratEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     const [isDealing, setIsDealing] = useState(false);
     const [playerHand, setPlayerHand] = useState<number[]>([]);
     const [bankerHand, setBankerHand] = useState<number[]>([]);
@@ -1505,14 +1511,14 @@ function BaccaratEngine({ onAction, balance, setBalance, playSound }: any) {
 
             <div className="mt-12 p-5 bg-blue-500/5 rounded-2xl border border-blue-500/10 max-w-sm mx-auto">
                 <p className="text-xs text-slate-500 italic">
-                    <strong>The Commission Trap:</strong> Notice the "Banker Wins" payout? The house takes a 5% commission on every winning Banker bet. Over time, this "small" tax destroys your bankroll.
+                    <strong>The Commission Trap:</strong> Notice the &quot;Banker Wins&quot; payout? The house takes a 5% commission on every winning Banker bet. Over time, this &quot;small&quot; tax destroys your bankroll.
                 </p>
             </div>
         </div>
     );
 }
 
-function PaiGowEngine({ onAction, balance, setBalance, playSound }: any) {
+function PaiGowEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     const [isDealing, setIsDealing] = useState(false);
     const [result, setResult] = useState('');
 
@@ -1582,14 +1588,14 @@ function PaiGowEngine({ onAction, balance, setBalance, playSound }: any) {
 
             <div className="mt-12 p-6 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
                 <p className="text-xs text-slate-400 leading-relaxed">
-                    <strong>The Time Trap:</strong> Pai Gow is designed to have many "pushes" (ties). This keeps you at the table for hours, slowly bleeding you via the commission and exposing you to the house edge longer than any other game.
+                    <strong>The Time Trap:</strong> Pai Gow is designed to have many &quot;pushes&quot; (ties). This keeps you at the table for hours, slowly bleeding you via the commission and exposing you to the house edge longer than any other game.
                 </p>
             </div>
         </div>
     );
 }
 
-function VideoPokerEngine({ onAction, balance, setBalance, playSound }: any) {
+function VideoPokerEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     const [isDealing, setIsDealing] = useState(false);
     const [result, setResult] = useState('');
 
@@ -1676,7 +1682,7 @@ function VideoPokerEngine({ onAction, balance, setBalance, playSound }: any) {
     );
 }
 
-function KenoEngine({ onAction, balance, setBalance, playSound }: any) {
+function KenoEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     const [selected, setSelected] = useState<number[]>([]);
     const [isDrawing, setIsDrawing] = useState(false);
     const [drawn, setDrawn] = useState<number[]>([]);

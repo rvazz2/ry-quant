@@ -34,7 +34,7 @@ const VersionControl = () => {
                 "⚠️ Rollback to previous version? Use this only if the current version is broken."
             )
         ) {
-            window.location.href = targetUrl;
+            window.location.assign(targetUrl);
         }
     };
 

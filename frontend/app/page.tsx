@@ -16,8 +16,8 @@ interface Student {
   icon: React.ReactNode;
 }
 
-const BioModal = React.memo(({ student, isOpen, onClose }: { student: Student, isOpen: boolean, onClose: () => void }) => {
-  if (!isOpen) return null;
+const BioModal = React.memo(({ student, isOpen, onClose }: { student: Student | null, isOpen: boolean, onClose: () => void }) => {
+  if (!isOpen || !student) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300" onClick={onClose}>
@@ -63,7 +63,7 @@ BioModal.displayName = 'BioModal';
 
 export default function LandingPage() {
   const router = useRouter();
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   const students = useMemo(() => [
     {
@@ -195,7 +195,7 @@ export default function LandingPage() {
                 You spent 16 years in school learning about mitochondria and calculus. But the day you graduated, <strong className="text-white font-semibold decoration-rose-500 decoration-2 underline underline-offset-4">nobody told you how to manage debt, file taxes, or grow your money.</strong>
               </p>
               <p className="border-l-4 border-rose-500 pl-6 italic text-slate-400">
-                "You were thrown into the deep end of capitalism without a life jacket."
+                &quot;You were thrown into the deep end of capitalism without a life jacket.&quot;
               </p>
             </div>
           </div>
@@ -208,21 +208,21 @@ export default function LandingPage() {
                 <span className="text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] grayscale group-hover:grayscale-0 transition-all duration-500">📉</span>
                 <div>
                   <h3 className="font-bold text-white text-2xl mb-2">Inflation is Eating You</h3>
-                  <p className="text-slate-400 leading-relaxed">Your savings lose value every single day you don't invest. Cash is trash.</p>
+                  <p className="text-slate-400 leading-relaxed">Your savings lose value every single day you don&apos;t invest. Cash is trash.</p>
                 </div>
               </div>
               <div className="flex gap-7 items-start">
                 <span className="text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] grayscale group-hover:grayscale-0 transition-all duration-500 delay-100">💸</span>
                 <div>
                   <h3 className="font-bold text-white text-2xl mb-2">Debt is Compounding</h3>
-                  <p className="text-slate-400 leading-relaxed">Student loans are designed to keep you working until you're 70. Break the cycle.</p>
+                  <p className="text-slate-400 leading-relaxed">Student loans are designed to keep you working until you&apos;re 70. Break the cycle.</p>
                 </div>
               </div>
               <div className="flex gap-7 items-start">
                 <span className="text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] grayscale group-hover:grayscale-0 transition-all duration-500 delay-200">🚫</span>
                 <div>
-                  <h3 className="font-bold text-white text-2xl mb-2">The "Standard Path" is Broken</h3>
-                  <p className="text-slate-400 leading-relaxed">Work until 65 then retire? That math doesn't work anymore.</p>
+                  <h3 className="font-bold text-white text-2xl mb-2">The &quot;Standard Path&quot; is Broken</h3>
+                  <p className="text-slate-400 leading-relaxed">Work until 65 then retire? That math doesn&apos;t work anymore.</p>
                 </div>
               </div>
             </div>
