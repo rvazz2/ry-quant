@@ -431,7 +431,7 @@ export default function CasinoGuide() {
                             </div>
                             <button
                                 onClick={() => setActiveGame(null)}
-                                className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 transition-all hover:text-white"
+                                className="p-2 hover:bg-red-500/10 rounded-xl text-red-500 transition-all hover:text-red-400"
                             >
                                 <X size={24} />
                             </button>
@@ -1194,9 +1194,9 @@ function KenoEngine({ onAction, balance, setBalance }: any) {
                         onClick={() => toggleNum(n)}
                         disabled={isDrawing}
                         className={`aspect-square text-[10px] font-bold rounded-sm transition-all ${drawn.includes(n) && selected.includes(n) ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/50' :
-                                drawn.includes(n) ? 'bg-indigo-600 text-white' :
-                                    selected.includes(n) ? 'bg-yellow-500 text-black' :
-                                        'bg-slate-800 text-slate-500 hover:bg-slate-700'
+                            drawn.includes(n) ? 'bg-indigo-600 text-white' :
+                                selected.includes(n) ? 'bg-yellow-500 text-black' :
+                                    'bg-slate-800 text-slate-500 hover:bg-slate-700'
                             }`}
                     >
                         {n}
