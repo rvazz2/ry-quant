@@ -18,8 +18,86 @@ import {
 
 type TabType = 'slots' | 'tables' | 'electronic' | 'other' | 'reality';
 
-export default function CasinoGuide() {
+// Custom hook for synthesized casino sound effects
+const useCasinoSFX = () => {
+    const playSound = (type: 'spin' | 'win' | 'loss' | 'deal' | 'click' | 'bell' | 'chip') => {
+        try {
+            const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+            const ctx = new AudioContextClass();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            const now = ctx.currentTime;
+
+            if (type === 'spin') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.exponentialRampToValueAtTime(110, now + 0.5);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.start();
+                osc.stop(now + 0.5);
+            } else if (type === 'win') {
+                osc.type = 'square';
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, i) => {
+                    osc.frequency.setValueAtTime(freq, now + i * 0.1);
+                });
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.5);
+                osc.start();
+                osc.stop(now + 0.5);
+            } else if (type === 'loss') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.linearRampToValueAtTime(55, now + 0.5);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.5);
+                osc.start();
+                osc.stop(now + 0.5);
+            } else if (type === 'deal') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(880, now);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start();
+                osc.stop(now + 0.1);
+            } else if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1000, now);
+                gain.gain.setValueAtTime(0.02, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start();
+                osc.stop(now + 0.05);
+            } else if (type === 'bell') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1500, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 1);
+                osc.start();
+                osc.stop(now + 1);
+            } else if (type === 'chip') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(2000, now);
+                gain.gain.setValueAtTime(0.03, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start();
+                osc.stop(now + 0.05);
+            }
+        } catch (e) {
+            console.warn("Audio Context failed", e);
+        }
+    };
+
+    return { playSound };
+};
+
+export function CasinoGuide() {
     const [activeTab, setActiveTab] = useState<TabType>('slots');
+    const { playSound } = useCasinoSFX();
 
     // Session State
     const [balance, setBalance] = useState(1000);
@@ -439,14 +517,14 @@ export default function CasinoGuide() {
 
                         {/* Game Engine Space */}
                         <div className="flex-1 p-6 flex items-center justify-center">
-                            {activeGame === 'slots' && <SlotsEngine onAction={handleAction} balance={balance} setBalance={setBalance} />}
-                            {activeGame === 'blackjack' && <BlackjackEngine onAction={handleAction} balance={balance} setBalance={setBalance} />}
-                            {activeGame === 'roulette' && <RouletteEngine onAction={handleAction} balance={balance} setBalance={setBalance} />}
-                            {activeGame === 'craps' && <CrapsEngine onAction={handleAction} balance={balance} setBalance={setBalance} />}
-                            {activeGame === 'baccarat' && <BaccaratEngine onAction={handleAction} balance={balance} setBalance={setBalance} />}
-                            {activeGame === 'paigow' && <PaiGowEngine onAction={handleAction} balance={balance} setBalance={setBalance} />}
-                            {activeGame === 'videopoker' && <VideoPokerEngine onAction={handleAction} balance={balance} setBalance={setBalance} />}
-                            {activeGame === 'keno' && <KenoEngine onAction={handleAction} balance={balance} setBalance={setBalance} />}
+                            {activeGame === 'slots' && <SlotsEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                            {activeGame === 'blackjack' && <BlackjackEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                            {activeGame === 'roulette' && <RouletteEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                            {activeGame === 'craps' && <CrapsEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                            {activeGame === 'baccarat' && <BaccaratEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                            {activeGame === 'paigow' && <PaiGowEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                            {activeGame === 'videopoker' && <VideoPokerEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                            {activeGame === 'keno' && <KenoEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                             {['poker', 'sports'].includes(activeGame as string) && (
                                 <div className="text-center">
                                     <div className="text-4xl font-black text-slate-700 mb-4 opacity-50 uppercase tracking-tighter italic select-none">Social Lobby</div>
@@ -463,160 +541,189 @@ export default function CasinoGuide() {
 
 // --- GAME ENGINES ---
 
-function SlotsEngine({ onAction, balance, setBalance }: any) {
-    const [reels, setReels] = useState(['🍒', '🍋', '🔔']);
-    const [isSpinning, setIsSpinning] = useState(false);
-    const [lastWin, setLastWin] = useState<number | null>(null);
-
+function SlotsEngine({ onAction, balance, setBalance, playSound }: any) {
     const symbols = ['🍒', '🍋', '🔔', '💎', '7️⃣', '🎰'];
+    const [reels, setReels] = useState(['🎰', '🎰', '🎰']);
+    const [isSpinning, setIsSpinning] = useState(false);
+    const [result, setResult] = useState('');
+
     const betSize = 10;
 
     const spin = async () => {
         if (balance < betSize || isSpinning) return;
 
         setIsSpinning(true);
-        setLastWin(null);
+        setResult('');
         setBalance((b: number) => b - betSize);
         onAction(-betSize);
+        playSound('spin');
+
+        // Animation
+        for (let i = 0; i < 15; i++) {
+            setReels([
+                symbols[Math.floor(Math.random() * symbols.length)],
+                symbols[Math.floor(Math.random() * symbols.length)],
+                symbols[Math.floor(Math.random() * symbols.length)]
+            ]);
+            if (i % 3 === 0) playSound('click');
+            await new Promise(r => setTimeout(r, 60 + (i * 10)));
+        }
 
         // Rigged RTP: 90%
         const winChance = 0.15;
         const isWin = Math.random() < winChance;
 
-        await new Promise(r => setTimeout(r, 800));
-
-        let newReels;
-        let winAmount = 0;
-
         if (isWin) {
             const sym = symbols[Math.floor(Math.random() * symbols.length)];
-            newReels = [sym, sym, sym];
-            winAmount = betSize * 5;
-            setBalance((b: number) => b + winAmount);
-            onAction(winAmount - betSize);
+            setReels([sym, sym, sym]);
+            const payout = betSize * 6;
+            setResult(`BIG WIN! +$${payout}`);
+            setBalance((b: number) => b + payout);
+            onAction(payout - betSize);
+            playSound('win');
+            playSound('bell');
         } else {
+            // Near miss simulation
             const sym1 = symbols[Math.floor(Math.random() * symbols.length)];
-            const sym2 = sym1;
-            const sym3 = symbols.find(s => s !== sym1) || '🍒';
-            newReels = [sym1, sym2, sym3];
+            const sym2 = symbols[Math.floor(Math.random() * symbols.length)];
+            setReels([sym1, sym1, sym2]);
+            setResult('NEAR MISS!');
+            playSound('loss');
         }
 
-        setReels(newReels);
-        setLastWin(winAmount > 0 ? winAmount : null);
         setIsSpinning(false);
     };
 
     return (
         <div className="max-w-md w-full text-center">
-            <div className="inline-block p-8 bg-slate-900 border-4 border-yellow-600 rounded-[3rem] shadow-2xl mb-8 relative">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-600 px-6 py-1 rounded-full text-[10px] font-black text-black uppercase tracking-[0.3em]">
-                    90% RTP RIGGED
-                </div>
-                <div className="flex gap-4 mb-8">
-                    {reels.map((symbol, i) => (
-                        <motion.div
-                            key={i}
-                            animate={isSpinning ? { y: [0, -20, 20, 0], scale: [1, 1.1, 0.9, 1] } : {}}
-                            transition={{ repeat: isSpinning ? Infinity : 0, duration: 0.1 }}
-                            className="w-24 h-32 bg-slate-950 border-2 border-slate-800 rounded-2xl flex items-center justify-center text-5xl shadow-inner"
-                        >
-                            {symbol}
-                        </motion.div>
-                    ))}
-                </div>
-                <button
-                    onClick={spin}
-                    disabled={isSpinning || balance < betSize}
-                    className={`w-full py-4 rounded-2xl font-black text-2xl uppercase tracking-widest transition-all ${isSpinning ? 'bg-slate-800 text-slate-600' : 'bg-yellow-500 hover:bg-yellow-400 text-black shadow-lg shadow-yellow-500/20 active:scale-95'
-                        }`}
-                >
-                    {isSpinning ? 'Spinning...' : 'SPIN $10'}
-                </button>
+            <div className="flex justify-center gap-4 mb-12 p-8 bg-slate-900 border-4 border-yellow-500/50 rounded-[3rem] shadow-[0_0_30px_rgba(234,179,8,0.3)] relative">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-500 text-black px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter shadow-lg">90% RTP RIGGED</div>
+                {reels.map((s, i) => (
+                    <motion.div
+                        key={i}
+                        animate={isSpinning ? { y: [0, 10, -10, 0], scale: [1, 1.1, 0.9, 1] } : {}}
+                        transition={{ repeat: isSpinning ? Infinity : 0, duration: 0.1 }}
+                        className="w-24 h-32 bg-slate-950 border-2 border-slate-800 rounded-2xl flex items-center justify-center text-5xl shadow-inner shadow-yellow-500/5"
+                    >
+                        {s}
+                    </motion.div>
+                ))}
             </div>
 
+            <button
+                onClick={spin}
+                disabled={isSpinning || balance < betSize}
+                className={`w-full py-5 rounded-3xl font-black text-3xl uppercase tracking-[0.2em] transition-all shadow-[0_10px_40px_-10px_rgba(234,179,8,0.5)] active:scale-95 ${isSpinning ? 'bg-slate-800 text-slate-600' : 'bg-yellow-500 hover:bg-yellow-400 text-black'
+                    }`}
+            >
+                {isSpinning ? 'Spinning...' : 'SPIN $10'}
+            </button>
+
             <AnimatePresence>
-                {lastWin && (
+                {result && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="text-3xl font-black text-yellow-500 mb-4"
+                        initial={{ opacity: 0, scale: 0.5, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.5 }}
+                        className={`mt-8 text-4xl font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] ${result.includes('WIN') ? 'text-yellow-400' : 'text-slate-500'}`}
                     >
-                        WIN! ${lastWin}
+                        {result}
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            <p className="text-sm text-slate-500 italic">
-                Notice the "Near Misses"? They are mathematically tuned to keep you clicking while your balance trends to zero.
-            </p>
+            <div className="mt-12 text-center">
+                <p className="text-[10px] text-slate-500 leading-relaxed max-w-xs mx-auto italic">
+                    Notice the "Near Misses"? They are mathematically tuned to keep you clicking while your balance trends to zero.
+                </p>
+            </div>
         </div>
     );
 }
 
-function BlackjackEngine({ onAction, balance, setBalance }: any) {
+function BlackjackEngine({ onAction, balance, setBalance, playSound }: any) {
     const [gameState, setGameState] = useState<'betting' | 'playing' | 'result'>('betting');
     const [playerHand, setPlayerHand] = useState<number[]>([]);
     const [dealerHand, setDealerHand] = useState<number[]>([]);
     const [result, setResult] = useState('');
+    const [isDealing, setIsDealing] = useState(false);
 
     const betSize = 50;
 
-    const startHand = () => {
-        if (balance < betSize) return;
+    const startDeal = async () => {
+        if (balance < betSize || isDealing) return;
+        setIsDealing(true);
         setBalance((b: number) => b - betSize);
         onAction(-betSize);
+        playSound('chip');
 
         const p1 = Math.floor(Math.random() * 10) + 2;
-        const p2 = Math.floor(Math.random() * 10) + 2;
         const d1 = Math.floor(Math.random() * 10) + 2;
+        const p2 = Math.floor(Math.random() * 10) + 2;
 
-        setPlayerHand([p1, p2]);
+        setPlayerHand([p1]);
+        playSound('deal');
+        await new Promise(r => setTimeout(r, 400));
         setDealerHand([d1]);
+        playSound('deal');
+        await new Promise(r => setTimeout(r, 400));
+        setPlayerHand([p1, p2]);
+        playSound('deal');
+
         setGameState('playing');
-        setResult('');
+        setIsDealing(false);
     };
 
     const hit = () => {
         const card = Math.floor(Math.random() * 10) + 2;
         const newHand = [...playerHand, card];
         setPlayerHand(newHand);
+        playSound('deal');
 
-        const sum = newHand.reduce((a, b) => a + b, 0);
-        if (sum > 21) {
-            setResult('BUST!');
+        if (newHand.reduce((a, b) => a + b, 0) > 21) {
+            setResult('BUST! (LOSE)');
             setGameState('result');
+            playSound('loss');
         }
     };
 
-    const stand = () => {
+    const stand = async () => {
+        setIsDealing(true);
         let dHand = [...dealerHand];
         let dSum = dHand.reduce((a, b) => a + b, 0);
+
         while (dSum < 17) {
-            dHand.push(Math.floor(Math.random() * 10) + 2);
+            const card = Math.floor(Math.random() * 10) + 2;
+            dHand.push(card);
             dSum = dHand.reduce((a, b) => a + b, 0);
+            setDealerHand([...dHand]);
+            playSound('deal');
+            await new Promise(r => setTimeout(r, 600));
         }
-        setDealerHand(dHand);
 
         const pSum = playerHand.reduce((a, b) => a + b, 0);
         if (dSum > 21 || pSum > dSum) {
-            setResult('YOU WIN!');
+            setResult('YOU WIN! +$100');
             setBalance((b: number) => b + betSize * 2);
             onAction(betSize);
+            playSound('win');
         } else if (pSum === dSum) {
-            setResult('PUSH');
+            setResult('PUSH (TIE)');
             setBalance((b: number) => b + betSize);
             onAction(0);
+            playSound('deal');
         } else {
             setResult('DEALER WINS');
+            playSound('loss');
         }
         setGameState('result');
+        setIsDealing(false);
     };
 
     return (
         <div className="max-w-2xl w-full text-center">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                <div className="p-6 bg-slate-900 outline outline-2 outline-emerald-500/20 rounded-3xl">
+                <div className="p-6 bg-slate-900 outline outline-2 outline-emerald-500/20 rounded-3xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                     <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Dealer's Hand</div>
                     <div className="flex justify-center gap-2 h-24 items-center">
                         {dealerHand.map((c, i) => (
@@ -625,7 +732,7 @@ function BlackjackEngine({ onAction, balance, setBalance }: any) {
                         {gameState === 'playing' && <div className="w-12 h-16 bg-slate-800 rounded-lg flex items-center justify-center text-slate-600 font-bold text-xl border-2 border-dashed border-slate-700">?</div>}
                     </div>
                 </div>
-                <div className="p-6 bg-slate-900 outline outline-4 outline-emerald-500/40 rounded-3xl">
+                <div className="p-6 bg-slate-900 outline outline-4 outline-emerald-500/40 rounded-3xl shadow-[0_0_30px_rgba(16,185,129,0.2)]">
                     <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-4">Your Hand ({playerHand.reduce((a, b) => a + b, 0)})</div>
                     <div className="flex justify-center gap-2 h-24 items-center">
                         {playerHand.map((c, i) => (
@@ -636,23 +743,27 @@ function BlackjackEngine({ onAction, balance, setBalance }: any) {
             </div>
 
             {gameState === 'betting' && (
-                <button onClick={startHand} className="px-12 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-2xl uppercase tracking-[0.2em] transition-all">
-                    DEAL $50
+                <button onClick={startDeal} className="px-12 py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-3xl uppercase tracking-[0.2em] transition-all shadow-[0_10px_30px_-5px_rgba(16,185,129,0.4)] active:scale-95">
+                    {isDealing ? 'Dealing...' : 'DEAL $50'}
                 </button>
             )}
 
             {gameState === 'playing' && (
-                <div className="flex justify-center gap-4">
-                    <button onClick={hit} className="px-8 py-4 bg-emerald-500/10 border-2 border-emerald-500 text-emerald-500 font-black rounded-xl uppercase tracking-widest hover:bg-emerald-500/20 transition-all">Hit</button>
-                    <button onClick={stand} className="px-8 py-4 bg-slate-800 text-white font-black rounded-xl uppercase tracking-widest hover:bg-slate-700 transition-all">Stand</button>
+                <div className="flex justify-center gap-6">
+                    <button onClick={hit} className="px-10 py-4 bg-emerald-500/10 border-2 border-emerald-500 text-emerald-500 font-black rounded-2xl uppercase tracking-widest hover:bg-emerald-500/20 transition-all shadow-lg active:scale-95">Hit</button>
+                    <button onClick={stand} className="px-10 py-4 bg-slate-800 text-white font-black rounded-2xl uppercase tracking-widest hover:bg-slate-700 transition-all shadow-lg active:scale-95">Stand</button>
                 </div>
             )}
 
             {gameState === 'result' && (
-                <div className="space-y-6">
-                    <div className={`text-4xl font-black italic tracking-tighter ${result.includes('WIN') ? 'text-emerald-400' : 'text-red-500'}`}>{result}</div>
-                    <button onClick={() => setGameState('betting')} className="px-12 py-4 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-2xl uppercase tracking-widest transition-all">Next Hand</button>
-                </div>
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="space-y-6"
+                >
+                    <div className={`text-5xl font-black italic tracking-tighter drop-shadow-xl ${result.includes('WIN') ? 'text-emerald-400' : 'text-red-500'}`}>{result}</div>
+                    <button onClick={() => setGameState('betting')} className="px-12 py-4 bg-slate-100 text-slate-950 hover:bg-white font-black rounded-2xl uppercase tracking-widest transition-all shadow-xl">Next Hand</button>
+                </motion.div>
             )}
 
             <div className="mt-12 p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/10 max-w-sm mx-auto">
@@ -664,7 +775,7 @@ function BlackjackEngine({ onAction, balance, setBalance }: any) {
     );
 }
 
-function RouletteEngine({ onAction, balance, setBalance }: any) {
+function RouletteEngine({ onAction, balance, setBalance, playSound }: any) {
     const [isSpinning, setIsSpinning] = useState(false);
     const [lastNumber, setLastNumber] = useState<number | null>(null);
     const [bet, setBet] = useState<'red' | 'black' | null>(null);
@@ -679,10 +790,11 @@ function RouletteEngine({ onAction, balance, setBalance }: any) {
         setResult('');
         setBalance((b: number) => b - betSize);
         onAction(-betSize);
+        playSound('spin');
 
         await new Promise(r => setTimeout(r, 1500));
 
-        const num = Math.floor(Math.random() * 38); // 0-36 + 37 (00)
+        const num = Math.floor(Math.random() * 38);
         setLastNumber(num);
 
         const isRed = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36].includes(num);
@@ -690,11 +802,14 @@ function RouletteEngine({ onAction, balance, setBalance }: any) {
         const isGreen = num === 0 || num === 37;
 
         if ((bet === 'red' && isRed) || (bet === 'black' && isBlack)) {
-            setResult('WIN!');
+            setResult('WIN! +$50');
             setBalance((b: number) => b + betSize * 2);
             onAction(betSize);
+            playSound('win');
+            playSound('bell');
         } else {
             setResult(isGreen ? 'HOUSE WINS (0/00)' : 'LOSE');
+            playSound('loss');
         }
 
         setIsSpinning(false);
@@ -702,23 +817,31 @@ function RouletteEngine({ onAction, balance, setBalance }: any) {
 
     return (
         <div className="max-w-md w-full text-center">
-            <div className={`w-48 h-48 rounded-full border-8 border-slate-800 mx-auto mb-12 flex items-center justify-center text-6xl font-black relative overflow-hidden ${isSpinning ? 'animate-spin-slow' : ''}`}>
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent" />
-                <span className={lastNumber === 0 || lastNumber === 37 ? 'text-emerald-500' : [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36].includes(lastNumber as number) ? 'text-red-500' : 'text-slate-500'}>
+            <div className={`w-56 h-56 rounded-full border-[12px] border-slate-900 mx-auto mb-16 flex items-center justify-center text-7xl font-black relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-slate-950 ${isSpinning ? 'animate-spin-slow' : ''}`}>
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent z-10" />
+                <div className={`absolute inset-0 ${isSpinning ? 'opacity-20 transition-opacity' : 'opacity-100'}`}>
+                    <div className="absolute inset-0 border-[20px] border-green-900/10 rounded-full" />
+                </div>
+                <motion.span
+                    key={lastNumber}
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className={`relative z-20 ${lastNumber === 0 || lastNumber === 37 ? 'text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]' : [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36].includes(lastNumber as number) ? 'text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]' : 'text-slate-200'}`}
+                >
                     {lastNumber === 37 ? '00' : lastNumber ?? '?'}
-                </span>
+                </motion.span>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-2 gap-6 mb-12">
                 <button
-                    onClick={() => setBet('red')}
-                    className={`py-6 rounded-2xl border-4 transition-all font-black text-xl uppercase tracking-widest ${bet === 'red' ? 'bg-red-600 border-white shadow-lg' : 'bg-red-900/40 border-red-900 text-red-500/50'}`}
+                    onClick={() => { setBet('red'); playSound('click'); }}
+                    className={`py-8 rounded-[2rem] border-4 transition-all font-black text-2xl uppercase tracking-[0.2em] relative overflow-hidden ${bet === 'red' ? 'bg-red-600 border-white shadow-[0_0_30px_rgba(239,68,68,0.5)] text-white' : 'bg-red-900/10 border-red-900/30 text-red-500/40 hover:bg-red-900/20'}`}
                 >
                     Red
                 </button>
                 <button
-                    onClick={() => setBet('black')}
-                    className={`py-6 rounded-2xl border-4 transition-all font-black text-xl uppercase tracking-widest ${bet === 'black' ? 'bg-slate-900 border-white shadow-lg' : 'bg-slate-950 border-slate-900 text-slate-700'}`}
+                    onClick={() => { setBet('black'); playSound('click'); }}
+                    className={`py-8 rounded-[2rem] border-4 transition-all font-black text-2xl uppercase tracking-[0.2em] relative overflow-hidden ${bet === 'black' ? 'bg-slate-900 border-white shadow-[0_0_30px_rgba(255,255,255,0.1)] text-white' : 'bg-slate-950 border-slate-900/50 text-slate-700 hover:bg-slate-900'}`}
                 >
                     Black
                 </button>
@@ -727,7 +850,7 @@ function RouletteEngine({ onAction, balance, setBalance }: any) {
             <button
                 onClick={spin}
                 disabled={!bet || isSpinning || balance < betSize}
-                className={`w-full py-4 rounded-2xl font-black text-2xl uppercase tracking-widest transition-all ${isSpinning || !bet ? 'bg-slate-800 text-slate-600' : 'bg-yellow-500 hover:bg-yellow-400 text-black'
+                className={`w-full py-5 rounded-3xl font-black text-3xl uppercase tracking-[0.3em] transition-all active:scale-95 shadow-2xl ${isSpinning || !bet ? 'bg-slate-800 text-slate-600' : 'bg-yellow-500 hover:bg-yellow-400 text-slate-950'
                     }`}
             >
                 {isSpinning ? 'Spinning...' : 'SPIN $25'}
@@ -736,9 +859,9 @@ function RouletteEngine({ onAction, balance, setBalance }: any) {
             <AnimatePresence>
                 {result && (
                     <motion.div
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className={`mt-6 text-2xl font-black ${result === 'WIN!' ? 'text-emerald-400' : 'text-red-500'}`}
+                        className={`mt-10 text-4xl font-black italic ${result.includes('WIN') ? 'text-emerald-400' : 'text-red-500'}`}
                     >
                         {result}
                     </motion.div>
@@ -754,7 +877,7 @@ function RouletteEngine({ onAction, balance, setBalance }: any) {
     );
 }
 
-function CrapsEngine({ onAction, balance, setBalance }: any) {
+function CrapsEngine({ onAction, balance, setBalance, playSound }: any) {
     const [gameState, setGameState] = useState<'comeout' | 'point'>('comeout');
     const [point, setPoint] = useState<number | null>(null);
     const [lastRoll, setLastRoll] = useState<number[]>([1, 1]);
@@ -770,6 +893,7 @@ function CrapsEngine({ onAction, balance, setBalance }: any) {
         setResult('');
         setBalance((b: number) => b - betSize);
         onAction(-betSize);
+        playSound('spin');
 
         await new Promise(r => setTimeout(r, 1000));
 
@@ -777,30 +901,40 @@ function CrapsEngine({ onAction, balance, setBalance }: any) {
         const d2 = Math.floor(Math.random() * 6) + 1;
         const sum = d1 + d2;
         setLastRoll([d1, d2]);
+        playSound('click');
 
         if (gameState === 'comeout') {
             if (sum === 7 || sum === 11) {
-                setResult('PASS! (WIN)');
+                setResult('PASS! (WIN) +$50');
                 setBalance((b: number) => b + betSize * 2);
                 onAction(betSize);
+                playSound('win');
+                playSound('bell');
             } else if (sum === 2 || sum === 3 || sum === 12) {
                 setResult('CRAPS! (LOSE)');
+                playSound('loss');
             } else {
                 setPoint(sum);
                 setGameState('point');
                 setResult(`POINT IS ${sum}`);
+                playSound('deal');
             }
         } else {
             if (sum === point) {
-                setResult('MADE POINT! (WIN)');
+                setResult('MADE POINT! (WIN) +$50');
                 setBalance((b: number) => b + betSize * 2);
                 onAction(betSize);
                 setGameState('comeout');
                 setPoint(null);
+                playSound('win');
+                playSound('bell');
             } else if (sum === 7) {
                 setResult('SEVEN OUT! (LOSE)');
                 setGameState('comeout');
                 setPoint(null);
+                playSound('loss');
+            } else {
+                playSound('click');
             }
         }
 
@@ -809,21 +943,27 @@ function CrapsEngine({ onAction, balance, setBalance }: any) {
 
     return (
         <div className="max-w-md w-full text-center">
-            <div className="flex justify-center gap-6 mb-12">
+            <div className="flex justify-center gap-8 mb-16">
                 {lastRoll.map((d, i) => (
                     <motion.div
                         key={i}
-                        animate={isRolling ? { rotate: [0, 90, 180, 270, 360], scale: [1, 1.2, 0.8, 1] } : {}}
-                        className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center text-4xl text-slate-900 font-bold shadow-2xl border-4 border-slate-200"
+                        animate={isRolling ? {
+                            rotate: [0, 90, 180, 270, 360],
+                            scale: [1, 1.3, 0.7, 1],
+                            x: [0, 20, -20, 0],
+                            y: [0, -30, 30, 0]
+                        } : {}}
+                        transition={{ duration: 0.5, ease: "easeInOut" }}
+                        className="w-24 h-24 bg-white rounded-[1.5rem] flex items-center justify-center text-5xl text-slate-900 font-bold shadow-[0_15px_40px_-10px_rgba(255,255,255,0.3)] border-4 border-slate-200"
                     >
                         {d}
                     </motion.div>
                 ))}
             </div>
 
-            <div className="bg-slate-900 border-2 border-indigo-500/30 rounded-3xl p-6 mb-8">
-                <div className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-2">Table Status</div>
-                <div className="text-2xl font-black text-white uppercase italic">
+            <div className="bg-slate-950 border-2 border-indigo-500/30 rounded-[2.5rem] p-8 mb-10 shadow-inner">
+                <div className="text-[12px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-3">Table Status</div>
+                <div className="text-3xl font-black text-white uppercase italic tracking-tighter">
                     {gameState === 'comeout' ? 'Come Out Roll' : `Point is: ${point}`}
                 </div>
             </div>
@@ -831,7 +971,7 @@ function CrapsEngine({ onAction, balance, setBalance }: any) {
             <button
                 onClick={rollDice}
                 disabled={isRolling || balance < betSize}
-                className={`w-full py-4 rounded-2xl font-black text-2xl uppercase tracking-widest transition-all ${isRolling ? 'bg-slate-800 text-slate-600' : 'bg-indigo-500 hover:bg-indigo-400 text-white shadow-lg shadow-indigo-500/20 active:scale-95'
+                className={`w-full py-6 rounded-3xl font-black text-3xl uppercase tracking-[0.2em] transition-all shadow-2xl active:scale-95 ${isRolling ? 'bg-slate-800 text-slate-600' : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/20'
                     }`}
             >
                 {isRolling ? 'Rolling...' : 'ROLL DICE $25'}
@@ -840,25 +980,25 @@ function CrapsEngine({ onAction, balance, setBalance }: any) {
             <AnimatePresence>
                 {result && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className={`mt-6 text-3xl font-black ${result.includes('WIN') || result.includes('MADE') || result.includes('PASS') ? 'text-emerald-400' : result.includes('POINT') ? 'text-indigo-400' : 'text-red-500'}`}
+                        initial={{ opacity: 0, scale: 0.5, rotateX: 90 }}
+                        animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                        className={`mt-10 text-4xl font-black italic tracking-tight ${result.includes('WIN') || result.includes('MADE') || result.includes('PASS') ? 'text-emerald-400' : result.includes('POINT') ? 'text-indigo-400' : 'text-red-500'}`}
                     >
                         {result}
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            <div className="mt-12 p-4 bg-indigo-500/5 rounded-xl border border-indigo-500/10">
-                <p className="text-xs text-slate-500">
-                    <strong>The Complexity Trap:</strong> Craps has dozens of bets. Some have an edge of 1.4%, others (like "Any 7") have edges as high as 16.67%. The noise and energy hides the drain.
+            <div className="mt-12 p-5 bg-indigo-500/5 rounded-2xl border border-indigo-500/10">
+                <p className="text-xs text-slate-500 leading-relaxed italic">
+                    <strong>The Complexity Trap:</strong> Craps energy hides the drain. While the "Pass Line" is okay, the side bets are pure math suicide for your bankroll.
                 </p>
             </div>
         </div>
     );
 }
 
-function BaccaratEngine({ onAction, balance, setBalance }: any) {
+function BaccaratEngine({ onAction, balance, setBalance, playSound }: any) {
     const [isDealing, setIsDealing] = useState(false);
     const [playerHand, setPlayerHand] = useState<number[]>([]);
     const [bankerHand, setBankerHand] = useState<number[]>([]);
@@ -874,6 +1014,7 @@ function BaccaratEngine({ onAction, balance, setBalance }: any) {
         setResult('');
         setBalance((b: number) => b - betSize);
         onAction(-betSize);
+        playSound('chip');
 
         await new Promise(r => setTimeout(r, 1200));
 
@@ -883,25 +1024,37 @@ function BaccaratEngine({ onAction, balance, setBalance }: any) {
         const bSum = (bHand[0] + bHand[1]) % 10;
 
         setPlayerHand(pHand);
+        playSound('deal');
+        await new Promise(r => setTimeout(r, 400));
         setBankerHand(bHand);
+        playSound('deal');
 
         if (pSum > bSum) {
             setResult('PLAYER WINS');
             if (bet === 'player') {
                 setBalance((b: number) => b + betSize * 2);
                 onAction(betSize);
+                playSound('win');
+            } else {
+                playSound('loss');
             }
         } else if (bSum > pSum) {
             setResult('BANKER WINS');
             if (bet === 'banker') {
                 const winAmount = betSize * 1.95;
+                setResult('BANKER WINS (5% COMM.)');
                 setBalance((b: number) => b + winAmount);
                 onAction(winAmount - betSize);
+                playSound('win');
+                playSound('chip');
+            } else {
+                playSound('loss');
             }
         } else {
             setResult('TIE');
             setBalance((b: number) => b + betSize);
             onAction(0);
+            playSound('deal');
         }
 
         setIsDealing(false);
@@ -909,35 +1062,35 @@ function BaccaratEngine({ onAction, balance, setBalance }: any) {
 
     return (
         <div className="max-w-2xl w-full text-center">
-            <div className="grid grid-cols-2 gap-12 mb-12">
-                <div className="space-y-4">
-                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Player ({(playerHand.reduce((a, b) => a + b, 0)) % 10})</div>
-                    <div className="flex justify-center gap-2 h-24 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div className="p-8 bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] shadow-inner">
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6">Player Hand</div>
+                    <div className="flex justify-center gap-4">
                         {playerHand.map((c, i) => (
-                            <div key={i} className="w-12 h-16 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold text-xl shadow-lg">{c}</div>
+                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} key={i} className="w-16 h-24 bg-white rounded-xl flex items-center justify-center text-slate-900 font-bold text-2xl shadow-xl">{c}</motion.div>
                         ))}
                     </div>
                 </div>
-                <div className="space-y-4">
-                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Banker ({(bankerHand.reduce((a, b) => a + b, 0)) % 10})</div>
-                    <div className="flex justify-center gap-2 h-24 items-center">
+                <div className="p-8 bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] shadow-inner">
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6">Banker Hand</div>
+                    <div className="flex justify-center gap-4">
                         {bankerHand.map((c, i) => (
-                            <div key={i} className="w-12 h-16 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold text-xl shadow-lg border-2 border-emerald-500/20">{c}</div>
+                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} key={i} className="w-16 h-24 bg-white rounded-xl flex items-center justify-center text-slate-900 font-bold text-2xl shadow-lg border-2 border-blue-500/20">{c}</motion.div>
                         ))}
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-8 max-w-sm mx-auto">
+            <div className="grid grid-cols-2 gap-4 mb-8">
                 <button
-                    onClick={() => setBet('player')}
-                    className={`py-4 rounded-2xl border-2 transition-all font-black uppercase tracking-widest ${bet === 'player' ? 'bg-blue-600 border-white text-white' : 'bg-blue-900/10 border-blue-900/30 text-blue-500/50'}`}
+                    onClick={() => { setBet('player'); playSound('click'); }}
+                    className={`py-5 rounded-2xl font-black text-xl uppercase transition-all border-4 ${bet === 'player' ? 'bg-slate-100 text-slate-950 border-white shadow-xl' : 'bg-slate-800 border-slate-700 text-slate-400'}`}
                 >
                     Bet Player
                 </button>
                 <button
-                    onClick={() => setBet('banker')}
-                    className={`py-4 rounded-2xl border-2 transition-all font-black uppercase tracking-widest ${bet === 'banker' ? 'bg-emerald-600 border-white text-white' : 'bg-emerald-900/10 border-emerald-900/30 text-emerald-500/50'}`}
+                    onClick={() => { setBet('banker'); playSound('click'); }}
+                    className={`py-5 rounded-2xl font-black text-xl uppercase transition-all border-4 ${bet === 'banker' ? 'bg-slate-100 text-slate-950 border-white shadow-xl' : 'bg-slate-800 border-slate-700 text-slate-400'}`}
                 >
                     Bet Banker
                 </button>
@@ -946,7 +1099,7 @@ function BaccaratEngine({ onAction, balance, setBalance }: any) {
             <button
                 onClick={deal}
                 disabled={!bet || isDealing || balance < betSize}
-                className={`px-12 py-4 rounded-2xl font-black text-2xl uppercase tracking-widest transition-all active:scale-95 ${isDealing || !bet ? 'bg-slate-800 text-slate-600' : 'bg-slate-100 hover:bg-white text-slate-950 shadow-xl'
+                className={`w-full py-6 rounded-3xl font-black text-3xl uppercase tracking-widest transition-all shadow-2xl active:scale-95 ${!bet || isDealing ? 'bg-slate-800 text-slate-600' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/20'
                     }`}
             >
                 {isDealing ? 'Dealing...' : 'DEAL $100'}
@@ -954,51 +1107,58 @@ function BaccaratEngine({ onAction, balance, setBalance }: any) {
 
             <AnimatePresence>
                 {result && (
-                    <div className={`mt-8 text-3xl font-black italic ${(result === 'PLAYER WINS' && bet === 'player') || (result === 'BANKER WINS' && bet === 'banker') ? 'text-emerald-400' : result === 'TIE' ? 'text-slate-400' : 'text-red-500'
-                        }`}>
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`mt-10 text-4xl font-black italic tracking-tighter drop-shadow-lg ${result.includes('WIN') || result === 'PLAYER WINS' || result === 'BANKER WINS' ? 'text-blue-400' : 'text-red-500'}`}
+                    >
                         {result}
-                        {result === 'BANKER WINS' && bet === 'banker' && <div className="text-xs text-white/50 not-italic mt-1">(-5% Commission Deducted)</div>}
-                    </div>
+                    </motion.div>
                 )}
             </AnimatePresence>
 
-            <div className="mt-12 p-4 bg-slate-900 rounded-xl border border-slate-800 max-w-md mx-auto">
+            <div className="mt-12 p-5 bg-blue-500/5 rounded-2xl border border-blue-500/10 max-w-sm mx-auto">
                 <p className="text-xs text-slate-500 italic">
-                    "High rollers love Baccarat because of the low house edge (1.06% on Banker), but that 5% commission is how the house stays rich. They shave your profits on every single win."
+                    <strong>The Commission Trap:</strong> Notice the "Banker Wins" payout? The house takes a 5% commission on every winning Banker bet. Over time, this "small" tax destroys your bankroll.
                 </p>
             </div>
         </div>
     );
 }
 
-function PaiGowEngine({ onAction, balance, setBalance }: any) {
+function PaiGowEngine({ onAction, balance, setBalance, playSound }: any) {
     const [isDealing, setIsDealing] = useState(false);
     const [result, setResult] = useState('');
 
     const betSize = 50;
 
-    const deal = async () => {
+    const play = async () => {
         if (balance < betSize || isDealing) return;
 
         setIsDealing(true);
         setResult('');
         setBalance((b: number) => b - betSize);
         onAction(-betSize);
+        playSound('chip');
 
         await new Promise(r => setTimeout(r, 1500));
 
-        // Pai Gow is known for PUSHES. We simulate 70% pushes.
-        const roll = Math.random();
-        if (roll < 0.7) {
+        const outcome = Math.random();
+
+        if (outcome < 0.6) {
             setResult('PUSH (TIE)');
             setBalance((b: number) => b + betSize);
             onAction(0);
-        } else if (roll < 0.85) {
-            setResult('YOU WIN!');
-            setBalance((b: number) => b + betSize * 1.95); // 5% commission even on wins
+            playSound('deal');
+        } else if (outcome < 0.8) {
+            setResult('WIN! (+$47.50 after commission)');
+            setBalance((b: number) => b + betSize * 1.95);
             onAction(betSize * 0.95);
+            playSound('win');
+            playSound('chip');
         } else {
             setResult('HOUSE WINS');
+            playSound('loss');
         }
 
         setIsDealing(false);
@@ -1006,44 +1166,44 @@ function PaiGowEngine({ onAction, balance, setBalance }: any) {
 
     return (
         <div className="max-w-md w-full text-center">
-            <div className="p-12 mb-8 bg-slate-900 border-4 border-slate-800 rounded-[3rem] relative overflow-hidden">
-                <div className="flex justify-center gap-4 mb-8">
-                    {[1, 2, 3, 4, 5, 6, 7].map(i => (
-                        <div key={i} className="w-10 h-14 bg-white/10 border border-white/20 rounded flex items-center justify-center text-white/20">?</div>
-                    ))}
-                </div>
-                <button
-                    onClick={deal}
-                    disabled={isDealing || balance < betSize}
-                    className={`w-full py-4 rounded-2xl font-black text-2xl uppercase tracking-widest transition-all active:scale-95 ${isDealing ? 'bg-slate-800 text-slate-600' : 'bg-slate-100 hover:bg-white text-slate-950'
-                        }`}
-                >
-                    {isDealing ? 'Dealing...' : 'DEAL $50'}
-                </button>
+            <div className="p-12 bg-slate-900 border-4 border-emerald-900/40 rounded-[3rem] mb-12 shadow-2xl relative overflow-hidden group">
+                <div className="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors" />
+                <Dices className="mx-auto text-emerald-500 mb-6 opacity-40 group-hover:scale-110 transition-transform" size={64} />
+                <h4 className="text-xl font-black text-emerald-400 uppercase tracking-[0.3em] mb-2">The Slow Grinder</h4>
+                <p className="text-slate-500 text-xs italic">60% Push Frequency</p>
             </div>
+
+            <button
+                onClick={play}
+                disabled={isDealing || balance < betSize}
+                className={`w-full py-6 rounded-3xl font-black text-3xl uppercase tracking-widest transition-all shadow-2xl active:scale-95 ${isDealing ? 'bg-slate-800 text-slate-600' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20'
+                    }`}
+            >
+                {isDealing ? 'Dealing...' : 'DEAL $50'}
+            </button>
 
             <AnimatePresence>
                 {result && (
                     <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className={`text-3xl font-black italic ${result === 'YOU WIN!' ? 'text-emerald-400' : result === 'PUSH (TIE)' ? 'text-slate-400' : 'text-red-500'}`}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className={`mt-10 text-3xl font-black uppercase tracking-tighter italic ${result.includes('WIN') ? 'text-emerald-400' : result.includes('PUSH') ? 'text-slate-400' : 'text-red-500'}`}
                     >
                         {result}
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            <div className="mt-12 p-4 bg-slate-900 rounded-xl border border-slate-800">
-                <p className="text-xs text-slate-500">
-                    <strong>The Time Trap:</strong> Pai Gow is slow and results in many ties. This keeps you in the seat longer, exposed to the house edge for more hours, and the house takes a 5% cut when you do win.
+            <div className="mt-12 p-6 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                <p className="text-xs text-slate-400 leading-relaxed">
+                    <strong>The Time Trap:</strong> Pai Gow is designed to have many "pushes" (ties). This keeps you at the table for hours, slowly bleeding you via the commission and exposing you to the house edge longer than any other game.
                 </p>
             </div>
         </div>
     );
 }
 
-function VideoPokerEngine({ onAction, balance, setBalance }: any) {
+function VideoPokerEngine({ onAction, balance, setBalance, playSound }: any) {
     const [isDealing, setIsDealing] = useState(false);
     const [result, setResult] = useState('');
 
@@ -1056,25 +1216,30 @@ function VideoPokerEngine({ onAction, balance, setBalance }: any) {
         setResult('');
         setBalance((b: number) => b - betSize);
         onAction(-betSize);
+        playSound('chip');
 
         await new Promise(r => setTimeout(r, 600));
 
-        // Video Poker: We simulate "Jacks or Better" where you almost win often
         const roll = Math.random();
         if (roll < 0.2) {
-            setResult('JACKS OR BETTER! (PUSH)');
+            setResult('JACKS OR BETTER (PUSH)');
             setBalance((b: number) => b + betSize);
             onAction(0);
+            playSound('deal');
         } else if (roll < 0.25) {
-            setResult('TWO PAIR! (WIN $10)');
+            setResult('TWO PAIR! WIN $10');
             setBalance((b: number) => b + 10);
             onAction(5);
+            playSound('win');
         } else if (roll < 0.26) {
-            setResult('THREE OF A KIND! (WIN $15)');
+            setResult('THREE OF A KIND! WIN $15');
             setBalance((b: number) => b + 15);
             onAction(10);
+            playSound('win');
+            playSound('bell');
         } else {
             setResult('LOSING HAND');
+            playSound('loss');
         }
 
         setIsDealing(false);
@@ -1082,16 +1247,22 @@ function VideoPokerEngine({ onAction, balance, setBalance }: any) {
 
     return (
         <div className="max-w-md w-full text-center">
-            <div className="bg-blue-900/20 border-4 border-blue-600 rounded-[2rem] p-8 mb-8">
-                <div className="grid grid-cols-5 gap-2 mb-8">
+            <div className="bg-blue-900/10 border-4 border-blue-500/50 rounded-[3rem] p-10 mb-10 shadow-[0_0_40px_rgba(59,130,246,0.2)]">
+                <div className="grid grid-cols-5 gap-3 mb-12">
                     {[1, 2, 3, 4, 5].map(i => (
-                        <div key={i} className="aspect-[2/3] bg-white rounded-lg flex items-center justify-center text-slate-950 font-bold shadow-inner text-2xl">?</div>
+                        <motion.div
+                            key={i}
+                            animate={isDealing ? { rotateY: 180 } : { rotateY: 0 }}
+                            className="aspect-[2/3] bg-white rounded-xl flex items-center justify-center text-slate-950 font-black shadow-xl text-3xl border-2 border-blue-100"
+                        >
+                            {isDealing ? '' : '?'}
+                        </motion.div>
                     ))}
                 </div>
                 <button
                     onClick={deal}
                     disabled={isDealing || balance < betSize}
-                    className={`w-full py-4 rounded-2xl font-black text-2xl uppercase tracking-widest transition-all active:scale-95 ${isDealing ? 'bg-slate-800 text-slate-600' : 'bg-blue-600 hover:bg-blue-500 text-white'
+                    className={`w-full py-5 rounded-2xl font-black text-3xl uppercase tracking-[0.2em] transition-all shadow-2xl active:scale-95 ${isDealing ? 'bg-slate-800 text-slate-600' : 'bg-blue-600 hover:bg-blue-500 text-white'
                         }`}
                 >
                     {isDealing ? 'Dealing...' : 'DEAL $5'}
@@ -1101,139 +1272,130 @@ function VideoPokerEngine({ onAction, balance, setBalance }: any) {
             <AnimatePresence>
                 {result && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className={`text-2xl font-black italic ${result.includes('WIN') || result.includes('PUSH') ? 'text-emerald-400' : 'text-red-500'}`}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`text-3xl font-black italic tracking-tighter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] ${result.includes('WIN') || result.includes('PUSH') ? 'text-blue-400' : 'text-red-500'}`}
                     >
                         {result}
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            <div className="mt-12 p-4 bg-blue-900/10 rounded-xl border border-blue-900/20">
-                <p className="text-xs text-slate-500 leading-relaxed">
-                    <strong>The Paytable Trap:</strong> A "9/6" machine pays 9 for a Full House, while an "8/5" machine pays 8. That tiny difference—often ignored by casual players—is what makes the game unbeatable for 99% of people.
+            <div className="mt-12 p-5 bg-blue-500/5 rounded-2xl border border-blue-500/10">
+                <p className="text-xs text-slate-400 leading-relaxed italic">
+                    <strong>The Paytable Trap:</strong> Subtle math changes everything. A "9/6" machine pays 9 for a Full House, while an "8/5" pays 8. Most players never notice, but the house edge doubles.
                 </p>
             </div>
         </div>
     );
 }
 
-function KenoEngine({ onAction, balance, setBalance }: any) {
-    const [isDrawing, setIsDrawing] = useState(false);
+function KenoEngine({ onAction, balance, setBalance, playSound }: any) {
     const [selected, setSelected] = useState<number[]>([]);
+    const [isDrawing, setIsDrawing] = useState(false);
     const [drawn, setDrawn] = useState<number[]>([]);
-    const [matches, setMatches] = useState<number>(0);
+    const [matches, setMatches] = useState(0);
     const [result, setResult] = useState('');
 
     const betSize = 10;
 
-    const toggleNum = (n: number) => {
+    const toggle = (num: number) => {
         if (isDrawing) return;
-        if (selected.includes(n)) {
-            setSelected(selected.filter(i => i !== n));
+        playSound('click');
+        if (selected.includes(num)) {
+            setSelected(selected.filter(n => n !== num));
         } else if (selected.length < 5) {
-            setSelected([...selected, n]);
+            setSelected([...selected, num]);
         }
     };
 
     const draw = async () => {
-        if (selected.length < 5 || balance < betSize || isDrawing) return;
+        if (selected.length === 0 || isDrawing || balance < betSize) return;
 
         setIsDrawing(true);
-        setResult('');
         setDrawn([]);
         setMatches(0);
+        setResult('');
         setBalance((b: number) => b - betSize);
         onAction(-betSize);
+        playSound('spin');
 
-        const allNums = Array.from({ length: 80 }, (_, i) => i + 1);
-        const tempDrawn: number[] = [];
-        let tempMatches = 0;
-
-        for (let i = 0; i < 20; i++) {
-            await new Promise(r => setTimeout(r, 50));
-            const idx = Math.floor(Math.random() * allNums.length);
-            const num = allNums.splice(idx, 1)[0];
-            tempDrawn.push(num);
-            if (selected.includes(num)) tempMatches++;
-            setDrawn([...tempDrawn]);
-            setMatches(tempMatches);
+        let drawResults: number[] = [];
+        for (let i = 0; i < 15; i++) {
+            let num;
+            do { num = Math.floor(Math.random() * 80) + 1; } while (drawResults.includes(num));
+            drawResults.push(num);
+            setDrawn([...drawResults]);
+            playSound('click');
+            await new Promise(r => setTimeout(r, 100));
         }
 
-        // Keno Paytable: 5 picks
-        // 0-2 matches: 0
-        // 3 matches: 2x
-        // 4 matches: 5x
-        // 5 matches: 50x
-        if (tempMatches === 3) {
-            setResult('3 MATCHES! (WIN $20)');
-            setBalance((b: number) => b + 20);
-            onAction(10);
-        } else if (tempMatches === 4) {
-            setResult('4 MATCHES! (WIN $50)');
-            setBalance((b: number) => b + 50);
-            onAction(40);
-        } else if (tempMatches === 5) {
-            setResult('JACKPOT! (WIN $500)');
-            setBalance((b: number) => b + 500);
-            onAction(490);
+        const matchCount = drawResults.filter(n => selected.includes(n)).length;
+        setMatches(matchCount);
+
+        if (matchCount >= 2) {
+            const win = matchCount === 2 ? 10 : matchCount === 3 ? 30 : matchCount === 4 ? 100 : 500;
+            setResult(`WIN! ${matchCount} MATCHES: +$${win}`);
+            setBalance((b: number) => b + win);
+            onAction(win - betSize);
+            playSound('win');
+            playSound('bell');
         } else {
-            setResult('NOT ENOUGH MATCHES');
+            setResult('NO LUCK');
+            playSound('loss');
         }
 
         setIsDrawing(false);
     };
 
     return (
-        <div className="max-w-2xl w-full text-center">
-            <div className="grid grid-cols-10 gap-1 mb-6 bg-slate-900 p-4 rounded-2xl border border-slate-800">
-                {Array.from({ length: 80 }, (_, i) => i + 1).map(n => (
+        <div className="max-w-lg w-full text-center">
+            <div className="grid grid-cols-10 gap-1 mb-10 p-4 bg-slate-900 rounded-[2rem] border-2 border-slate-800 shadow-inner">
+                {Array.from({ length: 80 }, (_, i) => i + 1).map(num => (
                     <button
-                        key={n}
-                        onClick={() => toggleNum(n)}
+                        key={num}
+                        onClick={() => toggle(num)}
                         disabled={isDrawing}
-                        className={`aspect-square text-[10px] font-bold rounded-sm transition-all ${drawn.includes(n) && selected.includes(n) ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/50' :
-                            drawn.includes(n) ? 'bg-indigo-600 text-white' :
-                                selected.includes(n) ? 'bg-yellow-500 text-black' :
-                                    'bg-slate-800 text-slate-500 hover:bg-slate-700'
-                            }`}
+                        className={`aspect-square text-[10px] font-bold rounded-md transition-all flex items-center justify-center ${selected.includes(num) ? 'bg-yellow-500 text-black shadow-[0_0_10px_rgba(234,179,8,0.5)] z-10' :
+                            drawn.includes(num) ? 'bg-red-500/50 text-white z-20 scale-110' :
+                                'bg-slate-950 text-slate-600 hover:bg-slate-800'
+                            } ${selected.includes(num) && drawn.includes(num) ? 'bg-green-500 text-white ring-2 ring-white scale-125' : ''}`}
                     >
-                        {n}
+                        {num}
                     </button>
                 ))}
             </div>
 
-            <div className="flex justify-between items-center mb-8">
-                <div className="text-left">
-                    <div className="text-[10px] font-black text-slate-500 uppercase">Selected: {selected.length}/5</div>
-                    <div className="text-[10px] font-black text-slate-500 uppercase">Matches: {matches}</div>
+            <div className="flex flex-col md:flex-row gap-4 items-center mb-8">
+                <div className="flex-1 text-left px-6 py-4 bg-slate-950 rounded-2xl border border-slate-800">
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Selections</div>
+                    <div className="text-xl font-mono text-yellow-500 font-bold tracking-tighter">{selected.length}/5 Picked</div>
                 </div>
                 <button
                     onClick={draw}
-                    disabled={selected.length < 5 || isDrawing || balance < betSize}
-                    className={`px-12 py-4 rounded-2xl font-black text-2xl uppercase tracking-widest transition-all ${selected.length < 5 || isDrawing ? 'bg-slate-800 text-slate-600' : 'bg-indigo-600 hover:bg-indigo-500 text-white'
+                    disabled={selected.length === 0 || isDrawing || balance < betSize}
+                    className={`px-12 py-5 rounded-2xl font-black text-2xl uppercase tracking-[0.2em] transition-all shadow-2xl active:scale-95 ${isDrawing || selected.length === 0 ? 'bg-slate-800 text-slate-600' : 'bg-yellow-500 hover:bg-yellow-400 text-black'
                         }`}
                 >
-                    {isDrawing ? 'Drawing...' : 'PLAY $10'}
+                    {isDrawing ? 'Drawing...' : 'DRAW $10'}
                 </button>
             </div>
 
             <AnimatePresence>
                 {result && (
                     <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className={`text-2xl font-black ${result.includes('WIN') || result.includes('JACKPOT') ? 'text-emerald-400' : 'text-red-500'}`}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className={`text-3xl font-black italic tracking-tighter ${result.includes('WIN') ? 'text-yellow-400' : 'text-slate-500'}`}
                     >
                         {result}
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            <div className="mt-8 p-4 bg-red-900/10 border border-red-900/20 rounded-xl">
-                <p className="text-xs text-slate-500">
-                    <strong>The Donation Trap:</strong> Keno is statistically a donation to the house. With a house edge of 25-30%, it is mathematically one of the worst bets you can make. You are effectively paying for the air conditioning.
+            <div className="mt-12 p-5 bg-yellow-500/5 rounded-2xl border border-yellow-500/10">
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                    <strong>The Donation Trap:</strong> Keno is statistically the worst game in any casino. With a house edge often exceeding 25%, it is effectively a voluntary "donation" to the house while you wait for other results.
                 </p>
             </div>
         </div>
