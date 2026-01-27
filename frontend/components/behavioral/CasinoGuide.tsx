@@ -1180,23 +1180,55 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngin
                 <div className="relative z-10">
                     <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-4">Your Hand ({getHandTotal(playerHand)})</div>
                     <div className="flex justify-center gap-3 h-36 items-center">
-                        {playerHand.map((c, i) => (
-                            <PlayingCard key={i} suit={c.suit} rank={c.rank} size="md" />
-                        ))}
+                        <AnimatePresence mode="popLayout">
+                            {playerHand.map((c, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 50, rotateY: 180 }}
+                                    animate={{ opacity: 1, y: 0, rotateY: 0 }}
+                                    transition={{ delay: i * 0.2, type: 'spring', stiffness: 180 }}
+                                    whileHover={{ y: -12, scale: 1.08 }}
+                                >
+                                    <PlayingCard suit={c.suit} rank={c.rank} size="md" />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
                     </div>
                 </div>
             </div>
 
             {gameState === 'betting' && (
-                <button onClick={startDeal} disabled={isDealing || balance < betSize} className="px-16 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-3xl uppercase tracking-[0.3em] transition-all shadow-[0_15px_40px_-10px_rgba(16,185,129,0.6)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+                <motion.button
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    onClick={startDeal}
+                    disabled={isDealing || balance < betSize}
+                    className="px-16 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-3xl uppercase tracking-[0.3em] transition-all shadow-[0_15px_40px_-10px_rgba(16,185,129,0.6)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
                     {isDealing ? 'Dealing...' : 'DEAL $50'}
-                </button>
+                </motion.button>
             )}
 
             {gameState === 'playing' && (
                 <div className="flex justify-center gap-8">
-                    <button onClick={hit} className="px-12 py-5 bg-emerald-500/10 hover:bg-emerald-500/20 border-4 border-emerald-500 text-emerald-500 font-black rounded-3xl uppercase tracking-widest transition-all shadow-[0_10px_30px_-5px_rgba(16,185,129,0.4)] active:scale-95">Hit</button>
-                    <button onClick={stand} className="px-12 py-5 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-3xl uppercase tracking-widest transition-all shadow-2xl active:scale-95">Stand</button>
+                    <motion.button
+                        initial={{ x: -30, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ type: 'spring', stiffness: 200 }}
+                        onClick={hit}
+                        className="px-12 py-5 bg-emerald-500/10 hover:bg-emerald-500/20 border-4 border-emerald-500 text-emerald-500 font-black rounded-3xl uppercase tracking-widest transition-all shadow-[0_10px_30px_-5px_rgba(16,185,129,0.4)] active:scale-95"
+                    >
+                        Hit
+                    </motion.button>
+                    <motion.button
+                        initial={{ x: 30, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ type: 'spring', stiffness: 200 }}
+                        onClick={stand}
+                        className="px-12 py-5 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-3xl uppercase tracking-widest transition-all shadow-2xl active:scale-95"
+                    >
+                        Stand
+                    </motion.button>
                 </div>
             )}
 
@@ -1204,10 +1236,26 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngin
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ type: 'spring', stiffness: 150 }}
                     className="space-y-8"
                 >
-                    <div className={`text-6xl font-black italic tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.3)] ${result.includes('WIN') ? 'text-emerald-400' : 'text-red-500'}`}>{result}</div>
-                    <button onClick={() => { setPlayerHand([]); setDealerHand([]); setResult(''); setGameState('betting'); }} className="px-16 py-5 bg-white hover:bg-slate-100 text-slate-950 font-black rounded-3xl uppercase tracking-widest transition-all shadow-2xl active:scale-95">Next Hand</button>
+                    <motion.div
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.2, type: 'spring', stiffness: 120 }}
+                        className={`text-6xl font-black italic tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.3)] ${result.includes('WIN') ? 'text-emerald-400' : 'text-red-500'}`}
+                    >
+                        {result}
+                    </motion.div>
+                    <motion.button
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                        onClick={() => { setPlayerHand([]); setDealerHand([]); setResult(''); setGameState('betting'); }}
+                        className="px-16 py-5 bg-white hover:bg-slate-100 text-slate-950 font-black rounded-3xl uppercase tracking-widest transition-all shadow-2xl active:scale-95"
+                    >
+                        Next Hand
+                    </motion.button>
                 </motion.div>
             )}
 
