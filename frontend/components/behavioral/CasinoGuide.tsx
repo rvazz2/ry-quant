@@ -22,6 +22,8 @@ import {
     Trophy,
     User
 } from 'lucide-react';
+import { PokerGame } from './PokerGame';
+import { SportsGame } from './SportsGame';
 import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
 import { PokerChip } from '../ui/PokerChip';
 
@@ -910,13 +912,8 @@ export function CasinoGuide() {
                                     {activeGame === 'paigow' && <PaiGowEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'videopoker' && <VideoPokerEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'keno' && <KenoEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
-                                    {['poker', 'sports'].includes(activeGame as string) && (
-                                        <div className="text-center max-w-lg">
-                                            <Skull size={100} className="mx-auto mb-8 text-slate-800 opacity-20" />
-                                            <h4 className="text-4xl font-black text-slate-700 uppercase italic tracking-tighter mb-4">Under Construction</h4>
-                                            <p className="text-slate-500 text-lg font-medium italic">&quot;The psychology of the PVP room is being mapped. Data indicates the house always finds the rake.&quot;</p>
-                                        </div>
-                                    )}
+                                    {activeGame === 'poker' && <PokerGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                                    {activeGame === 'sports' && <SportsGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                 </div>
                             </motion.div>
                         )}
