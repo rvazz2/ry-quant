@@ -48,9 +48,12 @@ function Beacon({ data }: { data: CountryData }) {
     }, [position]);
 
     const color = data.performance > 0.3 ? "#10b981" : data.performance < -0.3 ? "#ef4444" : "#fbbf24";
+    const textColor = data.performance > 0.3 ? "text-emerald-400" : data.performance < -0.3 ? "text-red-400" : "text-amber-400";
+    const sign = data.performance > 0 ? "+" : "";
 
     useFrame((state) => {
         if (meshRef.current) {
+            // Pulse effect
             const s = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.05;
             meshRef.current.scale.set(s, s, s);
         }
@@ -65,40 +68,62 @@ function Beacon({ data }: { data: CountryData }) {
                 position={[0, 0, 0.05]}
             >
                 {/* Glowing Pillar */}
-                <cylinderGeometry args={[0.006, 0.006, 0.15, 8]} />
+                <cylinderGeometry args={[0.008, 0.008, 0.2, 8]} />
                 <meshBasicMaterial color={color} toneMapped={false} transparent opacity={0.9} />
             </mesh>
 
             {/* Glowing Ring */}
             <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.01]}>
-                <ringGeometry args={[0.015, 0.025, 16]} />
+                <ringGeometry args={[0.02, 0.03, 16]} />
                 <meshBasicMaterial color={color} side={THREE.DoubleSide} transparent opacity={0.6} />
             </mesh>
 
-            {/* City Label (Persistent - Dark Mode Style) */}
-            <Html position={[0, 0.18, 0]} center transform sprite distanceFactor={10}>
-                <div className={`text-[6px] font-bold tracking-widest uppercase pointer-events-none select-none text-center whitespace-nowrap ${hovered ? 'text-white' : 'text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity'}`}
-                    style={{ textShadow: "0px 1px 2px rgba(0,0,0,1)" }}>
-                    {data.city}
+            {/* Performance Label (ALWAYS VISIBLE) */}
+            <Html
+                position={[0, 0.22, 0]}
+                center
+                transform
+                sprite
+                distanceFactor={8}
+                occlude
+                style={{
+                    transition: 'all 0.2s',
+                    opacity: 1,
+                    transform: 'scale3d(1, 1, 1)'
+                }}
+            >
+                <div className={`flex flex-col items-center pointer-events-none select-none ${hovered ? 'scale-125 z-50' : 'scale-100'}`}>
+                    {/* Country Code */}
+                    <div className="bg-slate-950/80 px-1.5 py-0.5 rounded border border-slate-700 backdrop-blur-sm mb-0.5">
+                        <span className="text-[5px] font-bold text-slate-200 tracking-wider font-mono">
+                            {data.code}
+                        </span>
+                    </div>
+                    {/* Performance % */}
+                    <div className="bg-slate-900/90 px-1.5 py-0.5 rounded border border-slate-800 backdrop-blur-md shadow-lg">
+                        <span className={`text-[6px] font-bold font-mono ${textColor}`}>
+                            {sign}{data.performance}%
+                        </span>
+                    </div>
                 </div>
             </Html>
 
-            {/* Hover Tooltip */}
+            {/* Detailed Hover Tooltip (Only on interaction) */}
             {hovered && (
-                <Html distanceFactor={1.5} position={[0, 0, 0.3]} style={{ pointerEvents: 'none' }}>
-                    <div className="bg-slate-900/95 text-white p-3 rounded-md border border-slate-700 text-xs w-48 backdrop-blur-md shadow-2xl z-50 select-none transform -translate-x-1/2 -translate-y-1/2">
+                <Html distanceFactor={1.5} position={[0, 0, 0.4]} style={{ pointerEvents: 'none', zIndex: 100 }}>
+                    <div className="bg-slate-900/95 text-white p-3 rounded-md border border-slate-600 text-xs w-48 backdrop-blur-md shadow-2xl z-50 select-none transform -translate-x-1/2 -translate-y-1/2">
                         <div className="font-bold mb-2 text-sm border-b border-slate-700 pb-1 flex justify-between items-center">
-                            <span className="text-cyan-400">{data.city}, {data.code}</span>
-                            <span className="text-[10px] text-slate-500">{data.country}</span>
+                            <span className="text-cyan-400">{data.city}</span>
+                            <span className="text-[10px] text-slate-400">{data.country}</span>
                         </div>
                         <div className="flex justify-between mb-1">
-                            <span className="text-slate-400">Market (1D):</span>
+                            <span className="text-slate-400">Index ({data.code}):</span>
                             <span className={data.performance >= 0 ? "text-emerald-400 font-bold" : "text-red-400 font-bold"}>
-                                {data.performance > 0 ? "+" : ""}{data.performance}%
+                                {sign}{data.performance}%
                             </span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-slate-400">Inflation estimate:</span>
+                            <span className="text-slate-400">CPI (Inflation):</span>
                             <span className={data.inflation < 3 ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
                                 {data.inflation}%
                             </span>
@@ -141,7 +166,7 @@ function DataArc({ startLat, startLon, endLat, endLon, color = "#0ea5e9" }: { st
 }
 
 function Earth() {
-    // Load Earth Texture - Using "Blue Marble" for clear day-lit visibility of countries
+    // Load Earth Texture - Blue Marble for visibility
     const [colorMap] = useTexture([
         'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg'
     ]);
@@ -161,21 +186,10 @@ function Earth() {
                 <sphereGeometry args={[1, 64, 64]} />
                 <meshPhongMaterial
                     map={colorMap}
-                    color="#ddd" // Brighter base
-                    emissive="#111" // Slight glow
-                    specular="#333"
-                    shininess={15}
-                />
-            </mesh>
-
-            {/* Cyan Cyber Grid Overlay - Reduced opacity for better map visibility */}
-            <mesh>
-                <sphereGeometry args={[1.002, 32, 32]} />
-                <meshBasicMaterial
-                    color="#0ea5e9" // Cyan-500
-                    wireframe={true}
-                    transparent={true}
-                    opacity={0.08}
+                    color="#e5e5e5" // Bright base color
+                    emissive="#1a1a1a" // Subtle self-illumination
+                    specular="#444"
+                    shininess={10}
                 />
             </mesh>
 
