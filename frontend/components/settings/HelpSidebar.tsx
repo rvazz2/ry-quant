@@ -133,17 +133,18 @@ export default function HelpSidebar({ activeTab, isOpen, onClose }: HelpSidebarP
             {/* Backdrop */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity"
                     onClick={onClose}
                 />
             )}
 
             {/* Sidebar */}
             <div className={`
-                fixed md:relative right-0 top-0 h-full md:h-auto
+                fixed right-0 top-0 h-full
                 w-80 md:w-96 bg-slate-950 border-l border-slate-800
                 transition-transform duration-300 ease-in-out z-50
-                ${isOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-full'}
+                shadow-2xl shadow-black
+                ${isOpen ? 'translate-x-0' : 'translate-x-full'}
             `}>
                 <div className="h-full overflow-y-auto p-6">
                     {/* Header */}
