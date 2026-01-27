@@ -445,14 +445,6 @@ export function CasinoGuide() {
                         <p className="text-sm text-slate-400 leading-relaxed italic">
                             "Many hotels like The Venetian offer free lessons at 10:00 AM. They teach you the rules because they know once you know how to play, you’re more likely to give them your money."
                         </p>
-
-                        {/* Hidden Reality Check Trigger */}
-                        <button
-                            onClick={() => setShowGoggins(true)}
-                            className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full border border-white/5 flex items-center justify-center text-[8px] font-black text-white/10 hover:text-white/40 hover:border-white/20 transition-all uppercase tracking-tighter"
-                        >
-                            RC
-                        </button>
                     </div>
                 </div>
 
@@ -575,19 +567,35 @@ export function CasinoGuide() {
                         <div className="max-w-4xl">
                             <GogginsMessage
                                 onComplete={() => { }}
-                                text="I'M DISAPPOINTED IN YOU. YOU'RE A QUANT. YOU UNDERSTAND PROBABILITY BETTER THAN 99.9% OF THE POPULATION. YOU KNOW THE HOUSE EDGE ISN'T A SUGGESTION—IT'S A MATHEMATICAL CERTAINTY. SO EXPLAIN THE LOGICAL COLLAPSE. WHY ARE YOU HERE INTERACTING WITH RIGGED LOOPS? YOU DON'T BUILD SYSTEMS ON LUCK. YOU BUILD THEM ON DATA. STAY HARD."
+                                text="I'M DISAPPOINTED IN YOU. YOU KNOW THE HOUSE EDGE ISN'T A SUGGESTION—IT'S A MATHEMATICAL CERTAINTY. SO EXPLAIN THE LOGICAL COLLAPSE. WHY ARE YOU HERE INTERACTING WITH RIGGED LOOPS? YOU DON'T BUILD SYSTEMS ON LUCK. YOU BUILD THEM ON DATA. STAY HARD."
                             />
                         </div>
 
-                        <motion.button
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 10 }}
-                            onClick={() => setShowGoggins(false)}
-                            className="mt-16 px-10 py-4 bg-white text-black font-black uppercase tracking-[0.3em] hover:bg-zinc-200 transition-colors rounded-xl"
-                        >
-                            Stay Hard
-                        </motion.button>
+                        <div className="flex flex-col md:flex-row gap-6 mt-16 scale-110">
+                            <motion.button
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 10, duration: 0.5 }}
+                                onClick={() => setShowGoggins(false)}
+                                className="px-10 py-5 bg-white text-black font-black uppercase tracking-[0.3em] hover:bg-zinc-200 transition-colors rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                            >
+                                Stay Hard
+                            </motion.button>
+
+                            <motion.button
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 11, duration: 0.5 }}
+                                onClick={() => {
+                                    setShowGoggins(false);
+                                    setActiveTab('slots');
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                                className="px-10 py-5 bg-transparent border-2 border-white/20 text-white font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-colors rounded-2xl"
+                            >
+                                Play Casino Games
+                            </motion.button>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -695,6 +703,20 @@ export function CasinoGuide() {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Hidden Reality Check Trigger at the absolute bottom */}
+            <div className="mt-32 pb-10 flex justify-center">
+                <button
+                    onClick={() => {
+                        playSound('chip');
+                        // Animation sequence: Briefly flash the casino UI red before Goggins hits
+                        setTimeout(() => setShowGoggins(true), 200);
+                    }}
+                    className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-[8px] font-black text-white/5 hover:text-white/40 hover:border-white/20 transition-all uppercase tracking-tighter opacity-10 hover:opacity-100"
+                >
+                    RC
+                </button>
+            </div>
         </div>
     );
 }
