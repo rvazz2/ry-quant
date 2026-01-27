@@ -671,7 +671,7 @@ export default function SettingsPage() {
                     <div>
                         <Link href="/" className="inline-flex items-center hover:opacity-100 hover:scale-105 transition-all mb-4">
                             <div className="relative h-14 w-56">
-                                <Image src="/quantdash_logo.png" alt="Back to Dashboard" fill className="object-contain mix-blend-screen" style={{ filter: 'hue-rotate(260deg) contrast(1.5)' }} />
+                                <Image src="/quantdash_logo.png" alt="Back to Dashboard" fill className="object-contain mix-blend-screen" style={{ filter: 'hue-rotate(260deg) brightness(1.2) contrast(3)' }} />
                             </div>
                         </Link>
                         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
