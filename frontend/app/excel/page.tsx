@@ -197,7 +197,7 @@ export default function ExcelDashboard() {
               {/* <h1 className="text-2xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent cursor-pointer tracking-tighter drop-shadow-[0_2px_10px_rgba(6,182,212,0.3)]">
                 QUANT<span className="font-light text-slate-400">DASH</span>
               </h1> */}
-              <img src="/quantdash_logo.png" alt="QuantDash" className="h-16 w-auto object-contain mix-blend-screen" style={{ filter: 'brightness(1.2) contrast(3)' }} />
+              <img src="/quantdash_logo.png" alt="QuantDash" className="h-16 w-auto object-contain mix-blend-lighten" style={{ filter: 'contrast(1.5)' }} />
             </Link>
             <div className="h-8 w-px bg-white/10 mx-2"></div>
             <div className="bg-emerald-500/20 p-2 rounded-lg border border-emerald-500/30">

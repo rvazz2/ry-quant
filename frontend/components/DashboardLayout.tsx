@@ -237,8 +237,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         <img
                             src="/quantdash_logo.png"
                             alt="QuantDash"
-                            className="h-16 w-auto object-contain mix-blend-screen"
-                            style={{ filter: 'brightness(1.2) contrast(3)' }}
+                            className="h-16 w-auto object-contain mix-blend-lighten"
+                            style={{ filter: 'contrast(1.5)' }}
                         />
                     </Link>
                 </div>
