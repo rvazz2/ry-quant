@@ -79,7 +79,7 @@ export default function PlanningPage() {
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
                         <GraduationCap className="text-cyan-400" size={32} />
-                        Financial Freedom Academy
+                        Wise Luc Financial Academy
                     </h1>
                     <p className="text-slate-400">The class you should have taken instead of Organic Chemistry.</p>
                 </div>
