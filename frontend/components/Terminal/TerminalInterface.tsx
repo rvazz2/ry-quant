@@ -267,7 +267,7 @@ export default function TerminalInterface() {
             <div className="flex justify-between items-center bg-slate-900 border-b border-slate-700 p-1 select-none text-xs shrink-0">
                 <div className="flex items-center gap-4">
                     <Link href="/" className="mr-2 hover:brightness-125 transition-all">
-                        <img src="/quantdash_logo.png" alt="QuantDash" className="h-16 w-auto object-contain mix-blend-screen" />
+                        <img src="/quantdash_logo.png" alt="QuantDash" className="h-16 w-auto object-contain mix-blend-screen" style={{ filter: 'hue-rotate(260deg) contrast(1.5)' }} />
                     </Link>
                     <span className="bg-amber-600 text-black font-bold px-2 rounded-sm">1-BLOOMBERG</span>
                     <span className="text-cyan-400">QUANTDASH TERMINAL</span>
