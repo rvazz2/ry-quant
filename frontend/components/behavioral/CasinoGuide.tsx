@@ -146,33 +146,39 @@ export function CasinoGuide() {
     ];
 
     const renderSlots = () => (
-        <div className="space-y-6">
-            <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-gold-500/10 rounded-lg">
-                    <Zap className="text-yellow-500" size={24} />
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 bg-yellow-500/10 rounded-2xl border border-yellow-500/20 shadow-[0_0_20px_rgba(234,179,8,0.1)]">
+                    <Zap className="text-yellow-500" size={28} />
                 </div>
                 <div>
-                    <h4 className="text-xl font-bold text-white">The Floor Anchors</h4>
-                    <p className="text-sm text-slate-400">High-energy machines designed for max engagement.</p>
+                    <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">The Floor Anchors</h4>
+                    <p className="text-slate-400 text-sm font-medium tracking-wide">High-energy machines engineered for maximum psychological "stickiness."</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4">
                 {[
-                    { title: "Classic Slots", desc: "The old-school 'three-reel' mechanical machines. Simple, direct, and fast-paced.", id: 'slots' },
-                    { title: "Video Slots", desc: "Immersive screens themed after movies and TV like Wheel of Fortune or Buffalo. Heavy on audio-visual 'wins' that hide net losses.", id: 'slots' },
-                    { title: "Progressives", desc: "Linked machines where a portion of every bet goes into a massive, life-changing jackpot. These offer the worst base odds.", id: 'slots' }
+                    { title: "Classic Slots", desc: "Mechanical 'three-reel' relics. Fast, unforgiving, and built for high-speed turnover.", id: 'slots', icon: "🎰" },
+                    { title: "Video Slots", desc: "Immersive screens using cinematic audio-visual 'rewards' to mask net session losses.", id: 'slots', icon: "🎬" },
+                    { title: "Progressives", desc: "Massive networked jackpots. A small tax on every bet funds the 'Big One', leaving base odds at their worst.", id: 'slots', icon: "💎" }
                 ].map((s, i) => (
                     <button
                         key={i}
-                        onClick={() => setActiveGame('slots')}
-                        className="p-4 text-left bg-slate-900/50 border border-slate-800 rounded-xl hover:border-yellow-500/30 transition-all group"
+                        onClick={() => { setActiveGame('slots'); playSound('click'); }}
+                        className="group relative p-6 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] hover:border-yellow-500/40 transition-all overflow-hidden"
                     >
-                        <div className="flex justify-between items-center">
-                            <div className="font-bold text-yellow-500 mb-1 group-hover:text-yellow-400 transition-colors">{s.title}</div>
-                            <Zap size={14} className="text-yellow-500/0 group-hover:text-yellow-500/50 transition-all" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="flex justify-between items-start relative z-10">
+                            <div className="flex-1">
+                                <span className="text-xs font-black text-yellow-500/60 uppercase tracking-[0.2em] mb-2 block">{s.icon} Engine Type</span>
+                                <h5 className="text-lg font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors">{s.title}</h5>
+                                <p className="text-sm text-slate-400 leading-relaxed font-medium">{s.desc}</p>
+                            </div>
+                            <div className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
+                                <Zap size={18} className="text-yellow-500" />
+                            </div>
                         </div>
-                        <p className="text-sm text-slate-400">{s.desc}</p>
                     </button>
                 ))}
             </div>
@@ -180,35 +186,39 @@ export function CasinoGuide() {
     );
 
     const renderTables = () => (
-        <div className="space-y-6">
-            <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-emerald-500/10 rounded-lg">
-                    <Dices className="text-emerald-500" size={24} />
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                    <Dices className="text-emerald-500" size={28} />
                 </div>
                 <div>
-                    <h4 className="text-xl font-bold text-white">Table Games</h4>
-                    <p className="text-sm text-slate-400">Skill meets luck in the heart of the casino floor.</p>
+                    <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">The Green Felt</h4>
+                    <p className="text-slate-400 text-sm font-medium tracking-wide">Where skill meets the inevitable math of the house edge.</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                    { name: "Blackjack", desc: "Play against dealer to 21. Best odds using 'basic strategy'.", id: 'blackjack' },
-                    { name: "Roulette", desc: "Iconic spinning wheel. Pure luck, zero skill involved.", id: 'roulette' },
-                    { name: "Craps", desc: "High-energy dice game. Built on momentum and complex odds.", id: 'craps' },
-                    { name: "Baccarat", desc: "Player vs Banker. Lowest house edges on the floor.", id: 'baccarat' },
-                    { name: "Pai Gow Poker", desc: "Two-handed poker. Slow pace, frequent 'pushes' (ties).", id: 'paigow' }
+                    { name: "Blackjack", desc: "Beat the dealer to 21. Lowest edge if you follow the book.", id: 'blackjack', stat: "0.5% Edge" },
+                    { name: "Roulette", desc: "The wheel of chance. Numbers, colors, and the 0/00 trap.", id: 'roulette', stat: "5.26% Edge" },
+                    { name: "Craps", desc: "Momentum and complex odds. Stick to the line bets.", id: 'craps', stat: "1.4% Edge" },
+                    { name: "Baccarat", desc: "The high-roller choice. Banker vs Player logic.", id: 'baccarat', stat: "1.06% Edge" },
+                    { name: "Pai Gow", desc: "Two-handed poker. The ultimate 'slow burn' game.", id: 'paigow', stat: "Low Vol" }
                 ].map((t, i) => (
                     <button
                         key={i}
-                        onClick={() => setActiveGame(t.id)}
-                        className="p-4 text-left bg-slate-900/50 border border-slate-800 rounded-xl hover:border-emerald-500/30 transition-all group"
+                        onClick={() => { setActiveGame(t.id); playSound('chip'); }}
+                        className="group relative p-6 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] hover:border-emerald-500/40 transition-all overflow-hidden"
                     >
-                        <div className="flex justify-between items-center">
-                            <div className="font-bold text-emerald-400 mb-1 group-hover:text-emerald-300 transition-colors">{t.name}</div>
-                            <TrendingDown size={14} className="text-emerald-500/0 group-hover:text-emerald-500/50 transition-all" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="relative z-10">
+                            <div className="flex justify-between items-center mb-4">
+                                <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-[0.2em]">{t.stat}</span>
+                                <TrendingDown size={14} className="text-emerald-500 opacity-0 group-hover:opacity-50 transition-all" />
+                            </div>
+                            <h5 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">{t.name}</h5>
+                            <p className="text-xs text-slate-500 leading-relaxed font-medium">{t.desc}</p>
                         </div>
-                        <p className="text-xs text-slate-400">{t.desc}</p>
                     </button>
                 ))}
             </div>
@@ -216,109 +226,126 @@ export function CasinoGuide() {
     );
 
     const renderReality = () => (
-        <div className="space-y-8 animate-in fade-in duration-500">
-            <div className="p-6 bg-red-950/20 border border-red-500/30 rounded-2xl">
-                <div className="flex items-center gap-3 mb-4">
-                    <Skull className="text-red-500" size={28} />
-                    <h4 className="text-2xl font-black text-white tracking-tight">WHY THE HOUSE ALWAYS WINS</h4>
+        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+            <div className="relative group overflow-hidden p-10 bg-gradient-to-br from-red-950/40 to-black rounded-[3rem] border border-red-500/20 shadow-2xl">
+                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-transform duration-700">
+                    <Skull size={120} className="text-red-500" />
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="text-red-400 border-b border-red-500/20">
-                                <th className="text-left py-3">Game</th>
-                                <th className="text-center py-3">House Edge</th>
-                                <th className="text-right py-3">Outcome Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-slate-300">
-                            {[
-                                { name: "Blackjack (Perfect)", edge: "0.5%", status: "Inevitable Loss" },
-                                { name: "Baccarat (Banker)", edge: "1.06%", status: "Slow Drain" },
-                                { name: "Roulette (American)", edge: "5.26%", status: "High Risk" },
-                                { name: "Slot Machines", edge: "10-15%", status: "Extreme Churn" },
-                                { name: "Keno", edge: "25-30%", status: "Pure Donation" }
-                            ].map((row, i) => (
-                                <tr key={i} className="border-b border-red-500/10 last:border-0 hover:bg-red-500/5 transition-colors">
-                                    <td className="py-3 font-bold text-white">{row.name}</td>
-                                    <td className="py-3 text-center text-red-400 font-mono">{row.edge}</td>
-                                    <td className="py-3 text-right font-bold text-red-500/80">{row.status}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <div className="relative z-10">
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="p-3 bg-red-500/20 rounded-2xl border border-red-500/30">
+                            <Skull className="text-red-500" size={32} />
+                        </div>
+                        <h4 className="text-3xl font-black text-white tracking-tighter italic uppercase">The Math of Decay</h4>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {[
+                            { name: "Blackjack", edge: "0.5%", status: "Slow Drain", color: "text-emerald-400" },
+                            { name: "Baccarat", edge: "1.06%", status: "Steady Erosion", color: "text-blue-400" },
+                            { name: "Roulette", edge: "5.26%", status: "High Risk", color: "text-orange-400" },
+                            { name: "Slot Machines", edge: "10-15%", status: "Extreme Churn", color: "text-red-400" },
+                            { name: "Keno / Bingo", edge: "25-30%", status: "Total Loss", color: "text-red-600" }
+                        ].map((row, i) => (
+                            <div key={i} className="p-6 bg-slate-950/60 backdrop-blur-xl border border-white/5 rounded-3xl group/row hover:border-red-500/30 transition-all">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="text-sm font-black text-slate-500 uppercase tracking-widest">{row.name}</div>
+                                    <div className={`text-xl font-mono font-black ${row.color}`}>{row.edge}</div>
+                                </div>
+                                <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${Math.min(100, (parseFloat(row.edge) / 30) * 100)}%` }}
+                                        className={`h-full bg-current ${row.color}`}
+                                    />
+                                </div>
+                                <div className="mt-3 text-[10px] font-bold text-slate-600 uppercase tracking-tighter">{row.status}</div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            <div className="p-8 bg-slate-950 border border-slate-800 rounded-2xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <Calculator size={80} />
-                </div>
+            <div className="p-10 bg-slate-950/40 backdrop-blur-md border border-slate-800 rounded-[3rem] relative overflow-hidden group">
+                <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-10">
+                        <div className="p-2 bg-cyan-500/10 rounded-xl">
+                            <Calculator className="text-cyan-400" size={24} />
+                        </div>
+                        <h4 className="text-xl font-black text-white uppercase tracking-widest">Expected Loss Calculator</h4>
+                    </div>
 
-                <h4 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                    <Calculator className="text-cyan-400" size={20} />
-                    The Expected Loss Calculator
-                </h4>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-12">
+                        <div className="space-y-6">
+                            <div className="space-y-3">
+                                <div className="flex justify-between">
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Initial Bankroll</label>
+                                    <span className="text-sm font-mono text-cyan-400">${bankroll}</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="100"
+                                    max="10000"
+                                    step="100"
+                                    value={bankroll}
+                                    onChange={(e) => setBankroll(Number(e.target.value))}
+                                    className="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                                />
+                            </div>
+                            <div className="space-y-3">
+                                <div className="flex justify-between">
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Hands / Hour</label>
+                                    <span className="text-sm font-mono text-cyan-400">60 Hands</span>
+                                </div>
+                                <div className="h-2 w-full bg-slate-900 rounded-full overflow-hidden">
+                                    <div className="h-full bg-cyan-500/20 w-[60%]" />
+                                </div>
+                            </div>
+                            <div className="space-y-3">
+                                <div className="flex justify-between">
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Bet Size</label>
+                                    <span className="text-sm font-mono text-cyan-400">${betSize}</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="5"
+                                    max="500"
+                                    step="5"
+                                    value={betSize}
+                                    onChange={(e) => setBetSize(Number(e.target.value))}
+                                    className="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                                />
+                            </div>
+                        </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Starting Bankroll</label>
-                        <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-                            <input
-                                type="number"
-                                value={bankroll}
-                                onChange={(e) => setBankroll(Number(e.target.value))}
-                                className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 pl-8 pr-4 text-white font-mono focus:border-cyan-500 transition-all outline-none"
-                            />
+                        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="p-8 bg-red-500/5 border border-red-500/20 rounded-[2rem] flex flex-col justify-center">
+                                <div className="text-[10px] font-black text-red-500 uppercase tracking-[0.3em] mb-4">Mathematical Decay</div>
+                                <div className="text-5xl font-black text-red-500 font-mono tracking-tighter">
+                                    -${calculation.expectedLoss.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                </div>
+                                <p className="mt-4 text-xs text-slate-500 font-medium leading-relaxed">
+                                    Your bankroll will likely bleed <span className="text-red-400 font-bold">{calculation.percentLost.toFixed(1)}%</span> in just {hours} hour{hours > 1 ? 's' : ''} of play.
+                                </p>
+                            </div>
+                            <div className="p-8 bg-slate-900/50 border border-slate-800 rounded-[2rem] flex flex-col justify-center group-hover:border-slate-700 transition-colors">
+                                <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-4">Likely Remaining</div>
+                                <div className="text-5xl font-black text-white font-mono tracking-tighter">
+                                    ${calculation.remaining.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                </div>
+                                <p className="mt-4 text-xs text-slate-600 font-medium">The house doesn't need to steal; they just wait for the math to work.</p>
+                            </div>
                         </div>
                     </div>
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Bet Size (Per Hand)</label>
-                        <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-                            <input
-                                type="number"
-                                value={betSize}
-                                onChange={(e) => setBetSize(Number(e.target.value))}
-                                className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 pl-8 pr-4 text-white font-mono focus:border-cyan-500 transition-all outline-none"
-                            />
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Hours Played</label>
-                        <div className="relative">
-                            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
-                            <input
-                                type="number"
-                                value={hours}
-                                onChange={(e) => setHours(Number(e.target.value))}
-                                className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white font-mono focus:border-cyan-500 transition-all outline-none"
-                            />
-                        </div>
-                    </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-5 bg-red-500/10 border border-red-500/20 rounded-xl">
-                        <div className="text-xs font-medium text-red-400 mb-1">Expected Mathematical Loss</div>
-                        <div className="text-4xl font-black text-red-500 font-mono">-${calculation.expectedLoss.toLocaleString()}</div>
-                        <div className="text-xs text-slate-500 mt-2">Based on 60 hands/hr and 1.5% edge</div>
-                    </div>
-                    <div className="p-5 bg-slate-900 border border-slate-800 rounded-xl">
-                        <div className="text-xs font-medium text-slate-400 mb-1">Likely Remaining Funds</div>
-                        <div className="text-4xl font-black text-white font-mono">${calculation.remaining.toLocaleString()}</div>
-                        <div className="text-xs text-slate-500 mt-2">The Law of Large Numbers at work</div>
-                    </div>
-                </div>
-
-                <div className="mt-8 p-4 bg-red-600/10 border-l-4 border-red-600 rounded-r-lg">
-                    <div className="flex gap-3">
-                        <TrendingDown className="text-red-500 flex-shrink-0" size={20} />
-                        <p className="text-sm text-slate-300 leading-relaxed">
-                            <strong className="text-red-400">The Mathematical Truth:</strong> You don't just lose your initial ${bankroll}. You bet, win small, then bet that money again. This "churn" means the house edge eats your wealth every single time a chip touches the table. Even with perfect play, you are playing against infinite bankroll (the house).
-                        </p>
+                    <div className="p-6 bg-cyan-500/5 border-l-4 border-cyan-500 rounded-r-2xl">
+                        <div className="flex gap-4">
+                            <TrendingDown className="text-cyan-500 flex-shrink-0" size={24} />
+                            <p className="text-sm text-slate-400 leading-relaxed font-medium">
+                                <strong className="text-cyan-400">The Velocity of Ruin:</strong> High-speed play (like slots or fast tables) increases your "Theoretical Loss" exponentially. The faster you play, the faster the house edge consumes your bankroll.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -350,20 +377,28 @@ export function CasinoGuide() {
 
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* Sidebar Tabs */}
-                <div className="w-full lg:w-72 flex-shrink-0 space-y-2">
+                <div className="w-full lg:w-72 flex-shrink-0 space-y-3">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
-                            onClick={() => setActiveTab(tab.id as TabType)}
-                            className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-black transition-all border-2 uppercase tracking-widest ${activeTab === tab.id
+                            onClick={() => { setActiveTab(tab.id as TabType); playSound('click'); }}
+                            className={`w-full flex items-center gap-4 px-6 py-5 rounded-[1.5rem] text-[10px] font-black transition-all border-2 uppercase tracking-[0.2em] relative overflow-hidden group ${activeTab === tab.id
                                 ? tab.id === 'reality'
-                                    ? 'bg-red-500/10 border-red-500 text-red-500 shadow-lg shadow-red-500/10'
-                                    : 'bg-yellow-500/10 border-yellow-600 text-yellow-500 shadow-lg shadow-yellow-500/10'
-                                : 'bg-slate-950 border-transparent text-slate-500 hover:text-slate-300 hover:bg-slate-900 border-slate-800'
+                                    ? 'bg-red-500/10 border-red-500/50 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.15)]'
+                                    : 'bg-yellow-500/10 border-yellow-500/50 text-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.15)]'
+                                : 'bg-slate-950/40 border-white/5 text-slate-500 hover:text-slate-300 hover:bg-slate-900/60 hover:border-white/10'
                                 }`}
                         >
-                            {tab.icon}
-                            {tab.label}
+                            {activeTab === tab.id && (
+                                <motion.div
+                                    layoutId="tab-glow"
+                                    className={`absolute inset-0 opacity-20 bg-gradient-to-r ${tab.id === 'reality' ? 'from-red-500' : 'from-yellow-500'} to-transparent`}
+                                />
+                            )}
+                            <div className="relative z-10 flex items-center gap-4">
+                                {tab.icon}
+                                {tab.label}
+                            </div>
                         </button>
                     ))}
 
@@ -389,39 +424,76 @@ export function CasinoGuide() {
                             {activeTab === 'tables' && renderTables()}
                             {activeTab === 'reality' && renderReality()}
                             {activeTab === 'electronic' && (
-                                <div className="space-y-6">
-                                    <h4 className="text-xl font-bold text-white mb-4">Electronic & Machine Games</h4>
-                                    <div className="space-y-4">
+                                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className="p-3 bg-cyan-500/10 rounded-2xl border border-cyan-500/20 shadow-[0_0_20px_rgba(34,211,238,0.1)]">
+                                            <Gamepad2 className="text-cyan-500" size={28} />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">Digital Churn</h4>
+                                            <p className="text-slate-400 text-sm font-medium tracking-wide">High-speed terminal gaming designed for relentless volume.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 gap-4">
                                         <button
-                                            onClick={() => setActiveGame('videopoker')}
-                                            className="p-6 text-left bg-slate-900/50 border border-slate-800 rounded-2xl hover:border-cyan-500/30 transition-all group w-full"
+                                            onClick={() => { setActiveGame('videopoker'); playSound('deal'); }}
+                                            className="group relative p-8 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2.5rem] hover:border-cyan-500/40 transition-all overflow-hidden"
                                         >
-                                            <div className="font-bold text-cyan-400 mb-2 group-hover:text-cyan-300">Video Poker</div>
-                                            <p className="text-sm text-slate-400 leading-relaxed">Found at almost every casino bar. Unlike slots, it involves skill; you choose which cards to "hold." However, pay tables are often adjusted to maintain the house edge.</p>
+                                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <div className="flex justify-between items-center relative z-10">
+                                                <div className="flex-1">
+                                                    <span className="text-xs font-black text-cyan-500/60 uppercase tracking-[0.2em] mb-2 block">Skill-Based Trap</span>
+                                                    <h5 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">Video Poker</h5>
+                                                    <p className="text-sm text-slate-400 leading-relaxed font-medium max-w-xl">Unlike slots, this involves strategy. However, casinos often adjust pay tables (e.g., 8/5 vs 9/6) to maintain a lethal edge over time.</p>
+                                                </div>
+                                                <div className="w-12 h-12 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/5 group-hover:border-cyan-500/30 transition-all">
+                                                    <Gamepad2 size={24} className="text-cyan-500" />
+                                                </div>
+                                            </div>
                                         </button>
-                                        <div className="p-6 bg-slate-900/50 border border-slate-800 rounded-2xl">
-                                            <div className="font-bold text-cyan-400 mb-2">Electronic Table Games (ETGs)</div>
-                                            <p className="text-sm text-slate-400 leading-relaxed">"Stadium Gaming" terminals where you play roulette or blackjack on a screen while a central machine handles the action. Faster play = faster loss.</p>
+
+                                        <div className="p-8 bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2.5rem] relative overflow-hidden">
+                                            <div className="flex items-start gap-4">
+                                                <div className="mt-1 w-2 h-2 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.5)]" />
+                                                <div>
+                                                    <h5 className="text-lg font-bold text-white mb-2 italic">Electronic Table Games (ETGs)</h5>
+                                                    <p className="text-sm text-slate-500 leading-relaxed font-medium">Stadium Gaming terminals where you play roulette or blackjack on a screen. Faster play cycles mean you hit the house edge more frequently per hour.</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             )}
                             {activeTab === 'other' && (
-                                <div className="space-y-6">
-                                    <h4 className="text-xl font-bold text-white mb-4">Other Options</h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className="p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 shadow-[0_0_20px_rgba(99,102,241,0.1)]">
+                                            <MoreHorizontal className="text-indigo-500" size={28} />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">Ancillary Options</h4>
+                                            <p className="text-slate-400 text-sm font-medium tracking-wide">PVP rooms and high-margin distractions.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {[
-                                            { name: "Poker Rooms", desc: "Texas Hold 'em vs others.", id: 'poker' },
-                                            { name: "Sportsbooks", desc: "Betting on NFL/Horses.", id: 'sports' },
-                                            { name: "Keno/Bingo", desc: "Statistically worst odds (25%+ edge).", id: 'keno' }
+                                            { name: "Poker Rooms", desc: "Player vs Player. The house takes a 'rake' (fee) from every pot.", id: 'poker', icon: "🃏" },
+                                            { name: "Sportsbooks", desc: "The 'Vig' (juice) makes winning long-term extremely difficult.", id: 'sports', icon: "🏈" },
+                                            { name: "Keno / Bingo", desc: "The ultimate mathematical 'donation'. 25%+ house edge.", id: 'keno', icon: "🔢" }
                                         ].map((o, i) => (
                                             <button
                                                 key={i}
-                                                onClick={() => ['poker', 'sports', 'keno'].includes(o.id) && setActiveGame(o.id)}
-                                                className="p-4 text-left bg-slate-900/50 border border-slate-800 rounded-2xl hover:border-indigo-500/30 transition-all group"
+                                                onClick={() => { if (['poker', 'sports', 'keno'].includes(o.id)) { setActiveGame(o.id); playSound('click'); } }}
+                                                className="group relative p-6 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] hover:border-indigo-500/40 transition-all overflow-hidden"
                                             >
-                                                <div className="font-bold text-indigo-400 mb-2 group-hover:text-indigo-300">{o.name}</div>
-                                                <p className="text-xs text-slate-400 leading-loose">{o.desc}</p>
+                                                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                <div className="relative z-10">
+                                                    <div className="text-2xl mb-4 group-hover:scale-110 transition-transform origin-left">{o.icon}</div>
+                                                    <h5 className="text-lg font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors uppercase tracking-tight">{o.name}</h5>
+                                                    <p className="text-xs text-slate-500 leading-relaxed font-medium">{o.desc}</p>
+                                                </div>
                                             </button>
                                         ))}
                                     </div>

@@ -42,7 +42,7 @@ const BiasesCasino = dynamic(() => import('@/components/behavioral/BiasesCasino'
     loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
     ssr: false
 });
-const CasinoGuide = dynamic(() => import('@/components/behavioral/CasinoGuide'), {
+const CasinoGuide = dynamic(() => import('@/components/behavioral/CasinoGuide').then(mod => mod.CasinoGuide), {
     loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
     ssr: false
 });
