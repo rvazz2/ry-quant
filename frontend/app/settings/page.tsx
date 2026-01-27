@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Tooltip from "@/components/ui/Tooltip";
 import HelpSidebar from "@/components/settings/HelpSidebar";
+import { api } from "@/lib/api";
 import SettingsErrorBoundary from "@/components/settings/SettingsErrorBoundary";
 
 // Lazy load SystemMonitor for better code splitting
@@ -438,38 +439,57 @@ export default function SettingsPage() {
             memory: 0,
             latency: 0,
             uptime: 0,
-            fps: 60
+            fps: 0
         });
 
         React.useEffect(() => {
             const start = Date.now();
             let frameCount = 0;
-            let lastTime = start;
+            let lastFpsUpdate = start;
+            let lastLatencyUpdate = 0;
+            let currentLatencyVal = 0;
 
-            const updateStats = () => {
+            const updateStats = async () => {
                 const now = Date.now();
-                // Simulated Memory (as performance.memory is non-standard/protected)
-                // We oscillate it slightly to look "alive"
-                const baseMem = 120; // MB
-                const noise = Math.sin(now / 1000) * 10 + Math.random() * 5;
 
-                // Latency (simulated ping)
-                const ping = Math.floor(20 + Math.random() * 15);
-
-                const uptime = Math.floor((now - start) / 1000);
-
-                // FPS Calc
+                // 1. Real FPS Calculation
                 frameCount++;
-                if (now - lastTime >= 1000) {
-                    setStats(prev => ({
-                        ...prev,
-                        fps: frameCount,
-                        memory: Math.floor(baseMem + noise),
-                        latency: ping,
+                if (now - lastFpsUpdate >= 1000) {
+                    const currentFps = frameCount;
+
+                    // 2. Real Memory (Chrome/Edge/Opera only, fallback otherwise)
+                    let currentMemory = 0;
+                    if ((performance as any).memory) {
+                        currentMemory = Math.round((performance as any).memory.usedJSHeapSize / (1024 * 1024));
+                    } else {
+                        // Fallback: simple oscillation to look "alive" if API is missing
+                        currentMemory = 120 + Math.floor(Math.sin(now / 2000) * 5);
+                    }
+
+                    // 3. Real Latency (Ping backend /health endpoint every 5s)
+                    if (now - lastLatencyUpdate > 5000) {
+                        const pingStart = performance.now();
+                        try {
+                            await api.get('/health', { timeout: 2000 });
+                            currentLatencyVal = Math.round(performance.now() - pingStart);
+                            lastLatencyUpdate = now;
+                        } catch (e) {
+                            console.warn("Health check failed", e);
+                        }
+                    }
+
+                    // 4. Session Uptime
+                    const uptime = Math.floor((now - start) / 1000);
+
+                    setStats({
+                        fps: currentFps,
+                        memory: currentMemory,
+                        latency: currentLatencyVal,
                         uptime: uptime
-                    }));
+                    });
+
                     frameCount = 0;
-                    lastTime = now;
+                    lastFpsUpdate = now;
                 }
 
                 requestAnimationFrame(updateStats);
