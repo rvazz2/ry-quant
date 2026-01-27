@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Dices,
@@ -13,7 +13,14 @@ import {
     Zap,
     Clock,
     Skull,
-    X
+    X,
+    ShieldAlert,
+    LayoutDashboard,
+    History,
+    Info,
+    Smartphone,
+    Trophy,
+    User
 } from 'lucide-react';
 
 type TabType = 'slots' | 'tables' | 'electronic' | 'other' | 'reality';
@@ -95,15 +102,46 @@ const useCasinoSFX = () => {
     return { playSound };
 };
 
+// GogginsMessage component for typewriter effect
+const GogginsMessage = ({ text, onComplete }: { text: string; onComplete: () => void }) => {
+    const [displayedText, setDisplayedText] = useState('');
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        if (index < text.length) {
+            const timeoutId = setTimeout(() => {
+                setDisplayedText((prev) => prev + text[index]);
+                setIndex((prev) => prev + 1);
+            }, 50); // Typing speed
+
+            return () => clearTimeout(timeoutId);
+        } else {
+            onComplete();
+        }
+    }, [index, text, onComplete]);
+
+    return (
+        <p className="text-2xl md:text-4xl font-black text-white leading-tight md:leading-snug tracking-tighter italic mb-8">
+            {displayedText}
+            <motion.span
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                className="inline-block w-2 h-6 md:h-10 bg-white ml-1"
+            />
+        </p>
+    );
+};
+
 export function CasinoGuide() {
     const [activeTab, setActiveTab] = useState<TabType>('slots');
+    const [activeGame, setActiveGame] = useState<string | null>(null);
+    const [showGoggins, setShowGoggins] = useState(false);
     const { playSound } = useCasinoSFX();
 
     // Session State
     const [balance, setBalance] = useState(1000);
     const [totalLost, setTotalLost] = useState(0);
     const [actionCount, setActionCount] = useState(0);
-    const [activeGame, setActiveGame] = useState<string | null>(null);
     const [showRealityCheck, setShowRealityCheck] = useState(false);
 
     // Loss Calculator State (legacy/static)
@@ -402,11 +440,19 @@ export function CasinoGuide() {
                         </button>
                     ))}
 
-                    <div className="mt-10 p-6 bg-slate-950 border border-slate-800 rounded-3xl hidden lg:block">
+                    <div className="mt-10 p-6 bg-slate-950 border border-slate-800 rounded-3xl hidden lg:block relative">
                         <p className="text-xs text-slate-500 font-bold mb-4 uppercase tracking-tighter">Pro Tip</p>
                         <p className="text-sm text-slate-400 leading-relaxed italic">
                             "Many hotels like The Venetian offer free lessons at 10:00 AM. They teach you the rules because they know once you know how to play, you’re more likely to give them your money."
                         </p>
+
+                        {/* Hidden Reality Check Trigger */}
+                        <button
+                            onClick={() => setShowGoggins(true)}
+                            className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full border border-white/5 flex items-center justify-center text-[8px] font-black text-white/10 hover:text-white/40 hover:border-white/20 transition-all uppercase tracking-tighter"
+                        >
+                            RC
+                        </button>
                     </div>
                 </div>
 
@@ -503,6 +549,48 @@ export function CasinoGuide() {
                     </AnimatePresence>
                 </div>
             </div>
+
+            {/* Goggins Reality Check Overlay */}
+            <AnimatePresence>
+                {showGoggins && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-8 text-center overflow-hidden"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.8, filter: 'grayscale(100%) brightness(0%)' }}
+                            animate={{ scale: 1, filter: 'grayscale(100%) brightness(100%) shadow(0 0 30px rgba(255,255,255,0.1))' }}
+                            transition={{ duration: 1 }}
+                            className="relative w-64 h-64 md:w-80 md:h-80 mb-12 rounded-full overflow-hidden border-4 border-white/20"
+                        >
+                            <img
+                                src="/assets/goggins.png"
+                                alt="David Goggins"
+                                className="w-full h-full object-cover"
+                            />
+                        </motion.div>
+
+                        <div className="max-w-4xl">
+                            <GogginsMessage
+                                onComplete={() => { }}
+                                text="I'M DISAPPOINTED IN YOU. YOU'RE A QUANT. YOU UNDERSTAND PROBABILITY BETTER THAN 99.9% OF THE POPULATION. YOU KNOW THE HOUSE EDGE ISN'T A SUGGESTION—IT'S A MATHEMATICAL CERTAINTY. SO EXPLAIN THE LOGICAL COLLAPSE. WHY ARE YOU HERE INTERACTING WITH RIGGED LOOPS? YOU DON'T BUILD SYSTEMS ON LUCK. YOU BUILD THEM ON DATA. STAY HARD."
+                            />
+                        </div>
+
+                        <motion.button
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 10 }}
+                            onClick={() => setShowGoggins(false)}
+                            className="mt-16 px-10 py-4 bg-white text-black font-black uppercase tracking-[0.3em] hover:bg-zinc-200 transition-colors rounded-xl"
+                        >
+                            Stay Hard
+                        </motion.button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Reality Check Overlay */}
             <AnimatePresence>
