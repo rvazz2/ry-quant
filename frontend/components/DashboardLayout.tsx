@@ -9,6 +9,7 @@ import MarketStatus from './MarketStatus';
 import ErrorBoundary from './ErrorBoundary';
 import { useSettings } from "@/contexts/SettingsContext";
 import ConnectionStatus from './ConnectionStatus';
+import { CosmicBackground } from './ui/CosmicBackground';
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -219,12 +220,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     return (
         // Added suppressHydrationWarning to handle potential server/client mismatches during dev
         <div suppressHydrationWarning className="min-h-screen bg-transparent text-slate-100 flex font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden">
-            {/* Background Ambient Glow - Client Only - Reused global background mostly but adding specific ambient spots */}
-            {mounted && (
-                <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-                    {/* Rely on global body background for the base, add subtle overlay if needed */}
-                </div>
-            )}
+            {/* Background Ambient Glow */}
+            <CosmicBackground />
 
             {/* Sidebar */}
             <aside className="w-72 bg-[rgba(11,14,20,0.4)] backdrop-blur-xl border-r border-white/5 hidden md:flex flex-col relative z-20 shadow-[5px_0_30px_rgba(0,0,0,0.5)] h-screen">
