@@ -409,7 +409,7 @@ export function CasinoGuide() {
                 <div className="inline-flex p-3 bg-yellow-500/10 rounded-2xl mb-4 border border-yellow-500/20">
                     <Dices className="text-yellow-500" size={32} />
                 </div>
-                <h2 className="text-5xl font-black text-white tracking-tight mb-2 italic">Casino</h2>
+                <h2 className="text-5xl font-black text-white tracking-tight mb-2 italic">Ryans Casino</h2>
                 <p className="text-2xl font-bold text-yellow-500/80 tracking-wide">"Good Luck,"</p>
             </div>
 
