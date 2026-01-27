@@ -1,0 +1,266 @@
+[1mbackend\cache.py[m[36m:[m6[36m:[m80[36m:[m [1m[31mE501[m line too long (94 > 79 characters)
+# This creates a persistent SQLite-backed cache that survives restarts and handles concurrency
+                                                                               ^
+[1mbackend\cache.py[m[36m:[m9[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+def timed_cache(seconds: int):
+^
+[1mbackend\cache.py[m[36m:[m11[36m:[m80[36m:[m [1m[31mE501[m line too long (85 > 79 characters)
+    """
+    Decorator that caches function results to DISK for a specified number of seconds.
+    Persists across server restarts!
+    """
+       
+                                                                       ^
+[1mbackend\cache.py[m[36m:[m19[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+            
+^
+[1mbackend\cache.py[m[36m:[m24[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+            
+^
+[1mbackend\cache.py[m[36m:[m28[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+                
+^
+[1mbackend\cache.py[m[36m:[m32[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+                
+^
+[1mbackend\cache.py[m[36m:[m37[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+                
+^
+[1mbackend\check_gzip.py[m[36m:[m2[36m:[m5[36m:[m [1m[31mF401[m 'fastapi.middleware.gzip.GZipMiddleware' imported but unused
+    from fastapi.middleware.gzip import GZipMiddleware
+    ^
+[1mbackend\check_gzip.py[m[36m:[m8[36m:[m5[36m:[m [1m[31mF401[m 'fastapi.middleware.gzip.GzipMiddleware' imported but unused
+    from fastapi.middleware.gzip import GzipMiddleware
+    ^
+[1mbackend\debug_commodities.py[m[36m:[m5[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+import yfinance as yf
+^
+[1mbackend\debug_commodities.py[m[36m:[m6[36m:[m1[36m:[m [1m[31mF401[m 'pandas as pd' imported but unused
+import pandas as pd
+^
+[1mbackend\debug_commodities.py[m[36m:[m6[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+import pandas as pd
+^
+[1mbackend\debug_commodities.py[m[36m:[m9[36m:[m80[36m:[m [1m[31mE501[m line too long (89 > 79 characters)
+tickers = ["GC=F", "CL=F", "HG=F", "^VIX", "DX-Y.NYB", "^TNX", "SI=F", "NG=F", "BTC-USD"]
+                                                                               ^
+[1mbackend\debug_commodities.py[m[36m:[m16[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+    
+^
+[1mbackend\debug_commodities.py[m[36m:[m22[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+    
+^
+[1mbackend\debug_commodities.py[m[36m:[m23[36m:[m11[36m:[m [1m[31mF541[m f-string is missing placeholders
+    print(f"\nAll price data (last 5 days):")
+          ^
+[1mbackend\debug_commodities.py[m[36m:[m25[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+    
+^
+[1mbackend\debug_commodities.py[m[36m:[m29[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+    
+^
+[1mbackend\debug_commodities.py[m[36m:[m37[36m:[m80[36m:[m [1m[31mE501[m line too long (104 > 79 characters)
+                print(f"{ticker:12} ${last_valid:10.2f}  (from {last_valid_date.strftime('%Y-%m-%d')})")
+                                                                               ^
+[1mbackend\debug_commodities.py[m[36m:[m42[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+            
+^
+[1mbackend\debug_exchanges.py[m[36m:[m4[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+async def check_exchanges():
+^
+[1mbackend\debug_exchanges.py[m[36m:[m8[36m:[m80[36m:[m [1m[31mE501[m line too long (91 > 79 characters)
+            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={q}&quotesCount=5"
+                                                                               ^
+[1mbackend\debug_exchanges.py[m[36m:[m15[36m:[m80[36m:[m [1m[31mE501[m line too long (124 > 79 characters)
+                    print(f"Symbol: {quote.get('symbol')} | Exch: {quote.get('exchange')} | Type: {quote.get('quoteType')}")
+                                                                               ^
+[1mbackend\debug_financials.py[m[36m:[m8[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+from services.research import get_financials
+^
+[1mbackend\debug_financials.py[m[36m:[m10[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+def test_ticker(ticker):
+^
+[1mbackend\debug_financials.py[m[36m:[m16[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+        
+^
+[1mbackend\debug_financials.py[m[36m:[m22[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+            
+^
+[1mbackend\debug_financials.py[m[36m:[m27[36m:[m1[36m:[m [1m[31mE305[m expected 2 blank lines after class or function definition, found 1
+if __name__ == "__main__":
+^
+[1mbackend\debug_fix.py[m[36m:[m3[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+def check_data():
+^
+[1mbackend\debug_fix.py[m[36m:[m17[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+    
+^
+[1mbackend\debug_fix.py[m[36m:[m18[36m:[m1[36m:[m [1m[31mE305[m expected 2 blank lines after class or function definition, found 1
+check_data()
+^
+[1mbackend\debug_import.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mF401[m 'sys' imported but unused
+import sys
+^
+[1mbackend\debug_import.py[m[36m:[m2[36m:[m1[36m:[m [1m[31mF401[m 'os' imported but unused
+import os
+^
+[1mbackend\debug_import.py[m[36m:[m3[36m:[m1[36m:[m [1m[31mF401[m 'inspect' imported but unused
+import inspect
+^
+[1mbackend\debug_import.py[m[36m:[m20[36m:[m5[36m:[m [1m[31mF811[m redefinition of unused 'GzipMiddleware' from line 14
+    from fastapi.middleware.gzip import GzipMiddleware
+    ^
+[1mbackend\debug_import.py[m[36m:[m20[36m:[m5[36m:[m [1m[31mF401[m 'fastapi.middleware.gzip.GzipMiddleware' imported but unused
+    from fastapi.middleware.gzip import GzipMiddleware
+    ^
+[1mbackend\debug_indices.py[m[36m:[m2[36m:[m1[36m:[m [1m[31mF401[m 'pandas as pd' imported but unused
+import pandas as pd
+^
+[1mbackend\debug_indices.py[m[36m:[m4[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+def test_indices():
+^
+[1mbackend\debug_indices.py[m[36m:[m7[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+    
+^
+[1mbackend\debug_indices.py[m[36m:[m11[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+        
+^
+[1mbackend\debug_indices.py[m[36m:[m22[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+        
+^
+[1mbackend\debug_indices.py[m[36m:[m29[36m:[m1[36m:[m [1m[31mE305[m expected 2 blank lines after class or function definition, found 1
+if __name__ == "__main__":
+^
+[1mbackend\debug_macro.py[m[36m:[m6[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+from services.macro import get_yield_curves, get_macro_summary
+^
+[1mbackend\debug_macro.py[m[36m:[m8[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+async def main():
+^
+[1mbackend\debug_macro.py[m[36m:[m13[36m:[m80[36m:[m [1m[31mE501[m line too long (95 > 79 characters)
+        print("Current curve points:", len(curves['current']) if curves['current'] else "None")
+                                                                               ^
+[1mbackend\debug_market_service.py[m[36m:[m3[36m:[m1[36m:[m [1m[31mF401[m 'pandas as pd' imported but unused
+import pandas as pd
+^
+[1mbackend\debug_market_service.py[m[36m:[m8[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+from services.market_data import get_market_overview
+^
+[1mbackend\debug_market_service.py[m[36m:[m10[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+def test_service():
+^
+[1mbackend\debug_market_service.py[m[36m:[m17[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+            
+^
+[1mbackend\debug_market_service.py[m[36m:[m21[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+        
+^
+[1mbackend\debug_market_service.py[m[36m:[m26[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+            
+^
+[1mbackend\debug_market_service.py[m[36m:[m30[36m:[m1[36m:[m [1m[31mE305[m expected 2 blank lines after class or function definition, found 1
+if __name__ == "__main__":
+^
+[1mbackend\debug_rss.py[m[36m:[m5[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+def fetch_google_news_rss(ticker: str):
+^
+[1mbackend\debug_rss.py[m[36m:[m8[36m:[m80[36m:[m [1m[31mE501[m line too long (95 > 79 characters)
+    rss_url = f"https://news.google.com/rss/search?q={encoded_query}&hl=en-US&gl=US&ceid=US:en"
+                                                                               ^
+[1mbackend\debug_rss.py[m[36m:[m10[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+    
+^
+[1mbackend\debug_rss.py[m[36m:[m13[36m:[m80[36m:[m [1m[31mE501[m line too long (165 > 79 characters)
+        feed = feedparser.parse(rss_url, agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+                                                                               ^
+[1mbackend\debug_rss.py[m[36m:[m14[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+        
+^
+[1mbackend\debug_rss.py[m[36m:[m18[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+        
+^
+[1mbackend\debug_rss.py[m[36m:[m24[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+            
+^
+[1mbackend\debug_rss.py[m[36m:[m28[36m:[m1[36m:[m [1m[31mE305[m expected 2 blank lines after class or function definition, found 1
+if __name__ == "__main__":
+^
+[1mbackend\debug_server.py[m[36m:[m9[36m:[m5[36m:[m [1m[31mF401[m 'main' imported but unused
+    import main
+    ^
+[1mbackend\debug_server.py[m[36m:[m13[36m:[m5[36m:[m [1m[31mF401[m 'services.macro' imported but unused
+    import services.macro
+    ^
+[1mbackend\debug_startup.py[m[36m:[m9[36m:[m1[36m:[m [1m[31mF401[m 'services.market_data.get_market_overview' imported but unused
+from services.market_data import get_market_overview
+^
+[1mbackend\debug_startup.py[m[36m:[m9[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+from services.market_data import get_market_overview
+^
+[1mbackend\debug_startup.py[m[36m:[m10[36m:[m1[36m:[m [1m[31mF401[m 'main.app' imported but unused
+from main import app, refresh_market_data
+^
+[1mbackend\debug_startup.py[m[36m:[m10[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+from main import app, refresh_market_data
+^
+[1mbackend\debug_startup.py[m[36m:[m12[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+async def test_startup():
+^
+[1mbackend\debug_yf.py[m[36m:[m2[36m:[m1[36m:[m [1m[31mF401[m 'pandas as pd' imported but unused
+import pandas as pd
+^
+[1mbackend\main.py[m[36m:[m4[36m:[m80[36m:[m [1m[31mE501[m line too long (168 > 79 characters)
+from routers import market, quant, research, macro, mergers, planning, accounting, behavioral, ai, strategy_builder, stress, crypto, reports, simulator, system, sectors
+                                                                               ^
+[1mbackend\main.py[m[36m:[m7[36m:[m1[36m:[m [1m[31mF401[m 'services.market_data.get_market_news' imported but unused
+from services.market_data import get_market_overview, get_market_news
+^
+[1mbackend\main.py[m[36m:[m8[36m:[m1[36m:[m [1m[31mF401[m 'services.research.get_treasury_rates' imported but unused
+from services.research import get_treasury_rates
+^
+[1mbackend\main.py[m[36m:[m14[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+def refresh_market_data():
+^
+[1mbackend\main.py[m[36m:[m27[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+@asynccontextmanager
+^
+[1mbackend\main.py[m[36m:[m31[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+    
+^
+[1mbackend\main.py[m[36m:[m35[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+    
+^
+[1mbackend\main.py[m[36m:[m38[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+    
+^
+[1mbackend\main.py[m[36m:[m45[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+from fastapi import Request
+^
+[1mbackend\main.py[m[36m:[m46[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+from fastapi.responses import JSONResponse
+^
+[1mbackend\main.py[m[36m:[m47[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+import time
+^
+[1mbackend\main.py[m[36m:[m52[36m:[m25[36m:[m [1m[31mE261[m at least two spaces before inline comment
+    allow_origins=["*"], # Allow all origins for development/demo. In production, list specific domains.
+                        ^
+[1mbackend\main.py[m[36m:[m52[36m:[m80[36m:[m [1m[31mE501[m line too long (104 > 79 characters)
+    allow_origins=["*"], # Allow all origins for development/demo. In production, list specific domains.
+                                                                               ^
+[1mbackend\main.py[m[36m:[m62[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+from starlette.middleware.base import BaseHTTPMiddleware
+^
+[1mbackend\main.py[m[36m:[m63[36m:[m1[36m:[m [1m[31mF401[m 'starlette.responses.Response' imported but unused
+from starlette.responses import Response
+^
+[1mbackend\main.py[m[36m:[m63[36m:[m1[36m:[m [1m[31mE402[m module level import not at top of file
+from starlette.responses import Response
+^
+[1mbackend\main.py[m[36m:[m65[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+class TimeoutMiddleware(BaseHTTPMiddleware):
+^
+[1mbackend\main.py[m[36m:[m68[36m:[m80[36m:[m [1m[31mE501[m line too long (82 > 79 characters)
+            # 60-second timeout for ALL requests (increased for local cold starts)
+                                                                               ^
+[1mbackend\main.py[m[36m:[m71[36m:[m80[36m:[m [1m[31mE501[m line too long (82 > 79 characters)

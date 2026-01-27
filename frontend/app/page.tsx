@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { TrendingUp, ArrowRight, BookOpen, LineChart, Cpu, Activity, Zap, ShieldAlert, Bitcoin, PlayCircle } from 'lucide-react';
+import { ArrowRight, BookOpen, LineChart, Cpu, Activity, Zap, Bitcoin, PlayCircle } from 'lucide-react';
 
 // --- BioModal Component ---
 interface Student {

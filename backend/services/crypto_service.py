@@ -145,7 +145,7 @@ class CryptoService:
                     # Fetch recent trades (limit 50 to exist within rate limits usually)
                     try:
                         trades = await exchange.fetch_trades(symbol, limit=50)
-                    except:
+                    except Exception:
                         continue
                     
                     for trade in trades:
@@ -185,9 +185,7 @@ class CryptoService:
         # To make this truly "live" without API keys for all exchanges is hard.
         # But we can use ccxt public APIs for a few exchanges.
         
-        exchanges_to_check = ['kraken'] # binance often requires API key or has strict geo-blocking
-        tickers_to_check = ['BTC/USD', 'ETH/USD']
-        
+
         # NOTE: In a real production app, we would initialize these properly
         # For this MVP, let's use a mix of known live data + some simulated spread for demonstration
         # if the "spread" is 0 it's boring.

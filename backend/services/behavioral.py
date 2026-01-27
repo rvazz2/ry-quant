@@ -210,7 +210,7 @@ def get_social_hype(ticker: str, news_count: int = 0):
                 "Market sentiment analyzing..."
             ]
         }
-    except Exception as e:
+    except Exception:
         return {}
 
 @timed_cache(seconds=600)

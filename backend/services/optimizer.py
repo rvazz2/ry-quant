@@ -164,7 +164,7 @@ def calculate_efficient_frontier(tickers, start_date, end_date, constraints=None
     sim_sharpe = (sim_returns - rf) / sim_std
     
     # Prepare results structure for frontend (3, num_sims)
-    results = np.vstack((sim_std, sim_returns, sim_sharpe))
+
     
     # Convert to list of dicts for frontend
     # Zip is fast enough for 2000 items

@@ -69,7 +69,7 @@ export default function ValuationPage() {
                     {/* Module 1: 2-Minute DCF */}
                     <div className="space-y-4">
                         <h2 className="text-xl font-bold text-slate-200 border-l-4 border-cyan-500 pl-4 py-1">
-                            Module 1: The "2-Minute DCF"
+                            Module 1: The &quot;2-Minute DCF&quot;
                         </h2>
                         <p className="text-slate-400 text-sm max-w-3xl mb-6">
                             A Discounted Cash Flow (DCF) analysis determines the value of an investment based on its expected future cash flows.
@@ -96,7 +96,7 @@ export default function ValuationPage() {
                         </h2>
                         <p className="text-slate-400 text-sm max-w-3xl mb-6">
                             Advanced tools to detect earnings manipulation and decompose return drivers.
-                            Use these to "sanity check" a company before investing.
+                            Use these to &quot;sanity check&quot; a company before investing.
                         </p>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

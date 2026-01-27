@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from 'react';
-import { Brain, TrendingUp, TrendingDown, Activity, AlertTriangle, Zap, BarChart2 } from 'lucide-react';
+import { Brain, Activity, Zap } from 'lucide-react';
 import StatBox from './StatBox';
 import { getAIAnalysis } from '@/lib/api';
 
@@ -10,10 +10,22 @@ interface AIResearchLabProps {
     realBeta?: number | null;
 }
 
+interface AIStats {
+    trend: string;
+    signal: string;
+    beta: number;
+    sentiment: string;
+    rsi: number;
+    volatility: number;
+    confidence: number;
+    support: number;
+    resistance: number;
+}
+
 const AIResearchLab = ({ ticker, realBeta }: AIResearchLabProps) => {
     // Deterministic random number generator based on ticker and date
     // This ensures the "AI" analysis is consistent for the same stock on the same day
-    const [stats, setStats] = React.useState<any>(null);
+    const [stats, setStats] = React.useState<AIStats | null>(null);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {

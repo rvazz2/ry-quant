@@ -1,0 +1,45 @@
+﻿backend\services\accounting.py:47:13: E722 do not use bare 'except'
+            except:
+            ^
+backend\services\accounting.py:141:9: F841 local variable 'prob' is assigned to but never used
+        prob = 0.0 # Placeholder, interpretation is mainly Binary
+        ^
+backend\services\accounting.py:178:13: E722 do not use bare 'except'
+            except:
+            ^
+backend\services\analyst.py:44:5: F841 local variable 'df' is assigned to but never used
+    df = pd.DataFrame(TRADE_LOG)
+    ^
+backend\services\behavioral.py:213:5: F841 local variable 'e' is assigned to but never used
+    except Exception as e:
+    ^
+backend\services\crypto_service.py:148:21: E722 do not use bare 'except'
+                    except:
+                    ^
+backend\services\crypto_service.py:188:9: F841 local variable 'exchanges_to_check' is assigned to but never used
+        exchanges_to_check = ['kraken'] # binance often requires API key or has strict geo-blocking
+        ^
+backend\services\crypto_service.py:189:9: F841 local variable 'tickers_to_check' is assigned to but never used
+        tickers_to_check = ['BTC/USD', 'ETH/USD']
+        ^
+backend\services\optimizer.py:167:5: F841 local variable 'results' is assigned to but never used
+    results = np.vstack((sim_std, sim_returns, sim_sharpe))
+    ^
+backend\services\planning.py:38:5: F841 local variable 'daily_mu' is assigned to but never used
+    daily_mu = mu / 252
+    ^
+backend\services\planning.py:39:5: F841 local variable 'daily_sigma' is assigned to but never used
+    daily_sigma = sigma / np.sqrt(252)
+    ^
+backend\services\quant.py:53:9: E722 do not use bare 'except'
+        except:
+        ^
+backend\services\research.py:45:17: E722 do not use bare 'except'
+                except:
+                ^
+backend\services\research.py:384:9: F841 local variable 'current_price' is assigned to but never used
+        current_price = hist['Close'].iloc[-1]
+        ^
+backend\verify_perf.py:47:5: E722 do not use bare 'except'
+    except:
+    ^

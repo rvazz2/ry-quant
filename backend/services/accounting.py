@@ -44,7 +44,7 @@ def calculate_beneish_m_score(ticker: str):
                 matches = [i for i in df.index if row_name.lower() in i.lower()]
                 if not matches: return 0.0
                 return float(df.loc[matches[0]].iloc[col_idx])
-            except:
+            except Exception:
                 return 0.0
 
         # --- Variables ---
@@ -138,7 +138,7 @@ def calculate_beneish_m_score(ticker: str):
         
         # Prob of Manipulation (cdf of normal distribution)
         # Not strictly standard normal, but commonly approximated or just interpreted by threshold > -1.78
-        prob = 0.0 # Placeholder, interpretation is mainly Binary
+
         
         return {
             "m_score": m_score,
@@ -175,7 +175,7 @@ def calculate_dupont(ticker: str):
                 matches = [i for i in df.index if row_name.lower() in i.lower()]
                 if not matches: return 0.0
                 return float(df.loc[matches[0]].iloc[0]) # Current year
-            except:
+            except Exception:
                 return 0.0
                 
         net_income = get_val(inc, "Net Income")

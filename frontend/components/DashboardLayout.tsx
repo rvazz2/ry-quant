@@ -3,7 +3,7 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { LayoutDashboard, TrendingUp, Activity, Calculator, Search, Settings, Terminal, SquareTerminal, BookOpen, BrainCircuit, Command, Bitcoin, Menu, X, GraduationCap, HardDrive, FileSpreadsheet } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Activity, Calculator, Search, Settings, SquareTerminal, BookOpen, BrainCircuit, Bitcoin, Menu, X, GraduationCap, HardDrive, FileSpreadsheet } from 'lucide-react';
 import { SearchResult } from '@/lib/types';
 import MarketStatus from './MarketStatus';
 import ErrorBoundary from './ErrorBoundary';

@@ -42,7 +42,7 @@ def get_company_info(ticker: str):
                     import dateutil.parser
                     dt = dateutil.parser.parse(content["pubDate"])
                     pub_time = int(dt.timestamp())
-                except:
+                except Exception:
                     pass
             
             processed_news.append({
@@ -381,7 +381,7 @@ def get_ai_analysis(ticker: str):
         if hist.empty:
             return None
             
-        current_price = hist['Close'].iloc[-1]
+
         
         # 1. Trend Analysis (SMA 50 vs SMA 200)
         sma_50 = hist['Close'].rolling(window=50).mean().iloc[-1]

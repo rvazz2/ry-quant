@@ -41,7 +41,7 @@ export default function SystemPage() {
             await api.post("/system/cache/clear");
             setMessage("Cache cleared successfully!");
             fetchStatus();
-        } catch (error) {
+        } catch (_) {
             setMessage("Failed to clear cache.");
         } finally {
             setLoading(false);
@@ -55,7 +55,7 @@ export default function SystemPage() {
         try {
             await api.post("/system/refresh");
             setMessage("Market data refresh triggered!");
-        } catch (error) {
+        } catch (_) {
             setMessage("Failed to trigger refresh.");
         } finally {
             setLoading(false);

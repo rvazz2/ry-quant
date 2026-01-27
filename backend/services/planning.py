@@ -35,8 +35,7 @@ def run_monte_carlo_simulation(
     
     # Brownian Motion: dS/S = mu*dt + sigma*dW
     # Discrete: Return = exp((mu - 0.5*sigma^2) + sigma*Z) - 1
-    daily_mu = mu / 252
-    daily_sigma = sigma / np.sqrt(252)
+
     # Note: Annual simulation is coarser but faster for this interactive tool. 
     # Let's stick to annual steps for instant feedback, it's sufficient for "War Game" vibes.
     

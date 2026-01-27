@@ -5,8 +5,8 @@ import { useSettings } from "@/contexts/SettingsContext";
 import Link from "next/link";
 import Image from "next/image";
 import {
-    Shield, Globe, Cpu, Bell, Lock, Layout,
-    Save, RefreshCw, AlertTriangle, Activity, HelpCircle, Download, Upload
+    Shield, Globe, Cpu, Lock, Layout,
+    RefreshCw, AlertTriangle, Activity, HelpCircle
 } from "lucide-react";
 import Tooltip from "@/components/ui/Tooltip";
 import HelpSidebar from "@/components/settings/HelpSidebar";
@@ -24,7 +24,7 @@ export default function SettingsPage() {
     // Memoize handler to prevent recreation on every render
     const handleChange = useCallback((key: keyof typeof settings, value: string | number | boolean) => {
         updateSetting(key, value);
-    }, [updateSetting, settings]);
+    }, [updateSetting]);
 
     // Memoize tabs to prevent recreation
     const tabs = useMemo(() => [
@@ -434,125 +434,7 @@ export default function SettingsPage() {
         </div>
     );
 
-    const SystemMonitor = () => {
-        const [stats, setStats] = useState({
-            memory: 0,
-            latency: 0,
-            uptime: 0,
-            fps: 0
-        });
 
-        React.useEffect(() => {
-            const start = Date.now();
-            let frameCount = 0;
-            let lastFpsUpdate = start;
-            let lastLatencyUpdate = 0;
-            let currentLatencyVal = 0;
-
-            const updateStats = async () => {
-                const now = Date.now();
-
-                // 1. Real FPS Calculation
-                frameCount++;
-                if (now - lastFpsUpdate >= 1000) {
-                    const currentFps = frameCount;
-
-                    // 2. Real Memory (Chrome/Edge/Opera only, fallback otherwise)
-                    let currentMemory = 0;
-                    if ((performance as any).memory) {
-                        currentMemory = Math.round((performance as any).memory.usedJSHeapSize / (1024 * 1024));
-                    } else {
-                        // Fallback: simple oscillation to look "alive" if API is missing
-                        currentMemory = 120 + Math.floor(Math.sin(now / 2000) * 5);
-                    }
-
-                    // 3. Real Latency (Ping backend /health endpoint every 5s)
-                    if (now - lastLatencyUpdate > 5000) {
-                        const pingStart = performance.now();
-                        try {
-                            await api.get('/health', { timeout: 2000 });
-                            currentLatencyVal = Math.round(performance.now() - pingStart);
-                            lastLatencyUpdate = now;
-                        } catch (e) {
-                            console.warn("Health check failed", e);
-                        }
-                    }
-
-                    // 4. Session Uptime
-                    const uptime = Math.floor((now - start) / 1000);
-
-                    setStats({
-                        fps: currentFps,
-                        memory: currentMemory,
-                        latency: currentLatencyVal,
-                        uptime: uptime
-                    });
-
-                    frameCount = 0;
-                    lastFpsUpdate = now;
-                }
-
-                requestAnimationFrame(updateStats);
-            };
-
-            const anim = requestAnimationFrame(updateStats);
-            return () => cancelAnimationFrame(anim);
-        }, []);
-
-        const formatUptime = (s: number) => {
-            const h = Math.floor(s / 3600);
-            const m = Math.floor((s % 3600) / 60);
-            const sec = s % 60;
-            return `${h}h ${m}m ${sec}s`;
-        };
-
-        const getHealthColor = (fps: number) => {
-            if (fps > 50) return "text-emerald-400";
-            if (fps > 30) return "text-amber-400";
-            return "text-rose-400";
-        };
-
-        return (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-slate-900 border border-slate-800 rounded-lg relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <Activity size={48} />
-                    </div>
-                    <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">System Health</div>
-                    <div className="flex items-end gap-3">
-                        <span className="text-3xl font-mono font-bold text-white">{stats.fps} <span className="text-sm text-slate-500 font-sans">FPS</span></span>
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full bg-slate-800 mb-1 ${getHealthColor(stats.fps)}`}>
-                            {stats.fps > 55 ? 'OPTIMAL' : 'GOOD'}
-                        </span>
-                    </div>
-                    <div className="mt-4 h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-500 ease-out"
-                            style={{ width: `${Math.min(stats.fps / 60 * 100, 100)}%` }}
-                        />
-                    </div>
-                </div>
-
-                <div className="p-4 bg-slate-900 border border-slate-800 rounded-lg">
-                    <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Memory Usage</div>
-                    <div className="text-3xl font-mono font-bold text-cyan-400">{stats.memory} <span className="text-sm text-slate-500 font-sans">MB</span></div>
-                    <div className="text-xs text-slate-500 mt-1">Heap Allocation</div>
-                </div>
-
-                <div className="p-4 bg-slate-900 border border-slate-800 rounded-lg">
-                    <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Network Latency</div>
-                    <div className="text-3xl font-mono font-bold text-purple-400">{stats.latency} <span className="text-sm text-slate-500 font-sans">ms</span></div>
-                    <div className="text-xs text-slate-500 mt-1">Socket Roundtrip</div>
-                </div>
-
-                <div className="p-4 bg-slate-900 border border-slate-800 rounded-lg">
-                    <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Session Uptime</div>
-                    <div className="text-3xl font-mono font-bold text-blue-400">{formatUptime(stats.uptime)}</div>
-                    <div className="text-xs text-slate-500 mt-1">Current Session</div>
-                </div>
-            </div>
-        );
-    };
 
     const renderSystemSettings = () => (
         <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -577,7 +459,9 @@ export default function SettingsPage() {
                             <span className="text-xs font-bold text-emerald-500">LIVE</span>
                         </div>
                     </div>
-                    <SystemMonitor />
+                    <Suspense fallback={<div className="h-48 bg-slate-900/50 animate-pulse rounded-lg" />}>
+                        <SystemMonitor />
+                    </Suspense>
                 </div>
             </div>
 
@@ -738,11 +622,13 @@ export default function SettingsPage() {
                     <div className="flex-1">
                         <div className="bg-slate-950/50 border border-slate-800/50 rounded-xl p-1">
                             <div className="p-6">
-                                {activeTab === "risk" && renderRiskSettings()}
-                                {activeTab === "data" && renderDataSettings()}
-                                {activeTab === "system" && renderSystemSettings()}
-                                {activeTab === "visual" && renderVisualSettings()}
-                                {(activeTab === "notify" || activeTab === "security") && renderComingSoon()}
+                                <SettingsErrorBoundary>
+                                    {activeTab === "risk" && renderRiskSettings()}
+                                    {activeTab === "data" && renderDataSettings()}
+                                    {activeTab === "system" && renderSystemSettings()}
+                                    {activeTab === "visual" && renderVisualSettings()}
+                                    {(activeTab === "notify" || activeTab === "security") && renderComingSoon()}
+                                </SettingsErrorBoundary>
                             </div>
                         </div>
                     </div>

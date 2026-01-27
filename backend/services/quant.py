@@ -50,7 +50,7 @@ def get_vol_surface(ticker: str, r: float = 0.05, sigma: float = 0.2):
                 hist = t.history(period="1d")
                 if not hist.empty:
                     spot = float(hist["Close"].iloc[-1])
-        except:
+        except Exception:
             pass
             
     if spot is None:

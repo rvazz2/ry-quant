@@ -41,7 +41,7 @@ def get_track_record():
 
     # Simple mock logic for metrics
     # In reality, you'd match Buy/Sells to calculate realized PnL
-    df = pd.DataFrame(TRADE_LOG)
+
     
     return {
         "metrics": {
