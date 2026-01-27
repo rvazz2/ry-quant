@@ -278,6 +278,12 @@ export default function LandingPage() {
           </Link>
         </div>
 
+        {/* Footer */}
+        <footer className="relative z-10 py-12 text-center text-slate-600 text-sm border-t border-white/5 mt-32">
+          <p>© {new Date().getFullYear()} Ry Quant. All rights reserved.</p>
+          <p className="mt-2 text-xs opacity-50">QuantDash™ is a trademark of Ry Quant.</p>
+        </footer>
+
       </div>
     </div>
   );
