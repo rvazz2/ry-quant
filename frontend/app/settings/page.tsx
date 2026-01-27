@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
     Shield, Globe, Cpu, Bell, Lock, Layout,
-    Save, RefreshCw, AlertTriangle, Activity, HelpCircle, Download, Upload, ChevronLeft
+    Save, RefreshCw, AlertTriangle, Activity, HelpCircle, Download, Upload
 } from "lucide-react";
 import Tooltip from "@/components/ui/Tooltip";
 import HelpSidebar from "@/components/settings/HelpSidebar";
@@ -669,8 +669,7 @@ export default function SettingsPage() {
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center justify-between mb-8">
                     <div>
-                        <Link href="/" className="inline-flex items-center gap-2 group hover:opacity-100 transition-all mb-4" title="Return to Home">
-                            <ChevronLeft className="text-slate-500 group-hover:text-cyan-400 h-8 w-8 transition-colors" />
+                        <Link href="/" className="inline-flex items-center group hover:opacity-100 transition-all mb-4" title="Return to Home">
                             <div className="relative h-14 w-56 transform group-hover:translate-x-1 transition-transform">
                                 <Image src="/quantdash_logo.png" alt="Back to Dashboard" fill className="object-contain mix-blend-lighten" style={{ filter: 'contrast(1.5)' }} />
                             </div>
