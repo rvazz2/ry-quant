@@ -22,6 +22,8 @@ import {
     Trophy,
     User
 } from 'lucide-react';
+import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
+import { PokerChip } from '../ui/PokerChip';
 
 type TabType = 'slots' | 'tables' | 'electronic' | 'other' | 'reality';
 
@@ -1034,13 +1036,39 @@ function SlotsEngine({ onAction, balance, setBalance, playSound }: GameEnginePro
 }
 
 function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
+    type CardType = { suit: Suit; rank: Rank };
     const [gameState, setGameState] = useState<'betting' | 'playing' | 'result'>('betting');
-    const [playerHand, setPlayerHand] = useState<number[]>([]);
-    const [dealerHand, setDealerHand] = useState<number[]>([]);
+    const [playerHand, setPlayerHand] = useState<CardType[]>([]);
+    const [dealerHand, setDealerHand] = useState<CardType[]>([]);
     const [result, setResult] = useState('');
     const [isDealing, setIsDealing] = useState(false);
 
     const betSize = 50;
+
+    const getRandomCard = (): CardType => {
+        const suits: Suit[] = ['hearts', 'diamonds', 'clubs', 'spades'];
+        const ranks: Rank[] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        return {
+            suit: suits[Math.floor(Math.random() * suits.length)],
+            rank: ranks[Math.floor(Math.random() * ranks.length)]
+        };
+    };
+
+    const getCardValue = (card: CardType): number => {
+        if (card.rank === 'A') return 11;
+        if (['J', 'Q', 'K'].includes(card.rank)) return 10;
+        return parseInt(card.rank);
+    };
+
+    const getHandTotal = (hand: CardType[]): number => {
+        let total = hand.reduce((sum, card) => sum + getCardValue(card), 0);
+        let aces = hand.filter(c => c.rank === 'A').length;
+        while (total > 21 && aces > 0) {
+            total -= 10;
+            aces--;
+        }
+        return total;
+    };
 
     const startDeal = async () => {
         if (balance < betSize || isDealing) return;
@@ -1049,9 +1077,9 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngin
         onAction(-betSize);
         playSound('chip');
 
-        const p1 = Math.floor(Math.random() * 10) + 2;
-        const d1 = Math.floor(Math.random() * 10) + 2;
-        const p2 = Math.floor(Math.random() * 10) + 2;
+        const p1 = getRandomCard();
+        const d1 = getRandomCard();
+        const p2 = getRandomCard();
 
         setPlayerHand([p1]);
         playSound('deal');
@@ -1067,12 +1095,12 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngin
     };
 
     const hit = () => {
-        const card = Math.floor(Math.random() * 10) + 2;
+        const card = getRandomCard();
         const newHand = [...playerHand, card];
         setPlayerHand(newHand);
         playSound('deal');
 
-        if (newHand.reduce((a, b) => a + b, 0) > 21) {
+        if (getHandTotal(newHand) > 21) {
             setResult('BUST! (LOSE)');
             setGameState('result');
             playSound('loss');
@@ -1082,18 +1110,18 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngin
     const stand = async () => {
         setIsDealing(true);
         let dHand = [...dealerHand];
-        let dSum = dHand.reduce((a, b) => a + b, 0);
+        let dSum = getHandTotal(dHand);
 
         while (dSum < 17) {
-            const card = Math.floor(Math.random() * 10) + 2;
+            const card = getRandomCard();
             dHand.push(card);
-            dSum = dHand.reduce((a, b) => a + b, 0);
+            dSum = getHandTotal(dHand);
             setDealerHand([...dHand]);
             playSound('deal');
             await new Promise(r => setTimeout(r, 600));
         }
 
-        const pSum = playerHand.reduce((a, b) => a + b, 0);
+        const pSum = getHandTotal(playerHand);
         if (dSum > 21 || pSum > dSum) {
             setResult('YOU WIN! +$100');
             setBalance((b: number) => b + betSize * 2);
@@ -1113,54 +1141,70 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngin
     };
 
     return (
-        <div className="max-w-2xl w-full text-center">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                <div className="p-6 bg-slate-900 outline outline-2 outline-emerald-500/20 rounded-3xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Dealer&apos;s Hand</div>
-                    <div className="flex justify-center gap-2 h-24 items-center">
+        <div className="max-w-3xl w-full text-center">
+            {/* Chip Stacks */}
+            <div className="flex justify-center gap-4 mb-8">
+                <PokerChip value={100} count={3} size="md" />
+                <PokerChip value={25} count={2} size="md" />
+                <PokerChip value={5} count={5} size="md" />
+            </div>
+
+            {/* Table */}
+            <div className="p-10 bg-gradient-to-br from-emerald-900/30 to-green-950/50 rounded-[3rem] border-4 border-emerald-800/30 shadow-[0_0_60px_rgba(16,185,129,0.2)] mb-12 min-h-[400px] relative overflow-hidden">
+                {/* Felt Texture */}
+                <div className="absolute inset-0 opacity-10" style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234ade80' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+                }} />
+
+                {/* Dealer's Hand */}
+                <div className="relative z-10 mb-20">
+                    <div className="text-[10px] font-black text-emerald-300/60 uppercase tracking-widest mb-6">Dealer ({gameState === 'result' ? getHandTotal(dealerHand) : '?'})</div>
+                    <div className="flex justify-center gap-3 h-36 items-center">
                         {dealerHand.map((c, i) => (
-                            <div key={i} className="w-12 h-16 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold text-xl shadow-lg border-2 border-emerald-500/30">{c}</div>
+                            <PlayingCard key={i} suit={c.suit} rank={c.rank} size="md" />
                         ))}
-                        {gameState === 'playing' && <div className="w-12 h-16 bg-slate-800 rounded-lg flex items-center justify-center text-slate-600 font-bold text-xl border-2 border-dashed border-slate-700">?</div>}
+                        {gameState === 'playing' && <PlayingCard faceDown size="md" />}
                     </div>
                 </div>
-                <div className="p-6 bg-slate-900 outline outline-4 outline-emerald-500/40 rounded-3xl shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                    <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-4">Your Hand ({playerHand.reduce((a, b) => a + b, 0)})</div>
-                    <div className="flex justify-center gap-2 h-24 items-center">
+
+                {/* Player's Hand */}
+                <div className="relative z-10">
+                    <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-4">Your Hand ({getHandTotal(playerHand)})</div>
+                    <div className="flex justify-center gap-3 h-36 items-center">
                         {playerHand.map((c, i) => (
-                            <div key={i} className="w-12 h-16 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold text-xl shadow-lg">{c}</div>
+                            <PlayingCard key={i} suit={c.suit} rank={c.rank} size="md" />
                         ))}
                     </div>
                 </div>
             </div>
 
             {gameState === 'betting' && (
-                <button onClick={startDeal} className="px-12 py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-3xl uppercase tracking-[0.2em] transition-all shadow-[0_10px_30px_-5px_rgba(16,185,129,0.4)] active:scale-95">
+                <button onClick={startDeal} disabled={isDealing || balance < betSize} className="px-16 py-6 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-3xl uppercase tracking-[0.3em] transition-all shadow-[0_15px_40px_-10px_rgba(16,185,129,0.6)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
                     {isDealing ? 'Dealing...' : 'DEAL $50'}
                 </button>
             )}
 
             {gameState === 'playing' && (
-                <div className="flex justify-center gap-6">
-                    <button onClick={hit} className="px-10 py-4 bg-emerald-500/10 border-2 border-emerald-500 text-emerald-500 font-black rounded-2xl uppercase tracking-widest hover:bg-emerald-500/20 transition-all shadow-lg active:scale-95">Hit</button>
-                    <button onClick={stand} className="px-10 py-4 bg-slate-800 text-white font-black rounded-2xl uppercase tracking-widest hover:bg-slate-700 transition-all shadow-lg active:scale-95">Stand</button>
+                <div className="flex justify-center gap-8">
+                    <button onClick={hit} className="px-12 py-5 bg-emerald-500/10 hover:bg-emerald-500/20 border-4 border-emerald-500 text-emerald-500 font-black rounded-3xl uppercase tracking-widest transition-all shadow-[0_10px_30px_-5px_rgba(16,185,129,0.4)] active:scale-95">Hit</button>
+                    <button onClick={stand} className="px-12 py-5 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-3xl uppercase tracking-widest transition-all shadow-2xl active:scale-95">Stand</button>
                 </div>
             )}
 
             {gameState === 'result' && (
                 <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-6"
+                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    className="space-y-8"
                 >
-                    <div className={`text-5xl font-black italic tracking-tighter drop-shadow-xl ${result.includes('WIN') ? 'text-emerald-400' : 'text-red-500'}`}>{result}</div>
-                    <button onClick={() => setGameState('betting')} className="px-12 py-4 bg-slate-100 text-slate-950 hover:bg-white font-black rounded-2xl uppercase tracking-widest transition-all shadow-xl">Next Hand</button>
+                    <div className={`text-6xl font-black italic tracking-tighter drop-shadow-[0_0_20px_rgba(255,255,255,0.3)] ${result.includes('WIN') ? 'text-emerald-400' : 'text-red-500'}`}>{result}</div>
+                    <button onClick={() => { setPlayerHand([]); setDealerHand([]); setResult(''); setGameState('betting'); }} className="px-16 py-5 bg-white hover:bg-slate-100 text-slate-950 font-black rounded-3xl uppercase tracking-widest transition-all shadow-2xl active:scale-95">Next Hand</button>
                 </motion.div>
             )}
 
-            <div className="mt-12 p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/10 max-w-sm mx-auto">
-                <p className="text-xs text-slate-400">
-                    <strong>The 0.5% Trap:</strong> Even with &quot;perfect strategy,&quot; you are statically guaranteed to hit $0 if you stay at this table long enough.
+            <div className="mt-16 px-6 py-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10 max-w-lg mx-auto">
+                <p className="text-xs text-slate-400 leading-relaxed">
+                    <strong className="text-emerald-500">The 0.5% Trap:</strong> Even with &quot;perfect strategy,&quot; you are statistically guaranteed to hit $0 if you stay at this table long enough. The house always wins in the long run.
                 </p>
             </div>
         </div>
