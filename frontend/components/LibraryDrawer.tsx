@@ -39,7 +39,7 @@ export const LibraryDrawer = () => {
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}
                         transition={{ type: "spring", damping: 30, stiffness: 300 }}
-                        className="fixed top-0 right-0 bottom-0 w-full md:w-[600px] lg:w-[700px] bg-[#0d1117] border-l border-slate-800 shadow-2xl z-[95] flex flex-col"
+                        className="fixed top-0 right-0 bottom-0 w-full md:w-[85vw] lg:w-[90vw] bg-[#0d1117] border-l border-slate-800 shadow-2xl z-[95] flex flex-col"
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-6 border-b border-slate-800 bg-slate-900/50">
