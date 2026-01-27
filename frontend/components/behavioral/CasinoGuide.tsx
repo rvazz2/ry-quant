@@ -1697,10 +1697,21 @@ function PaiGowEngine({ onAction, balance, setBalance, playSound }: GameEnginePr
 }
 
 function VideoPokerEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
+    type CardType = { suit: Suit; rank: Rank };
+    const [hand, setHand] = useState<CardType[]>([]);
     const [isDealing, setIsDealing] = useState(false);
     const [result, setResult] = useState('');
 
     const betSize = 5;
+
+    const getRandomCard = (): CardType => {
+        const suits: Suit[] = ['hearts', 'diamonds', 'clubs', 'spades'];
+        const ranks: Rank[] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        return {
+            suit: suits[Math.floor(Math.random() * suits.length)],
+            rank: ranks[Math.floor(Math.random() * ranks.length)]
+        };
+    };
 
     const deal = async () => {
         if (balance < betSize || isDealing) return;
@@ -1710,6 +1721,14 @@ function VideoPokerEngine({ onAction, balance, setBalance, playSound }: GameEngi
         setBalance((b: number) => b - betSize);
         onAction(-betSize);
         playSound('chip');
+
+        // Generate 5 cards
+        const newHand: CardType[] = [];
+        for (let i = 0; i < 5; i++) {
+            newHand.push(getRandomCard());
+        }
+        setHand(newHand);
+        playSound('deal');
 
         await new Promise(r => setTimeout(r, 600));
 
@@ -1741,16 +1760,30 @@ function VideoPokerEngine({ onAction, balance, setBalance, playSound }: GameEngi
     return (
         <div className="max-w-md w-full text-center">
             <div className="bg-blue-900/10 border-4 border-blue-500/50 rounded-[3rem] p-10 mb-10 shadow-[0_0_40px_rgba(59,130,246,0.2)]">
-                <div className="grid grid-cols-5 gap-3 mb-12">
-                    {[1, 2, 3, 4, 5].map(i => (
-                        <motion.div
-                            key={i}
-                            animate={isDealing ? { rotateY: 180 } : { rotateY: 0 }}
-                            className="aspect-[2/3] bg-white rounded-xl flex items-center justify-center text-slate-950 font-black shadow-xl text-3xl border-2 border-blue-100"
-                        >
-                            {isDealing ? '' : '?'}
-                        </motion.div>
-                    ))}
+                <div className="flex justify-center gap-2 mb-12 h-40">
+                    <AnimatePresence mode="popLayout">
+                        {hand.length > 0 ? (
+                            hand.map((card, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, rotateY: 180, y: -30 }}
+                                    animate={{ opacity: 1, rotateY: 0, y: 0 }}
+                                    transition={{ delay: i * 0.1, type: 'spring', stiffness: 180 }}
+                                >
+                                    <PlayingCard suit={card.suit} rank={card.rank} size="sm" />
+                                </motion.div>
+                            ))
+                        ) : (
+                            [1, 2, 3, 4, 5].map(i => (
+                                <motion.div
+                                    key={i}
+                                    className="w-16 h-24 bg-blue-500/20 rounded-xl border-2 border-blue-500/40 flex items-center justify-center"
+                                >
+                                    <div className="text-blue-500/40 text-xl">?</div>
+                                </motion.div>
+                            ))
+                        )}
+                    </AnimatePresence>
                 </div>
                 <button
                     onClick={deal}
