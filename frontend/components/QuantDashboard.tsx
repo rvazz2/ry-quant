@@ -92,7 +92,7 @@ const QuantDashboard = () => {
             </div>
 
             <div className="border-t border-slate-800 pt-8">
-                <ErrorBoundary name="Macro War Room">
+                <ErrorBoundary name="Tharunomics">
                     <MacroWarRoom />
                 </ErrorBoundary>
             </div>

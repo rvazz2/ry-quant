@@ -27,7 +27,7 @@ const SidebarContent = () => {
             <NavItem href="/dashboard?view=overview" icon={<LayoutDashboard size={18} className="text-sky-400" />} label="Overview" />
             <NavItem href="/crypto" icon={<Bitcoin size={18} className="text-orange-400" />} label="Crypto Command" />
             <NavItem href="/research" icon={<Search size={18} className="text-violet-400" />} label="Stock Research" />
-            <NavItem href="/macro" icon={<Activity size={18} className="text-rose-400" />} label="Macro War Room" />
+            <NavItem href="/macro" icon={<Activity size={18} className="text-rose-400" />} label="Tharunomics" />
             <NavItem href="/valuation" icon={<Calculator size={18} className="text-emerald-400" />} label="Valuation Sandbox" />
 
             <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 mt-8 px-3 flex items-center justify-between">

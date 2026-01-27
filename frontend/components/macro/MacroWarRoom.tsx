@@ -54,7 +54,7 @@ const MacroWarRoom = () => {
                         <Globe className="text-purple-400" size={32} />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-100">Macro War Room</h1>
+                        <h1 className="text-3xl font-bold text-slate-100">Tharunomics</h1>
                         <p className="text-slate-400">Global economic indicators and recession signals.</p>
                     </div>
                 </div>
