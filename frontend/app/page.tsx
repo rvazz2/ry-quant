@@ -247,7 +247,7 @@ export default function LandingPage() {
             {[
               { title: "Institutional Data", icon: LineChart, desc: "Real-time market analytics used by hedge funds.", link: "/research", color: "text-cyan-400", bg: "bg-cyan-500/10", border: "hover:border-cyan-500/50" },
               { title: "Crypto Command", icon: Bitcoin, desc: "Live DeFi yields, whale alerts, and token analytics.", link: "/crypto", color: "text-amber-400", bg: "bg-amber-500/10", border: "hover:border-amber-500/50" },
-              { title: "Financial Literacy", icon: BookOpen, desc: "Test your knowledge with our Interactive Quiz.", link: "/mission#quiz", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "hover:border-emerald-500/50" },
+              { title: "Financial Literacy", icon: BookOpen, desc: "Test your knowledge with our Interactive Quiz.", link: "/dashboard?view=quiz", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "hover:border-emerald-500/50" },
               { title: "Algorithmic Tools", icon: Cpu, desc: "Tools to optimize your portfolio mathematically.", link: "/quant", color: "text-purple-400", bg: "bg-purple-500/10", border: "hover:border-purple-500/50" }
             ].map((feature, i) => (
               <Link

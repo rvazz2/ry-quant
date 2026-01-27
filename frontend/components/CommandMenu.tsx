@@ -78,7 +78,7 @@ export function CommandMenu() {
                             </Command.Item>
 
                             <Command.Item
-                                onSelect={() => runCommand(() => setLibraryOpen(true))}
+                                onSelect={() => runCommand(() => router.push("/dashboard?view=library"))}
                                 className="flex items-center gap-2 px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer aria-selected:bg-slate-800 aria-selected:text-white transition-colors"
                             >
                                 <BookOpen className="w-4 h-4 text-emerald-400" />

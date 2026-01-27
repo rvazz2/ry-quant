@@ -34,12 +34,8 @@ const SidebarContent = () => {
                 <span>Education & Sim</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
             </div>
-            <NavItem
-                onClick={() => setLibraryOpen(true)}
-                icon={<BookOpen size={18} className="text-lime-400" />}
-                label="Library"
-            />
-            <NavItem href="/mission" icon={<GraduationCap size={18} className="text-yellow-400" />} label="Financial Quiz" />
+            <NavItem href="/dashboard?view=library" icon={<BookOpen size={18} className="text-lime-400" />} label="Library" />
+            <NavItem href="/dashboard?view=quiz" icon={<GraduationCap size={18} className="text-yellow-400" />} label="Financial Quiz" />
             <NavItem href="/excel" icon={<FileSpreadsheet size={18} className="text-emerald-400" />} label="Excel Skills" />
             <NavItem href="/planning" icon={<BookOpen size={18} className="text-amber-400" />} label="Financial Planning" />
             <NavItem href="/simulator" icon={<Activity size={18} className="text-indigo-400" />} label="Trading Simulator" />
