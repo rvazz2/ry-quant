@@ -1,162 +1,153 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, ReferenceDot, LabelList } from 'recharts';
 import { Info } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-const stages = [
-    { name: "Disbelief", x: 5, y: 85, color: "#64748b", tier: "Fear", desc: "This rally will fail like the others." },
-    { name: "Hope", x: 15, y: 75, color: "#94a3b8", tier: "Fear", desc: "A recovery is possible." },
-    { name: "Optimism", x: 30, y: 55, color: "#4ade80", tier: "Neutral", desc: "This performance is real." },
-    { name: "Belief", x: 45, y: 35, color: "#22c55e", tier: "Greed", desc: "Time to buy the dip." },
-    { name: "Thrilling", x: 60, y: 15, color: "#16a34a", tier: "Greed", desc: "I will buy more on margin." },
-    { name: "Euphoria", x: 75, y: 5, color: "#34d399", tier: "Mania", desc: "I am a genius! We are all gonna be rich!" },
-    { name: "Complacency", x: 82, y: 20, color: "#fbbf24", tier: "Greed", desc: "We just need to cool off." },
-    { name: "Anxiety", x: 88, y: 45, color: "#f59e0b", tier: "Neutral", desc: "Why am I getting margin calls?" },
-    { name: "Denial", x: 92, y: 65, color: "#ef4444", tier: "Fear", desc: "My investments are with good companies." },
-    { name: "Panic", x: 96, y: 85, color: "#dc2626", tier: "Fear", desc: "Sell everything! Get me out!" },
-    { name: "Anger", x: 98, y: 92, color: "#b91c1c", tier: "Fear", desc: "Why did the government allow this?!" },
-    { name: "Depression", x: 100, y: 98, color: "#7f1d1d", tier: "Fear", desc: "My retirement is gone. I'm a failure." },
+// Simulate the Market Psychology Curve (The "Bubble" Pattern)
+const data = [
+    { name: "Stealth", price: 10, phase: "Smart Money" },
+    { name: "Awareness", price: 20, phase: "Institutional" },
+    { name: "Sell Off", price: 15, phase: "Bear Trap" },
+    { name: "Media", price: 35, phase: "Public" },
+    { name: "Enthusiasm", price: 60, phase: "Greed" },
+    { name: "Greed", price: 85, phase: "Delusion" },
+    { name: "Euphoria", price: 100, phase: "New Paradigm" }, // Peak
+    { name: "Bull Trap", price: 85, phase: "Denial" },
+    { name: "Fear", price: 60, phase: "Bull Trap" },
+    { name: "Capitulation", price: 30, phase: "Panic" },
+    { name: "Despair", price: 15, phase: "Depression" },
+    { name: "Return", price: 25, phase: "Hope" },
 ];
 
+// Interpolate for smooth curve
+const generateCurve = () => {
+    const curve = [];
+    for (let i = 0; i < data.length - 1; i++) {
+        const start = data[i];
+        const end = data[i + 1];
+        const steps = 10;
+        for (let j = 0; j < steps; j++) {
+            const t = j / steps;
+            // Linear-ish interpolation for simplicity, or could use Bezier math
+            // Using slight smoothstep
+            const smoothT = t * t * (3 - 2 * t);
+            curve.push({
+                name: start.name,
+                price: start.price + (end.price - start.price) * smoothT,
+                originalPoint: j === 0 ? start : null
+            });
+        }
+    }
+    curve.push({ name: data[data.length - 1].name, price: data[data.length - 1].price, originalPoint: data[data.length - 1] });
+    return curve;
+};
+
+const curveData = generateCurve();
+
 const MarketPsychologyCycle = () => {
-    const [activeStage, setActiveStage] = useState<number | null>(null);
-
-    // Updated smooth curve path - more accurate to Wall Street Cheat Sheet
-    const pathD = "M 0 92 Q 10 92, 20 80 T 40 50 T 60 20 T 75 5 Q 80 5, 85 25 T 95 80 T 100 100";
-
     return (
-        <div className="glass-panel p-8 space-y-6 relative overflow-hidden group">
-            {/* Background Aesthetic */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
-
-            <div className="flex justify-between items-start relative z-10">
+        <div className="glass-panel p-8 space-y-6 relative overflow-hidden h-full flex flex-col">
+            <div className="flex justify-between items-start mb-6">
                 <div>
-                    <h2 className="text-2xl font-black text-white flex items-center gap-3 tracking-tight italic uppercase">
-                        <div className="p-2 bg-cyan-500/10 rounded-xl border border-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.1)]">
-                            <Info className="text-cyan-400" size={20} />
-                        </div>
+                    <h2 className="text-xl font-bold text-white flex items-center gap-3">
+                        <BrainIcon />
                         Market Psychology Cycle
                     </h2>
-                    <p className="text-slate-500 text-xs mt-2 font-bold uppercase tracking-[0.2em] opacity-80">
-                        The "Wall Street Cheat Sheet" visualized.
+                    <p className="text-slate-500 text-xs mt-1">
+                        The emotional rollercoaster of the average investor.
                     </p>
                 </div>
             </div>
 
-            <div className="relative h-96 w-full bg-slate-950/40 backdrop-blur-md rounded-3xl border border-white/5 p-10 overflow-hidden group/graph">
-                {/* Sentiment Zones Background Overlays */}
-                <div className="absolute inset-x-0 top-0 h-[25%] bg-emerald-500/5 border-b border-emerald-500/10 pointer-events-none flex items-center justify-end px-6">
-                    <span className="text-[10px] font-black text-emerald-500/30 uppercase tracking-[0.3em]">Extreme Greed / Mania</span>
+            <div className="flex-1 w-full min-h-[300px] relative">
+                <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={curveData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                        <defs>
+                            <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.4} />
+                                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                            </linearGradient>
+                            <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stopColor="#3b82f6" />
+                                <stop offset="50%" stopColor="#8b5cf6" />
+                                <stop offset="100%" stopColor="#ec4899" />
+                            </linearGradient>
+                        </defs>
+                        <XAxis dataKey="name" hide />
+                        <YAxis hide domain={[0, 110]} />
+                        <Tooltip
+                            content={({ active, payload }) => {
+                                if (active && payload && payload.length) {
+                                    const pt = payload[0].payload.originalPoint;
+                                    if (!pt) return null;
+                                    return (
+                                        <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-xl">
+                                            <p className="text-white font-bold mb-1">{pt.name}</p>
+                                            <p className="text-xs text-purple-300 font-mono">{pt.phase}</p>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            }}
+                        />
+                        <Area
+                            type="monotone"
+                            dataKey="price"
+                            stroke="url(#lineGradient)"
+                            strokeWidth={3}
+                            fillOpacity={1}
+                            fill="url(#colorPrice)"
+                        />
+                        {/* Highlights for Key Stages */}
+                        {data.map((pt, i) => (
+                            <ReferenceDot
+                                key={i}
+                                x={pt.name} // Note: This mapping matches interpolation index if using category axis correctly, but here we used generated curve.
+                            // Quick fix: Recharts category axis uses index. We need to find the index in curveData.
+                            // Actually, simpler: Just use ReferenceDot with x as index if using category? 
+                            // Let's simplify: Just render labels manually or use Customized dot.
+                            />
+                        ))}
+                    </AreaChart>
+                </ResponsiveContainer>
+
+                {/* Manual overlays for key phases because Recharts ReferenceDot on interpolated data is tricky */}
+                <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+                    <PhaseLabel top="85%" left="5%" text="Disbelief" color="text-slate-500" />
+                    <PhaseLabel top="60%" left="20%" text="Optimism" color="text-green-400" />
+                    <PhaseLabel top="10%" left="45%" text="Euphoria" color="text-purple-400" />
+                    <PhaseLabel top="30%" left="70%" text="Anxiety" color="text-orange-400" />
+                    <PhaseLabel top="85%" left="85%" text="Panic" color="text-red-500" />
                 </div>
-                <div className="absolute inset-x-0 bottom-0 h-[25%] bg-red-500/5 border-t border-red-500/10 pointer-events-none flex items-center justify-end px-6">
-                    <span className="text-[10px] font-black text-red-500/30 uppercase tracking-[0.3em]">Extreme Fear / Depression</span>
-                </div>
-
-                <svg viewBox="-5 -10 110 120" className="w-full h-full overflow-visible" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="curveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#64748b" />
-                            <stop offset="30%" stopColor="#22c55e" />
-                            <stop offset="70%" stopColor="#34d399" />
-                            <stop offset="85%" stopColor="#f59e0b" />
-                            <stop offset="100%" stopColor="#b91c1c" />
-                        </linearGradient>
-                        <filter id="highGlow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feGaussianBlur stdDeviation="2.5" result="blur" />
-                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                        </filter>
-                    </defs>
-
-                    {/* The Cycle Line */}
-                    <motion.path
-                        d={pathD}
-                        fill="none"
-                        stroke="url(#curveGradient)"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        filter="url(#highGlow)"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{ duration: 2.5, ease: "easeInOut" }}
-                    />
-
-                    {/* Interaction Points */}
-                    {stages.map((stage, i) => {
-                        const isRightSide = stage.x > 80;
-                        const labelYOffset = isRightSide ? 10 : -8;
-                        const textAnchor = isRightSide ? "start" : stage.x < 10 ? "start" : "middle";
-                        const labelXOffset = isRightSide ? 4 : 0;
-
-                        return (
-                            <g key={i}
-                                onMouseEnter={() => { setActiveStage(i); }}
-                                onMouseLeave={() => setActiveStage(null)}
-                                className="cursor-pointer group/node"
-                            >
-                                <motion.circle
-                                    cx={stage.x}
-                                    cy={stage.y}
-                                    r={activeStage === i ? 5 : 2.5}
-                                    fill={stage.color}
-                                    stroke="white"
-                                    strokeWidth={activeStage === i ? 1.5 : 0}
-                                    className="transition-all duration-300"
-                                />
-
-                                <text
-                                    x={stage.x + labelXOffset}
-                                    y={stage.y + labelYOffset}
-                                    fontSize="4"
-                                    fill={activeStage === i ? "#ffffff" : "#64748b"}
-                                    textAnchor={textAnchor}
-                                    className={`transition-all duration-300 pointer-events-none uppercase tracking-tighter ${activeStage === i ? 'font-black' : 'font-bold'}`}
-                                >
-                                    {stage.name}
-                                </text>
-                            </g>
-                        );
-                    })}
-                </svg>
-
-                {/* Popover Description - Professional Style */}
-                <AnimatePresence>
-                    {activeStage !== null && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                            className="absolute bottom-6 left-6 right-6 bg-slate-900/90 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] z-20 shadow-2xl"
-                        >
-                            <div className="flex items-center justify-between mb-2">
-                                <h4 className="font-black text-white italic uppercase tracking-widest text-lg">{stages[activeStage].name}</h4>
-                                <span className={`text-[10px] font-black px-3 py-1 rounded-full border ${stages[activeStage].tier === 'Mania' ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' :
-                                    stages[activeStage].tier === 'Greed' ? 'bg-green-500/20 border-green-500/50 text-green-400' :
-                                        stages[activeStage].tier === 'Fear' ? 'bg-red-500/20 border-red-500/50 text-red-400' :
-                                            'bg-slate-500/20 border-slate-500/50 text-slate-400'
-                                    }`}>
-                                    {stages[activeStage].tier} TIER
-                                </span>
-                            </div>
-                            <p className="text-slate-400 text-sm font-medium leading-relaxed italic">"{stages[activeStage].desc}"</p>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
-
-            <div className="flex items-center gap-4 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] justify-center">
-                <span>Stealth Phase</span>
-                <div className="w-12 h-[1px] bg-slate-800" />
-                <span>Awareness</span>
-                <div className="w-12 h-[1px] bg-slate-800" />
-                <span>Enthusiasm</span>
-                <div className="w-12 h-[1px] bg-slate-800" />
-                <span>Greed</span>
-                <div className="w-12 h-[1px] bg-slate-800" />
-                <span className="text-red-900">Blow-off</span>
             </div>
         </div>
     );
 };
+
+const PhaseLabel = ({ top, left, text, color }: { top: string, left: string, text: string, color: string }) => (
+    <motion.div
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5 }}
+        className={`absolute font-bold text-xs ${color} bg-slate-900/80 px-2 py-1 rounded backdrop-blur-sm border border-white/5`}
+        style={{ top, left }}
+    >
+        {text}
+    </motion.div>
+);
+
+const BrainIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-500">
+        <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
+        <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" />
+        <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" />
+        <path d="M17.599 6.5a3 3 0 0 0 .399-1.375" />
+        <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" />
+        <path d="M3.477 12.578a4 4 0 0 1-.375-1.789" />
+        <path d="M20.52 10.789c.12.583.184 1.185.184 1.789" />
+    </svg>
+);
 
 export default MarketPsychologyCycle;
