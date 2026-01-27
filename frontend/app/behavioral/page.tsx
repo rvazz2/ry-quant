@@ -42,6 +42,10 @@ const BiasesCasino = dynamic(() => import('@/components/behavioral/BiasesCasino'
     loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
     ssr: false
 });
+const CasinoGuide = dynamic(() => import('@/components/behavioral/CasinoGuide'), {
+    loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
+    ssr: false
+});
 
 export default function BehavioralPage() {
     return (
@@ -91,6 +95,11 @@ export default function BehavioralPage() {
                     </div>
                     <div className="lg:col-span-4">
                         <InverseCramer />
+                    </div>
+
+                    {/* Full Width Section: Casino Guide */}
+                    <div className="lg:col-span-12 mt-12 bg-black/40 p-8 rounded-[3rem] border border-yellow-500/10">
+                        <CasinoGuide />
                     </div>
                 </div>
             </div>
