@@ -136,6 +136,7 @@ export function CasinoGuide() {
     const [activeTab, setActiveTab] = useState<TabType>('slots');
     const [activeGame, setActiveGame] = useState<string | null>(null);
     const [showGoggins, setShowGoggins] = useState(false);
+    const [isLockdown, setIsLockdown] = useState(false);
     const { playSound } = useCasinoSFX();
 
     // Session State
@@ -160,6 +161,16 @@ export function CasinoGuide() {
         }
     };
 
+    useEffect(() => {
+        if (isLockdown) {
+            document.body.classList.add('lockdown-active');
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.classList.remove('lockdown-active');
+            document.body.style.overflow = 'auto';
+        }
+    }, [isLockdown]);
+
     const calculation = useMemo(() => {
         const handsPerHour = 60;
         const avgHouseEdge = 0.015; // 1.5% blended
@@ -182,6 +193,84 @@ export function CasinoGuide() {
         { id: 'other', label: 'Other', icon: <MoreHorizontal size={18} /> },
         { id: 'reality', label: 'The Reality Check', icon: <AlertTriangle size={18} /> },
     ];
+
+    const renderElectronic = () => (
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 bg-cyan-500/10 rounded-2xl border border-cyan-500/20 shadow-[0_0_20px_rgba(34,211,238,0.1)]">
+                    <Gamepad2 className="text-cyan-500" size={28} />
+                </div>
+                <div>
+                    <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">Digital Churn</h4>
+                    <p className="text-slate-400 text-sm font-medium tracking-wide">High-speed terminal gaming designed for relentless volume.</p>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+                <button
+                    onClick={() => { setActiveGame('videopoker'); playSound('deal'); }}
+                    className="group relative p-8 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2.5rem] hover:border-cyan-500/40 transition-all overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="flex justify-between items-center relative z-10">
+                        <div className="flex-1">
+                            <span className="text-xs font-black text-cyan-500/60 uppercase tracking-[0.2em] mb-2 block">Skill-Based Trap</span>
+                            <h5 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">Video Poker</h5>
+                            <p className="text-sm text-slate-400 leading-relaxed font-medium max-w-xl">Unlike slots, this involves strategy. However, casinos often adjust pay tables (e.g., 8/5 vs 9/6) to maintain a lethal edge over time.</p>
+                        </div>
+                        <div className="w-12 h-12 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/5 group-hover:border-cyan-500/30 transition-all">
+                            <Gamepad2 size={24} className="text-cyan-500" />
+                        </div>
+                    </div>
+                </button>
+
+                <div className="p-8 bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2.5rem] relative overflow-hidden">
+                    <div className="flex items-start gap-4">
+                        <div className="mt-1 w-2 h-2 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.5)]" />
+                        <div>
+                            <h5 className="text-lg font-bold text-white mb-2 italic">Electronic Table Games (ETGs)</h5>
+                            <p className="text-sm text-slate-500 leading-relaxed font-medium">Stadium Gaming terminals where you play roulette or blackjack on a screen. Faster play cycles mean you hit the house edge more frequently per hour.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderOther = () => (
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 shadow-[0_0_20px_rgba(99,102,241,0.1)]">
+                    <MoreHorizontal className="text-indigo-500" size={28} />
+                </div>
+                <div>
+                    <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">Ancillary Options</h4>
+                    <p className="text-slate-400 text-sm font-medium tracking-wide">PVP rooms and high-margin distractions.</p>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                    { name: "Poker Rooms", desc: "Player vs Player. The house takes a 'rake' (fee) from every pot.", id: 'poker', icon: "🃏" },
+                    { name: "Sportsbooks", desc: "The 'Vig' (juice) makes winning long-term extremely difficult.", id: 'sports', icon: "🏈" },
+                    { name: "Keno / Bingo", desc: "The ultimate mathematical 'donation'. 25%+ house edge.", id: 'keno', icon: "🔢" }
+                ].map((o, i) => (
+                    <button
+                        key={i}
+                        onClick={() => { if (['poker', 'sports', 'keno'].includes(o.id)) { setActiveGame(o.id); playSound('click'); } }}
+                        className="group relative p-6 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] hover:border-indigo-500/40 transition-all overflow-hidden"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="relative z-10">
+                            <div className="text-2xl mb-4 group-hover:scale-110 transition-transform origin-left">{o.icon}</div>
+                            <h5 className="text-lg font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors uppercase tracking-tight">{o.name}</h5>
+                            <p className="text-xs text-slate-500 leading-relaxed font-medium">{o.desc}</p>
+                        </div>
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
 
     const renderSlots = () => (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -391,165 +480,224 @@ export function CasinoGuide() {
     );
 
     return (
-        <div className="max-w-6xl mx-auto">
-            {/* Header Section with Session Balance */}
-            <div className="mb-10 text-center relative">
-                <div className="absolute top-0 right-0 flex flex-col items-end gap-2">
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-2xl">
-                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter mb-1">Session Balance</div>
-                        <div className="text-xl font-mono font-bold text-emerald-400">${balance.toLocaleString()}</div>
+        <div className="max-w-6xl mx-auto relative">
+            {/* Base View (Hidden when in Lockdown for performance/cleanliness, but overlay covers it anyway) */}
+            <div className={`${isLockdown ? 'opacity-0 pointer-events-none' : 'opacity-100 transition-opacity duration-500'}`}>
+                {/* Header Section with Session Balance */}
+                <div className="mb-10 text-center relative">
+                    <div className="absolute top-0 right-0 flex flex-col items-end gap-2">
+                        <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-2xl">
+                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter mb-1">Session Balance</div>
+                            <div className="text-xl font-mono font-bold text-emerald-400">${balance.toLocaleString()}</div>
+                        </div>
+                        <div className="bg-slate-900 border border-slate-800 rounded-xl p-2 px-3 shadow-xl flex items-center gap-2">
+                            <TrendingDown size={12} className="text-red-500" />
+                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Lost</div>
+                            <div className="text-sm font-mono font-bold text-red-500">-${totalLost.toLocaleString()}</div>
+                        </div>
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-2 px-3 shadow-xl flex items-center gap-2">
-                        <TrendingDown size={12} className="text-red-500" />
-                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Lost</div>
-                        <div className="text-sm font-mono font-bold text-red-500">-${totalLost.toLocaleString()}</div>
+
+                    <div className="inline-flex p-3 bg-yellow-500/10 rounded-2xl mb-4 border border-yellow-500/20">
+                        <Dices className="text-yellow-500" size={32} />
+                    </div>
+                    <h2 className="text-5xl font-black text-white tracking-tight mb-2 italic">Ryans Casino</h2>
+                    <p className="text-2xl font-bold text-yellow-500/80 tracking-wide">"Good Luck,"</p>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-8">
+                    {/* Sidebar Tabs */}
+                    <div className="w-full lg:w-72 flex-shrink-0 space-y-3">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => { setActiveTab(tab.id as TabType); playSound('click'); }}
+                                className={`w-full flex items-center gap-4 px-6 py-5 rounded-[1.5rem] text-[10px] font-black transition-all border-2 uppercase tracking-[0.2em] relative overflow-hidden group ${activeTab === tab.id
+                                    ? tab.id === 'reality'
+                                        ? 'bg-red-500/10 border-red-500/50 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.15)]'
+                                        : 'bg-yellow-500/10 border-yellow-500/50 text-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.15)]'
+                                    : 'bg-slate-950/40 border-white/5 text-slate-500 hover:text-slate-300 hover:bg-slate-900/60 hover:border-white/10'
+                                    }`}
+                            >
+                                {activeTab === tab.id && (
+                                    <motion.div
+                                        layoutId="tab-glow"
+                                        className={`absolute inset-0 opacity-20 bg-gradient-to-r ${tab.id === 'reality' ? 'from-red-500' : 'from-yellow-500'} to-transparent`}
+                                    />
+                                )}
+                                <div className="relative z-10 flex items-center gap-4">
+                                    {tab.icon}
+                                    {tab.label}
+                                </div>
+                            </button>
+                        ))}
+
+                        <div className="mt-10 p-6 bg-slate-950 border border-slate-800 rounded-3xl hidden lg:block relative">
+                            <p className="text-xs text-slate-500 font-bold mb-4 uppercase tracking-tighter">Pro Tip</p>
+                            <p className="text-sm text-slate-400 leading-relaxed italic">
+                                "Many hotels like The Venetian offer free lessons at 10:00 AM. They teach you the rules because they know once you know how to play, you’re more likely to give them your money."
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Content Area */}
+                    <div className="flex-1 bg-slate-950/30 border border-slate-800/50 rounded-[2.5rem] p-8 min-h-[600px] backdrop-blur-sm">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeTab}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                {activeTab === 'slots' && renderSlots()}
+                                {activeTab === 'tables' && renderTables()}
+                                {activeTab === 'reality' && renderReality()}
+                                {activeTab === 'electronic' && renderElectronic()}
+                                {activeTab === 'other' && renderOther()}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
                 </div>
 
-                <div className="inline-flex p-3 bg-yellow-500/10 rounded-2xl mb-4 border border-yellow-500/20">
-                    <Dices className="text-yellow-500" size={32} />
+                {/* Hidden Reality Check Trigger at the absolute bottom */}
+                <div className="mt-32 pb-10 flex justify-center">
+                    <button
+                        onClick={() => {
+                            playSound('chip');
+                            // Pattern Interrupt: Flicker effect before Lockdown
+                            document.body.style.filter = 'invert(1)';
+                            setTimeout(() => {
+                                document.body.style.filter = 'none';
+                                setIsLockdown(true);
+                            }, 150);
+                        }}
+                        className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-[8px] font-black text-white/5 hover:text-white/40 hover:border-white/20 transition-all uppercase tracking-tighter opacity-10 hover:opacity-100"
+                    >
+                        RC
+                    </button>
                 </div>
-                <h2 className="text-5xl font-black text-white tracking-tight mb-2 italic">Ryans Casino</h2>
-                <p className="text-2xl font-bold text-yellow-500/80 tracking-wide">"Good Luck,"</p>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-8">
-                {/* Sidebar Tabs */}
-                <div className="w-full lg:w-72 flex-shrink-0 space-y-3">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => { setActiveTab(tab.id as TabType); playSound('click'); }}
-                            className={`w-full flex items-center gap-4 px-6 py-5 rounded-[1.5rem] text-[10px] font-black transition-all border-2 uppercase tracking-[0.2em] relative overflow-hidden group ${activeTab === tab.id
-                                ? tab.id === 'reality'
-                                    ? 'bg-red-500/10 border-red-500/50 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.15)]'
-                                    : 'bg-yellow-500/10 border-yellow-500/50 text-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.15)]'
-                                : 'bg-slate-950/40 border-white/5 text-slate-500 hover:text-slate-300 hover:bg-slate-900/60 hover:border-white/10'
-                                }`}
-                        >
-                            {activeTab === tab.id && (
+            {/* David Goggins Lockdown Mode Overlay */}
+            <AnimatePresence>
+                {isLockdown && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[500] bg-black overflow-y-auto custom-scrollbar flex flex-col"
+                    >
+                        {/* Inject styles to suppress the rest of the site */}
+                        <style>
+                            {`
+                                body.lockdown-active aside, 
+                                body.lockdown-active header, 
+                                body.lockdown-active main > header {
+                                    display: none !important;
+                                }
+                                body.lockdown-active main {
+                                    padding: 0 !important;
+                                    margin: 0 !important;
+                                    background: black !important;
+                                }
+                            `}
+                        </style>
+
+                        {/* Lockdown Header: Goggins + Stats + Personalized Jabs */}
+                        <div className="sticky top-0 z-50 bg-black border-b border-white/10 p-4 md:p-12 flex flex-col md:flex-row items-center justify-between gap-10">
+                            <div className="flex items-center gap-8">
                                 <motion.div
-                                    layoutId="tab-glow"
-                                    className={`absolute inset-0 opacity-20 bg-gradient-to-r ${tab.id === 'reality' ? 'from-red-500' : 'from-yellow-500'} to-transparent`}
-                                />
-                            )}
-                            <div className="relative z-10 flex items-center gap-4">
-                                {tab.icon}
-                                {tab.label}
+                                    initial={{ scale: 0.5, rotate: -10 }}
+                                    animate={{ scale: 1, rotate: 0 }}
+                                    className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-white/10 shadow-[0_0_50px_rgba(255,255,255,0.1)] flex-shrink-0"
+                                >
+                                    <img src="/assets/goggins.png" alt="Goggins" className="w-full h-full object-cover grayscale" />
+                                </motion.div>
+                                <div className="max-w-xl text-center md:text-left">
+                                    <h2 className="text-2xl md:text-4xl font-black text-rose-600 italic tracking-tighter uppercase mb-3">Stay Hard.</h2>
+                                    <p className="text-xs md:text-sm text-slate-400 font-bold uppercase tracking-[0.2em] leading-relaxed">
+                                        "Rigged loops don't care about your logic. The house edge is a mathematical certainty. Explain the failure of being here."
+                                    </p>
+                                </div>
                             </div>
-                        </button>
-                    ))}
 
-                    <div className="mt-10 p-6 bg-slate-950 border border-slate-800 rounded-3xl hidden lg:block relative">
-                        <p className="text-xs text-slate-500 font-bold mb-4 uppercase tracking-tighter">Pro Tip</p>
-                        <p className="text-sm text-slate-400 leading-relaxed italic">
-                            "Many hotels like The Venetian offer free lessons at 10:00 AM. They teach you the rules because they know once you know how to play, you’re more likely to give them your money."
-                        </p>
-                    </div>
-                </div>
+                            <div className="flex gap-6">
+                                <div className="bg-slate-900 border border-slate-800 rounded-[2rem] p-6 min-w-[180px] text-center shadow-2xl">
+                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">Live Bankroll</p>
+                                    <p className="text-3xl font-mono font-bold text-emerald-400">${balance.toLocaleString()}</p>
+                                </div>
+                                <div className="bg-slate-900 border border-slate-800 rounded-[2rem] p-6 min-w-[180px] text-center shadow-2xl border-red-500/20">
+                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">Total Decay</p>
+                                    <p className="text-3xl font-mono font-bold text-red-500">-${totalLost.toLocaleString()}</p>
+                                </div>
+                            </div>
 
-                {/* Content Area */}
-                <div className="flex-1 bg-slate-950/30 border border-slate-800/50 rounded-[2.5rem] p-8 min-h-[600px] backdrop-blur-sm">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeTab}
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            {activeTab === 'slots' && renderSlots()}
-                            {activeTab === 'tables' && renderTables()}
-                            {activeTab === 'reality' && renderReality()}
-                            {activeTab === 'electronic' && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                                    <div className="flex items-center gap-4 mb-8">
-                                        <div className="p-3 bg-cyan-500/10 rounded-2xl border border-cyan-500/20 shadow-[0_0_20px_rgba(34,211,238,0.1)]">
-                                            <Gamepad2 className="text-cyan-500" size={28} />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">Digital Churn</h4>
-                                            <p className="text-slate-400 text-sm font-medium tracking-wide">High-speed terminal gaming designed for relentless volume.</p>
-                                        </div>
+                            <button
+                                onClick={() => {
+                                    playSound('click');
+                                    setIsLockdown(false);
+                                }}
+                                className="px-10 py-5 bg-white text-black font-black uppercase tracking-[0.3em] hover:bg-zinc-200 transition-all rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                            >
+                                Stay Hard
+                            </button>
+                        </div>
+
+                        {/* Lockdown Floor */}
+                        <div className="flex-1 p-6 md:p-20 max-w-7xl mx-auto w-full mb-32">
+                            <div className="grid lg:grid-cols-12 gap-16">
+                                <div className="lg:col-span-4 space-y-6">
+                                    <div className="mb-10">
+                                        <p className="text-[11px] font-black text-rose-500 uppercase tracking-[0.4em] mb-2">Casino Lockdown</p>
+                                        <h3 className="text-3xl font-black text-white italic tracking-tighter uppercase">The Floor</h3>
                                     </div>
-
-                                    <div className="grid grid-cols-1 gap-4">
+                                    {tabs.map((tab) => (
                                         <button
-                                            onClick={() => { setActiveGame('videopoker'); playSound('deal'); }}
-                                            className="group relative p-8 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2.5rem] hover:border-cyan-500/40 transition-all overflow-hidden"
+                                            key={tab.id}
+                                            onClick={() => { setActiveTab(tab.id as TabType); playSound('click'); }}
+                                            className={`w-full flex items-center justify-between px-8 py-6 rounded-[2rem] text-[10px] font-black transition-all border-2 uppercase tracking-[0.2em] ${activeTab === tab.id
+                                                ? 'bg-white/10 border-white/40 text-white shadow-[0_0_30px_rgba(255,255,255,0.1)]'
+                                                : 'bg-transparent border-white/5 text-slate-600 hover:border-white/20'}`}
                                         >
-                                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                            <div className="flex justify-between items-center relative z-10">
-                                                <div className="flex-1">
-                                                    <span className="text-xs font-black text-cyan-500/60 uppercase tracking-[0.2em] mb-2 block">Skill-Based Trap</span>
-                                                    <h5 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">Video Poker</h5>
-                                                    <p className="text-sm text-slate-400 leading-relaxed font-medium max-w-xl">Unlike slots, this involves strategy. However, casinos often adjust pay tables (e.g., 8/5 vs 9/6) to maintain a lethal edge over time.</p>
-                                                </div>
-                                                <div className="w-12 h-12 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/5 group-hover:border-cyan-500/30 transition-all">
-                                                    <Gamepad2 size={24} className="text-cyan-500" />
-                                                </div>
-                                            </div>
+                                            <span className="flex items-center gap-4">{tab.icon} {tab.label}</span>
+                                            {activeTab === tab.id && <motion.div layoutId="lockdown-indicator" className="w-2 h-2 rounded-full bg-white shadow-[0_0_15px_white]" />}
                                         </button>
+                                    ))}
 
-                                        <div className="p-8 bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2.5rem] relative overflow-hidden">
-                                            <div className="flex items-start gap-4">
-                                                <div className="mt-1 w-2 h-2 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.5)]" />
-                                                <div>
-                                                    <h5 className="text-lg font-bold text-white mb-2 italic">Electronic Table Games (ETGs)</h5>
-                                                    <p className="text-sm text-slate-500 leading-relaxed font-medium">Stadium Gaming terminals where you play roulette or blackjack on a screen. Faster play cycles mean you hit the house edge more frequently per hour.</p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div className="mt-20 p-8 bg-zinc-900/50 border border-white/5 rounded-[2.5rem] opacity-40">
+                                        <p className="text-[10px] font-black text-slate-500 uppercase mb-4 tracking-widest">Mathematical Alert</p>
+                                        <p className="text-xs text-slate-400 italic leading-relaxed">
+                                            "The house edge is 1.25% blended. There is no precision in luck. Return to the data."
+                                        </p>
                                     </div>
                                 </div>
-                            )}
-                            {activeTab === 'other' && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                                    <div className="flex items-center gap-4 mb-8">
-                                        <div className="p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 shadow-[0_0_20px_rgba(99,102,241,0.1)]">
-                                            <MoreHorizontal className="text-indigo-500" size={28} />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">Ancillary Options</h4>
-                                            <p className="text-slate-400 text-sm font-medium tracking-wide">PVP rooms and high-margin distractions.</p>
-                                        </div>
+                                <div className="lg:col-span-8 bg-zinc-950/80 border border-white/5 rounded-[3rem] p-10 md:p-16 min-h-[700px] flex items-center justify-center shadow-inner relative overflow-hidden">
+                                    {/* Background Subtle Logo */}
+                                    <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none">
+                                        <Skull size={400} />
                                     </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {[
-                                            { name: "Poker Rooms", desc: "Player vs Player. The house takes a 'rake' (fee) from every pot.", id: 'poker', icon: "🃏" },
-                                            { name: "Sportsbooks", desc: "The 'Vig' (juice) makes winning long-term extremely difficult.", id: 'sports', icon: "🏈" },
-                                            { name: "Keno / Bingo", desc: "The ultimate mathematical 'donation'. 25%+ house edge.", id: 'keno', icon: "🔢" }
-                                        ].map((o, i) => (
-                                            <button
-                                                key={i}
-                                                onClick={() => { if (['poker', 'sports', 'keno'].includes(o.id)) { setActiveGame(o.id); playSound('click'); } }}
-                                                className="group relative p-6 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] hover:border-indigo-500/40 transition-all overflow-hidden"
-                                            >
-                                                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                <div className="relative z-10">
-                                                    <div className="text-2xl mb-4 group-hover:scale-110 transition-transform origin-left">{o.icon}</div>
-                                                    <h5 className="text-lg font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors uppercase tracking-tight">{o.name}</h5>
-                                                    <p className="text-xs text-slate-500 leading-relaxed font-medium">{o.desc}</p>
-                                                </div>
-                                            </button>
-                                        ))}
+                                    <div className="relative z-10 w-full flex justify-center">
+                                        {activeTab === 'slots' && renderSlots()}
+                                        {activeTab === 'tables' && renderTables()}
+                                        {activeTab === 'electronic' && renderElectronic()}
+                                        {activeTab === 'other' && renderOther()}
+                                        {activeTab === 'reality' && renderReality()}
                                     </div>
                                 </div>
-                            )}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
-            </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            {/* Goggins Reality Check Overlay */}
+            {/* David Goggins Reality Check Overlay (Existing Feature) */}
             <AnimatePresence>
                 {showGoggins && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-8 text-center overflow-hidden"
+                        className="fixed inset-0 z-[600] bg-black flex flex-col items-center justify-center p-8 text-center overflow-hidden"
                     >
                         <motion.div
                             initial={{ scale: 0.8, filter: 'grayscale(100%) brightness(0%)' }}
@@ -572,20 +720,14 @@ export function CasinoGuide() {
                         </div>
 
                         <div className="flex flex-col md:flex-row gap-6 mt-16 scale-110">
-                            <motion.button
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 10, duration: 0.5 }}
+                            <button
                                 onClick={() => setShowGoggins(false)}
                                 className="px-10 py-5 bg-white text-black font-black uppercase tracking-[0.3em] hover:bg-zinc-200 transition-colors rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.2)]"
                             >
                                 Stay Hard
-                            </motion.button>
+                            </button>
 
-                            <motion.button
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 11, duration: 0.5 }}
+                            <button
                                 onClick={() => {
                                     setShowGoggins(false);
                                     setActiveTab('slots');
@@ -594,20 +736,20 @@ export function CasinoGuide() {
                                 className="px-10 py-5 bg-transparent border-2 border-white/20 text-white font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-colors rounded-2xl"
                             >
                                 Play Casino Games
-                            </motion.button>
+                            </button>
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            {/* Reality Check Overlay */}
+            {/* Reality Check Modal */}
             <AnimatePresence>
                 {showRealityCheck && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md"
+                        className="fixed inset-0 z-[700] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md"
                     >
                         <motion.div
                             initial={{ scale: 0.9, y: 20 }}
@@ -617,33 +759,21 @@ export function CasinoGuide() {
                             <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <AlertTriangle className="text-red-500" size={32} />
                             </div>
-                            <h3 className="text-2xl font-black text-white mb-2">REALITY CHECK</h3>
+                            <h3 className="text-2xl font-black text-white mb-2 uppercase">Reality Check</h3>
                             <p className="text-slate-400 mb-6 font-medium">
-                                You just completed <span className="text-red-500 font-bold">{actionCount}</span> actions.
-                                In this session, the house edge has already "taxed" your bankroll by
-                                <span className="text-red-500 font-bold"> ${totalLost.toLocaleString()}</span>.
+                                You've executed <span className="text-red-500 font-bold">{actionCount}</span> actions.
+                                Mathematical erosion in progress: <span className="text-red-500 font-bold">-${totalLost.toLocaleString()}</span>.
                             </p>
 
-                            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-8">
-                                <p className="text-sm text-red-400 italic">
-                                    "The only way to win is to not play the Law of Large Numbers."
-                                </p>
+                            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-8 text-sm italic text-red-400">
+                                "The only way to win is to not play the Law of Large Numbers."
                             </div>
 
                             <div className="flex flex-col gap-3">
-                                <button
-                                    onClick={() => setShowRealityCheck(false)}
-                                    className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl transition-all uppercase tracking-widest shadow-lg shadow-red-600/20"
-                                >
-                                    I understand, keep playing
+                                <button onClick={() => setShowRealityCheck(false)} className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl transition-all uppercase tracking-widest">
+                                    Continue Play
                                 </button>
-                                <button
-                                    onClick={() => {
-                                        setShowRealityCheck(false);
-                                        setActiveGame(null);
-                                    }}
-                                    className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-black rounded-xl transition-all uppercase tracking-widest"
-                                >
+                                <button onClick={() => { setShowRealityCheck(false); setActiveGame(null); }} className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-black rounded-xl transition-all uppercase tracking-widest">
                                     Exit to Menu
                                 </button>
                             </div>
@@ -652,39 +782,34 @@ export function CasinoGuide() {
                 )}
             </AnimatePresence>
 
-            {/* Game Overlay Container */}
+            {/* Interactive Game Overlay */}
             <AnimatePresence>
                 {activeGame && (
                     <motion.div
                         initial={{ opacity: 0, y: "100%" }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: "100%" }}
-                        className="fixed inset-0 z-[80] bg-slate-950 flex flex-col"
+                        className="fixed inset-0 z-[550] bg-slate-950 flex flex-col"
                     >
-                        {/* Game Header */}
-                        <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-black/20">
-                            <div className="flex items-center gap-4">
-                                <div className="p-2 bg-yellow-500/10 rounded-lg">
-                                    <Dices className="text-yellow-500" size={24} />
+                        <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-xl">
+                            <div className="flex items-center gap-6">
+                                <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                                    <Dices className="text-emerald-500" size={24} />
                                 </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-white uppercase tracking-widest">{activeGame} Floor</h3>
-                                    <div className="flex items-center gap-4 mt-1">
-                                        <div className="text-xs font-mono text-emerald-400">Balance: ${balance.toLocaleString()}</div>
-                                        <div className="text-xs font-mono text-slate-500">Actions: {actionCount}</div>
+                                <div className="text-left">
+                                    <h3 className="text-lg font-black text-white uppercase tracking-[0.2em] italic">{activeGame} Floor</h3>
+                                    <div className="flex gap-4 mt-1">
+                                        <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-widest">Bankroll: ${balance.toLocaleString()}</span>
+                                        <span className="text-[10px] font-mono font-bold text-red-500 uppercase tracking-widest">Lost: -${totalLost.toLocaleString()}</span>
                                     </div>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => setActiveGame(null)}
-                                className="p-2 hover:bg-red-500/10 rounded-xl text-red-500 transition-all hover:text-red-400"
-                            >
-                                <X size={24} />
+                            <button onClick={() => setActiveGame(null)} className="p-3 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-full transition-all">
+                                <X size={28} />
                             </button>
                         </div>
 
-                        {/* Game Engine Space */}
-                        <div className="flex-1 p-6 flex items-center justify-center">
+                        <div className="flex-1 overflow-y-auto p-8 flex items-center justify-center bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/5 via-transparent to-transparent">
                             {activeGame === 'slots' && <SlotsEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                             {activeGame === 'blackjack' && <BlackjackEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                             {activeGame === 'roulette' && <RouletteEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
@@ -694,29 +819,16 @@ export function CasinoGuide() {
                             {activeGame === 'videopoker' && <VideoPokerEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                             {activeGame === 'keno' && <KenoEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                             {['poker', 'sports'].includes(activeGame as string) && (
-                                <div className="text-center">
-                                    <div className="text-4xl font-black text-slate-700 mb-4 opacity-50 uppercase tracking-tighter italic select-none">Social Lobby</div>
-                                    <p className="text-slate-500 text-lg">The {activeGame?.toUpperCase()} area is for people-watching. The house edge is in the 'rake' or 'vig', not the game logic itself.</p>
+                                <div className="text-center max-w-lg">
+                                    <Skull size={100} className="mx-auto mb-8 text-slate-800 opacity-20" />
+                                    <h4 className="text-4xl font-black text-slate-700 uppercase italic tracking-tighter mb-4">Under Construction</h4>
+                                    <p className="text-slate-500 text-lg font-medium italic">"The psychology of the PVP room is being mapped. Data indicates the house always finds the rake."</p>
                                 </div>
                             )}
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
-
-            {/* Hidden Reality Check Trigger at the absolute bottom */}
-            <div className="mt-32 pb-10 flex justify-center">
-                <button
-                    onClick={() => {
-                        playSound('chip');
-                        // Animation sequence: Briefly flash the casino UI red before Goggins hits
-                        setTimeout(() => setShowGoggins(true), 200);
-                    }}
-                    className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-[8px] font-black text-white/5 hover:text-white/40 hover:border-white/20 transition-all uppercase tracking-tighter opacity-10 hover:opacity-100"
-                >
-                    RC
-                </button>
-            </div>
         </div>
     );
 }
