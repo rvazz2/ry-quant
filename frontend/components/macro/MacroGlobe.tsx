@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useRef, useMemo, useState, useEffect } from "react";
+import React, { useRef, useMemo, useState, useEffect, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Html, Stars, QuadraticBezierLine } from "@react-three/drei";
+import { OrbitControls, Html, Stars, QuadraticBezierLine, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { Loader2, Maximize2, X, Minimize2, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,12 +30,14 @@ function Beacon({ data }: { data: CountryData }) {
 
     // Position calc
     const position = useMemo(() => {
+        // Radius must match Earth radius (1) + slight elevation
+        const r = 1.0;
         const phi = (90 - data.lat) * (Math.PI / 180);
         const theta = (data.lon + 180) * (Math.PI / 180);
-        const x = -(Math.sin(phi) * Math.cos(theta));
-        const z = Math.sin(phi) * Math.sin(theta);
-        const y = Math.cos(phi);
-        return new THREE.Vector3(x, y, z).multiplyScalar(1.0);
+        const x = -(r * Math.sin(phi) * Math.cos(theta));
+        const z = r * Math.sin(phi) * Math.sin(theta);
+        const y = r * Math.cos(phi);
+        return new THREE.Vector3(x, y, z);
     }, [data.lat, data.lon]);
 
     const quaternion = useMemo(() => {
@@ -75,7 +77,7 @@ function Beacon({ data }: { data: CountryData }) {
 
             {/* City Label (Persistent - Dark Mode Style) */}
             <Html position={[0, 0.18, 0]} center transform sprite distanceFactor={10}>
-                <div className={`text-[6px] font-bold tracking-widest uppercase pointer-events-none select-none text-center whitespace-nowrap ${hovered ? 'text-white' : 'text-slate-400 opacity-70'}`}
+                <div className={`text-[6px] font-bold tracking-widest uppercase pointer-events-none select-none text-center whitespace-nowrap ${hovered ? 'text-white' : 'text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity'}`}
                     style={{ textShadow: "0px 1px 2px rgba(0,0,0,1)" }}>
                     {data.city}
                 </div>
@@ -83,7 +85,7 @@ function Beacon({ data }: { data: CountryData }) {
 
             {/* Hover Tooltip */}
             {hovered && (
-                <Html distanceFactor={1.5} position={[0, 0, 0.2]} style={{ pointerEvents: 'none' }}>
+                <Html distanceFactor={1.5} position={[0, 0, 0.3]} style={{ pointerEvents: 'none' }}>
                     <div className="bg-slate-900/95 text-white p-3 rounded-md border border-slate-700 text-xs w-48 backdrop-blur-md shadow-2xl z-50 select-none transform -translate-x-1/2 -translate-y-1/2">
                         <div className="font-bold mb-2 text-sm border-b border-slate-700 pb-1 flex justify-between items-center">
                             <span className="text-cyan-400">{data.city}, {data.code}</span>
@@ -96,7 +98,7 @@ function Beacon({ data }: { data: CountryData }) {
                             </span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-slate-400">Inflation:</span>
+                            <span className="text-slate-400">Inflation estimate:</span>
                             <span className={data.inflation < 3 ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
                                 {data.inflation}%
                             </span>
@@ -139,6 +141,11 @@ function DataArc({ startLat, startLon, endLat, endLon, color = "#0ea5e9" }: { st
 }
 
 function Earth() {
+    // Load Earth Texture - Using a high contrast dark map
+    const [colorMap] = useTexture([
+        'https://unpkg.com/three-globe/example/img/earth-night.jpg'
+    ]);
+
     const earthRef = useRef<THREE.Mesh>(null);
 
     useFrame((state) => {
@@ -149,36 +156,36 @@ function Earth() {
 
     return (
         <group>
-            {/* Dark Tech Sphere Core */}
+            {/* Textured Earth Sphere */}
             <mesh ref={earthRef}>
                 <sphereGeometry args={[1, 64, 64]} />
                 <meshPhongMaterial
-                    color="#0f172a"
-                    emissive="#020617"
-                    specular="#22d3ee"
-                    shininess={10}
-                    transparent={false}
+                    map={colorMap}
+                    color="#aaa" // Tint it slightly to match the scene if needed
+                    emissive="#111" // Slight self-illumination for cities in the texture
+                    specular="#222"
+                    shininess={5}
                 />
             </mesh>
 
-            {/* Cyan Cyber Grid Overlay */}
+            {/* Cyan Cyber Grid Overlay - Kept for style */}
             <mesh>
                 <sphereGeometry args={[1.002, 32, 32]} />
                 <meshBasicMaterial
                     color="#0ea5e9" // Cyan-500
                     wireframe={true}
                     transparent={true}
-                    opacity={0.15}
+                    opacity={0.1}
                 />
             </mesh>
 
             {/* Atmosphere Glow */}
-            <mesh scale={[1.2, 1.2, 1.2]}>
-                <sphereGeometry args={[1, 64, 64]} />
+            <mesh scale={[1.1, 1.1, 1.1]}>
+                <sphereGeometry args={[1, 32, 32]} />
                 <meshBasicMaterial
                     color="#38bdf8"
                     transparent
-                    opacity={0.06}
+                    opacity={0.05}
                     side={THREE.BackSide}
                     blending={THREE.AdditiveBlending}
                 />
@@ -192,12 +199,15 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
     const [loading, setLoading] = useState(true);
     const [isFullScreen, setIsFullScreen] = useState(false);
 
+    // Fallback to local if env not set
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const res = await fetch(`${API_URL}/api/macro/globe`);
+                // Ensure we handle trailing slashes correctly
+                const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
+                const res = await fetch(`${baseUrl}/api/macro/globe`);
                 if (!res.ok) throw new Error("Failed to fetch");
                 const json = await res.json();
                 setData(json);
@@ -208,6 +218,10 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
             }
         }
         fetchData();
+
+        // Refresh every minute
+        const interval = setInterval(fetchData, 60000);
+        return () => clearInterval(interval);
     }, [API_URL]);
 
     useEffect(() => {
@@ -289,9 +303,12 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
                 <pointLight position={[10, 10, 10]} intensity={2.0} color="#38bdf8" />
                 <pointLight position={[-10, 5, 2]} intensity={1.0} color="#c084fc" />
 
-                <Stars radius={100} depth={50} count={isFullScreen ? 5000 : 3000} factor={3} saturation={0} fade speed={0.5} />
+                <Stars radius={100} depth={50} count={isFullScreen ? 5000 : 3000} factor={4} saturation={0} fade speed={0.5} />
 
-                <Earth />
+                {/* Important: useTexture requires Suspense to handle loading */}
+                <Suspense fallback={null}>
+                    <Earth />
+                </Suspense>
 
                 <DataArc startLat={40.71} startLon={-74.00} endLat={51.50} endLon={-0.12} color="#0ea5e9" />
                 <DataArc startLat={51.50} startLon={-0.12} endLat={35.67} endLon={139.65} color="#0ea5e9" />
