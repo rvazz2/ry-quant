@@ -29,7 +29,7 @@ const QuantDashboard = dynamic(() => import('@/components/QuantDashboard'), {
 const SectorPerformance = dynamic(() => import('@/components/SectorPerformance'), {
     loading: () => <ShimmerSkeleton className="h-96 w-full rounded-xl" />
 });
-const FinancialQuiz = dynamic(() => import('@/components/mission/FinancialQuiz'), {
+const FinancialLiteracyDashboard = dynamic(() => import('@/components/mission/FinancialLiteracyDashboard'), {
     loading: () => <ShimmerSkeleton className="h-[600px] w-full rounded-xl" />
 });
 const LibraryContent = dynamic(() => import('@/components/library/LibraryContent'), {
@@ -96,7 +96,7 @@ function DashboardContent() {
 
                         {view === 'quiz' && (
                             <section>
-                                <FinancialQuiz />
+                                <FinancialLiteracyDashboard />
                             </section>
                         )}
 
