@@ -737,6 +737,18 @@ export function CasinoGuide() {
                                     </button>
                                 </div>
 
+                                {/* Casino Logo */}
+                                <div className="flex justify-center py-12 border-b border-white/5">
+                                    <motion.img
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.6, type: 'spring' }}
+                                        src="/ryans-casino-logo.png"
+                                        alt="Ryan's Casino"
+                                        className="w-64 h-64 drop-shadow-[0_0_50px_rgba(124,58,237,0.7)]"
+                                    />
+                                </div>
+
                                 {/* Lockdown Floor */}
                                 <div className="flex-1 p-6 md:p-20 max-w-7xl mx-auto w-full mb-32">
                                     <div className="grid lg:grid-cols-12 gap-16">
