@@ -141,9 +141,9 @@ function DataArc({ startLat, startLon, endLat, endLon, color = "#0ea5e9" }: { st
 }
 
 function Earth() {
-    // Load Earth Texture - Using a high contrast dark map
+    // Load Earth Texture - Using "Blue Marble" for clear day-lit visibility of countries
     const [colorMap] = useTexture([
-        'https://unpkg.com/three-globe/example/img/earth-night.jpg'
+        'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg'
     ]);
 
     const earthRef = useRef<THREE.Mesh>(null);
@@ -161,21 +161,21 @@ function Earth() {
                 <sphereGeometry args={[1, 64, 64]} />
                 <meshPhongMaterial
                     map={colorMap}
-                    color="#aaa" // Tint it slightly to match the scene if needed
-                    emissive="#111" // Slight self-illumination for cities in the texture
-                    specular="#222"
-                    shininess={5}
+                    color="#ddd" // Brighter base
+                    emissive="#111" // Slight glow
+                    specular="#333"
+                    shininess={15}
                 />
             </mesh>
 
-            {/* Cyan Cyber Grid Overlay - Kept for style */}
+            {/* Cyan Cyber Grid Overlay - Reduced opacity for better map visibility */}
             <mesh>
                 <sphereGeometry args={[1.002, 32, 32]} />
                 <meshBasicMaterial
                     color="#0ea5e9" // Cyan-500
                     wireframe={true}
                     transparent={true}
-                    opacity={0.1}
+                    opacity={0.08}
                 />
             </mesh>
 
@@ -299,9 +299,9 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
             )}
 
             <Canvas camera={{ position: [0, 0, isFullScreen ? 3.2 : 2.6], fov: 45 }}>
-                <ambientLight intensity={1.5} />
-                <pointLight position={[10, 10, 10]} intensity={2.0} color="#38bdf8" />
-                <pointLight position={[-10, 5, 2]} intensity={1.0} color="#c084fc" />
+                <ambientLight intensity={2.5} />
+                <pointLight position={[10, 10, 10]} intensity={3.0} color="#38bdf8" />
+                <pointLight position={[-10, 5, 2]} intensity={2.0} color="#c084fc" />
 
                 <Stars radius={100} depth={50} count={isFullScreen ? 5000 : 3000} factor={4} saturation={0} fade speed={0.5} />
 
