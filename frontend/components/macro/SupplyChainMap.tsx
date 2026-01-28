@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Network, Search, Zap, Globe, Cpu } from 'lucide-react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ZAxis, Cell } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer, ZAxis, Cell } from 'recharts';
 
 // Mock Data for "Apple Supply Chain"
 const mockNodes = [
@@ -15,10 +15,16 @@ const mockNodes = [
     { x: 10, y: 50, z: 100, name: "Sony (Cameras)", type: "Tier 1", fill: "#ec4899" }, // Japan
 ];
 
+interface SearchResult {
+    symbol: string;
+    name: string;
+    exch: string;
+}
+
 const SupplyChainMap = () => {
     const [ticker, setTicker] = useState("AAPL");
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<SearchResult[]>([]);
     const [showResults, setShowResults] = useState(false);
     const [nodes, setNodes] = useState(mockNodes);
 
@@ -52,7 +58,7 @@ const SupplyChainMap = () => {
         // Procedural generation of mock suppliers for demo purposes
         // In a real app, this would hit a specific supply chain API
         const newNodes = [
-            { x: 50, y: 50, z: 1000, name: `${symbol} (HQ)`, type: "OEM", fill: "#fff" }, // Center
+            { x: 50, y: 50, z: 1000, name: `${name} (HQ)`, type: "OEM", fill: "#fff" }, // Center
             { x: Math.random() * 80 + 10, y: Math.random() * 80 + 10, z: 500, name: "Key Supplier A", type: "Tier 1", fill: "#ef4444" },
             { x: Math.random() * 80 + 10, y: Math.random() * 80 + 10, z: 450, name: "Assembly Partner", type: "Tier 1", fill: "#f97316" },
             { x: Math.random() * 80 + 10, y: Math.random() * 80 + 10, z: 400, name: "Chip Fabs", type: "Tier 2", fill: "#3b82f6" },
@@ -177,11 +183,9 @@ const SupplyChainMap = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-3">
+                        <strong className="text-slate-200">Just-in-Time is Dead:</strong> For decades, efficiency meant zero inventory. COVID-19 killed that model. We are shifting to <span className="text-cyan-400">&quot;Just-in-Case&quot;</span>, where redundancy is priced in as an insurance premium against geopolitical entropy.
                         <p className="text-xs text-slate-400 leading-relaxed font-medium">
-                            <strong className="text-slate-200">Just-in-Time is Dead:</strong> For decades, efficiency meant zero inventory. COVID-19 killed that model. We are shifting to <span className="text-cyan-400">"Just-in-Case"</span>, where redundancy is priced in as an insurance premium against geopolitical entropy.
-                        </p>
-                        <p className="text-xs text-slate-400 leading-relaxed font-medium">
-                            The chart above isn't just logistics; it's a <span className="text-red-400">Heat Map of Geopolitical Risk</span>. A single node failure (e.g., TSMC blockade) creates a systemic cascade that no central bank can print their way out of.
+                            The chart above isn&apos;t just logistics; it&apos;s a <span className="text-red-400">Heat Map of Geopolitical Risk</span>. A single node failure (e.g., TSMC blockade) creates a systemic cascade that no central bank can print their way out of.
                         </p>
                     </div>
 
