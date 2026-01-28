@@ -117,7 +117,7 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                                 animate={{ x: 0 }}
                                 exit={{ x: "100%" }}
                                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                className="relative w-full max-w-md h-full bg-[#0f1115] border-l border-slate-700 shadow-2xl overflow-hidden flex flex-col z-10 pointer-events-auto"
+                                className="relative w-full max-w-2xl h-full bg-[#0f1115] border-l border-slate-700 shadow-2xl overflow-hidden flex flex-col z-10 pointer-events-auto"
                             >
                                 <div className="p-6 border-b border-slate-800/60 bg-slate-900/50 flex items-start justify-between">
                                     <div className="flex items-center gap-4">
@@ -131,7 +131,7 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                                     </div>
                                     <button
                                         onClick={() => setSelectedTopic(null)}
-                                        className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+                                        className="p-2 hover:bg-rose-500/10 rounded-lg text-rose-500 hover:text-rose-400 transition-colors"
                                     >
                                         <X size={20} />
                                     </button>
