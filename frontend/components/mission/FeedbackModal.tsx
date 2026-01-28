@@ -143,6 +143,20 @@ export default function FeedbackModal() {
                                     </div>
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-8">
+                                        {/* Performance Tip */}
+                                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 flex gap-3">
+                                            <div className="text-blue-400 shrink-0 mt-0.5">
+                                                <AlertCircle size={18} />
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="text-white font-medium mb-1">Experiencing lag or issues?</p>
+                                                <p className="text-slate-300">
+                                                    Try a hard refresh to clear the cache: <br />
+                                                    <span className="text-blue-200 font-mono">Ctrl + Shift + R</span> (Windows) or <span className="text-blue-200 font-mono">Cmd + Shift + R</span> (Mac)
+                                                </p>
+                                            </div>
+                                        </div>
+
                                         {/* Multiple Choice Questions */}
                                         {QUESTIONS.map((q) => (
                                             <div key={q.id} className="space-y-3">
@@ -156,8 +170,8 @@ export default function FeedbackModal() {
                                                             type="button"
                                                             onClick={() => handleInputChange(q.id, option)}
                                                             className={`px-4 py-3 rounded-lg text-sm text-left transition-all border ${formData[q.id] === option
-                                                                    ? 'bg-cyan-500/20 border-cyan-500/50 text-white shadow-[0_0_15px_rgba(6,182,212,0.2)]'
-                                                                    : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-200'
+                                                                ? 'bg-cyan-500/20 border-cyan-500/50 text-white shadow-[0_0_15px_rgba(6,182,212,0.2)]'
+                                                                : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-200'
                                                                 }`}
                                                         >
                                                             {option}
