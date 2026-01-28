@@ -17,13 +17,14 @@ import {
     PieChart,
     DollarSign,
     Wallet,
-    Building
+    Building,
+    LucideIcon
 } from 'lucide-react';
 
 export interface LibraryTopic {
     id: string;
     title: string;
-    icon: React.ElementType;
+    icon: LucideIcon;
     description: string;
     terms: {
         term: string;

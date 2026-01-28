@@ -107,30 +107,32 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
             )}
 
             <div className={`grid gap-4 ${isDrawer ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}>
-                {filteredTopics.map((topic) => (
-                    <motion.div
-                        key={topic.id}
-                        onClick={() => setSelectedTopic(topic)}
-                        className="group bg-slate-900/40 border border-slate-800/60 hover:border-cyan-500/30 rounded-xl p-5 cursor-pointer transition-all hover:bg-slate-800/60 hover:shadow-lg hover:shadow-cyan-900/10"
-                    >
-                        <div className="flex items-start justify-between mb-4">
-                            <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all duration-300">
-                                {/* @ts-ignore */}
-                                <topic.icon size={24} />
+                {filteredTopics.map((topic) => {
+                    const Icon = topic.icon;
+                    return (
+                        <motion.div
+                            key={topic.id}
+                            onClick={() => setSelectedTopic(topic)}
+                            className="group bg-slate-900/40 border border-slate-800/60 hover:border-cyan-500/30 rounded-xl p-5 cursor-pointer transition-all hover:bg-slate-800/60 hover:shadow-lg hover:shadow-cyan-900/10"
+                        >
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all duration-300">
+                                    <Icon size={24} />
+                                </div>
+                                <div className="bg-slate-800/50 px-2 py-1 rounded text-xs font-mono text-slate-500 group-hover:text-cyan-400/70 transition-colors">
+                                    {topic.terms.length} Terms
+                                </div>
                             </div>
-                            <div className="bg-slate-800/50 px-2 py-1 rounded text-xs font-mono text-slate-500 group-hover:text-cyan-400/70 transition-colors">
-                                {topic.terms.length} Terms
+
+                            <h3 className="text-lg font-semibold text-slate-200 group-hover:text-cyan-100 mb-2">{topic.title}</h3>
+                            <p className="text-sm text-slate-500 line-clamp-2">{topic.description}</p>
+
+                            <div className="mt-4 flex items-center text-xs font-medium text-cyan-500/70 group-hover:text-cyan-400 transition-colors">
+                                Explore Topic <ChevronRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform" />
                             </div>
-                        </div>
-
-                        <h3 className="text-lg font-semibold text-slate-200 group-hover:text-cyan-100 mb-2">{topic.title}</h3>
-                        <p className="text-sm text-slate-500 line-clamp-2">{topic.description}</p>
-
-                        <div className="mt-4 flex items-center text-xs font-medium text-cyan-500/70 group-hover:text-cyan-400 transition-colors">
-                            Explore Topic <ChevronRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                    </motion.div>
-                ))}
+                        </motion.div>
+                    );
+                })}
             </div>
 
             {mounted && createPortal(
@@ -154,19 +156,35 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                                 <div className="p-6 border-b border-slate-800/60 bg-slate-900/50 flex items-start justify-between">
                                     <div className="flex items-center gap-4">
                                         <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400">
-                                            {/* @ts-ignore */}
-                                            <selectedTopic.icon size={24} />
+                                            {(() => {
+                                                const SelectedIcon = selectedTopic.icon;
+                                                return <SelectedIcon size={24} />;
+                                            })()}
                                         </div>
                                         <div>
                                             <h2 className="text-xl font-bold text-white leading-tight">{selectedTopic.title}</h2>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={() => setSelectedTopic(null)}
-                                        className="p-2 hover:bg-rose-500/10 rounded-lg text-rose-500 hover:text-rose-400 transition-colors"
-                                    >
-                                        <X size={20} />
-                                    </button>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() => {
+                                                const url = new URL(window.location.href);
+                                                url.searchParams.set('topic', selectedTopic.id);
+                                                navigator.clipboard.writeText(url.toString());
+                                                // Could add quick toast notification here
+                                            }}
+                                            className="p-2 hover:bg-cyan-500/10 rounded-lg text-slate-500 hover:text-cyan-400 transition-colors"
+                                            title="Copy Link to Topic"
+                                        >
+                                            <Search size={18} className="rotate-90" />
+                                        </button>
+                                        <button
+                                            onClick={() => setSelectedTopic(null)}
+                                            className="p-2 hover:bg-rose-500/10 rounded-lg text-rose-500 hover:text-rose-400 transition-colors"
+                                        >
+                                            <X size={20} />
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="p-6 overflow-y-auto custom-scrollbar flex-1">

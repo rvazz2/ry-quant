@@ -148,27 +148,7 @@ const NavItem = React.memo(({ icon, label, href, view, onClick }: { icon: React.
     );
 });
 
-interface CommandItemProps {
-    icon: React.ReactNode;
-    label: string;
-    subLabel?: string;
-    href?: string;
-    onClick?: () => void;
-}
 
-const CommandItem = React.memo(({ icon, label, subLabel, href, onClick }: CommandItemProps) => (
-    <Link
-        href={href || "#"}
-        onClick={onClick}
-        className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-cyan-500/10 hover:border hover:border-cyan-500/20 hover:text-cyan-400 text-slate-300 transition-all duration-200 group cursor-pointer border border-transparent"
-    >
-        <div className="text-slate-500 group-hover:text-cyan-500 transition-colors">{icon}</div>
-        <div className="flex-1">
-            <div className="font-medium">{label}</div>
-            {subLabel && <div className="text-xs text-slate-500">{subLabel}</div>}
-        </div>
-    </Link>
-));
 
 const STATIC_PAGES = [
     { title: "Dashboard Overview", url: "/dashboard?view=overview", category: "Pages", icon: <LayoutDashboard size={18} /> },
@@ -205,6 +185,26 @@ const fuseOptions = {
     ],
     threshold: 0.3,
     ignoreLocation: true
+};
+
+const CommandItem = ({ icon, label, subLabel, href, onClick }: { icon: React.ReactNode, label: string, subLabel?: string, href?: string, onClick: () => void }) => {
+    return (
+        <button
+            onClick={onClick}
+            className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-white/5 group transition-all border border-transparent hover:border-white/5"
+        >
+            <div className="flex items-center gap-3 overflow-hidden">
+                <div className="text-slate-500 group-hover:text-cyan-400 transition-colors shrink-0">
+                    {icon}
+                </div>
+                <div className="flex flex-col items-start truncate">
+                    <span className="text-sm font-medium text-slate-200 group-hover:text-white truncate">{label}</span>
+                    {subLabel && <span className="text-xs text-slate-500 truncate group-hover:text-slate-400">{subLabel}</span>}
+                </div>
+            </div>
+            {href && <div className="hidden group-hover:flex text-[10px] bg-slate-800/80 px-1.5 py-0.5 rounded text-cyan-400 font-mono">JUMP</div>}
+        </button>
+    );
 };
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
