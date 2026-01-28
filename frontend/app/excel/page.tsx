@@ -685,7 +685,9 @@ export default function ExcelDashboard() {
           <div className="hidden md:flex items-center gap-4 text-sm text-slate-500">
             <span>v1.0.0</span>
             <span className="w-px h-4 bg-slate-700"></span>
-            <span>Dashboard</span>
+            <Link href="/dashboard" className="hover:text-emerald-400 transition-colors">
+              Dashboard
+            </Link>
           </div>
         </div>
       </header>
@@ -916,7 +918,7 @@ export default function ExcelDashboard() {
           </div>
         </div>
       </footer>
-    </div>
+    </div >
   );
 }
 
