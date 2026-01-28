@@ -1119,7 +1119,7 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngin
 
     const stand = async () => {
         setIsDealing(true);
-        let dHand = [...dealerHand];
+        const dHand = [...dealerHand];
         let dSum = getHandTotal(dHand);
 
         while (dSum < 17) {
@@ -1852,7 +1852,7 @@ function KenoEngine({ onAction, balance, setBalance, playSound }: GameEngineProp
         onAction(-betSize);
         playSound('spin');
 
-        let drawResults: number[] = [];
+        const drawResults: number[] = [];
         for (let i = 0; i < 15; i++) {
             let num;
             do { num = Math.floor(Math.random() * 80) + 1; } while (drawResults.includes(num));

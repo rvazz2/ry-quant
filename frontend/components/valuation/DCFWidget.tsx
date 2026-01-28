@@ -82,7 +82,7 @@ const DCFWidget = ({ ticker }: { ticker: string }) => {
 
         let futureRevenue = baseRevenue;
         let sumPV = 0;
-        let proj = [];
+        const proj = [];
 
         // 5 Year Projection
         for (let i = 1; i <= 5; i++) {
