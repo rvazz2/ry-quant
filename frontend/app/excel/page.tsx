@@ -19,11 +19,13 @@ import {
   Code2,
   Lightbulb,
   X,
-  Keyboard
+  Keyboard,
+  Play
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import clsx from 'clsx';
+import ExcelSimulator from '@/components/guide/ExcelSimulator';
 
 type Level = 'Beginner' | 'Intermediate' | 'Advanced';
 
@@ -43,6 +45,7 @@ interface SkillItem {
   commonPitfalls?: string[];
   advancedTechniques?: string[];
   bestPractices?: string[];
+  simulation?: 'SUM' | 'VLOOKUP' | 'IF';
 }
 
 interface LevelData {
@@ -180,6 +183,7 @@ const roadmapData: LevelData[] = [
         scenario: "Calculating total sales for a column of monthly revenue.",
         exampleStr: "=SUM(B2:B12) or Alt + =",
         proTip: "Press F4 while typing a cell reference to toggle between Relative and Absolute locking ($).",
+        simulation: 'SUM',
         keyboardShortcuts: [
           { key: "Alt + =", description: "AutoSum (insert SUM formula)", mac: "Cmd + Shift + T" },
           { key: "F4", description: "Toggle absolute/relative reference ($)", mac: "F4" },
@@ -319,6 +323,7 @@ const roadmapData: LevelData[] = [
         scenario: "Assigning 'Bonus' if sales > $10,000, otherwise 'No Bonus'.",
         exampleStr: "=IF(B2>10000, \"Bonus\", \"No Bonus\")",
         proTip: "Wrap complex formulas in =IFERROR(formula, 0) to replace ugly #DIV/0! errors with clean zeros or dashes.",
+        simulation: 'IF',
         keyboardShortcuts: [
           { key: "Ctrl + Shift + A", description: "Insert function arguments after typing function name", mac: "Cmd + Shift + A" },
           { key: "F3", description: "Paste function", mac: "F3" },
@@ -358,6 +363,7 @@ const roadmapData: LevelData[] = [
         scenario: "You have specific Product IDs and need to fetch their Prices from a master Price List sheet.",
         exampleStr: "=XLOOKUP(lookup_value, lookup_array, return_array)",
         proTip: "XLOOKUP defaults to an exact match (unlike VLOOKUP), so you don't need to specify 'FALSE' or '0' at the end.",
+        simulation: 'VLOOKUP',
         keyboardShortcuts: [
           { key: "F3", description: "Paste defined name in formula", mac: "F3" },
           { key: "Ctrl + F3", description: "Define Name dialog", mac: "Cmd + F3" },
@@ -871,6 +877,16 @@ export default function ExcelDashboard() {
                             <span>{selectedSkill.exampleStr}</span>
                           </div>
                         </div>
+                      </div>
+                    )}
+
+                    {/* Interactive Simulator */}
+                    {selectedSkill.simulation && (
+                      <div>
+                        <h4 className="text-sm font-bold uppercase tracking-wider text-emerald-400 mb-2 flex items-center gap-2">
+                          <Play size={16} className="fill-emerald-400" /> Interactive Demo
+                        </h4>
+                        <ExcelSimulator type={selectedSkill.simulation} />
                       </div>
                     )}
 
