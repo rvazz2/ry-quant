@@ -47,6 +47,11 @@ const CasinoGuide = dynamic(() => import('@/components/behavioral/CasinoGuide').
     ssr: false
 });
 
+const PsychologyOfMoney = dynamic(() => import('@/components/behavioral/PsychologyOfMoney'), {
+    loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
+    ssr: false
+});
+
 export default function BehavioralPage() {
     return (
         <DashboardLayout>
@@ -95,6 +100,11 @@ export default function BehavioralPage() {
                     </div>
                     <div className="lg:col-span-4">
                         <InverseCramer />
+                    </div>
+
+                    {/* Full Width Section: Psychology of Money */}
+                    <div className="lg:col-span-12">
+                        <PsychologyOfMoney />
                     </div>
 
                     {/* Full Width Section: Casino Guide */}
