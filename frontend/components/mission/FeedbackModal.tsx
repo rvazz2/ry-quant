@@ -48,7 +48,7 @@ export default function FeedbackModal() {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/api/feedback/submit', {
+            const response = await fetch('/api/feedback/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
