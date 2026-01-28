@@ -60,7 +60,7 @@ export default function SimulatorPage() {
     const [successMessage, setSuccessMessage] = useState('');
 
     // UI State
-    const [showHistory, setShowHistory] = useState(false);
+    const [showHistory, setShowHistory] = useState(true);
     const [sortBy, setSortBy] = useState<'symbol' | 'value' | 'gain'>('value');
 
     // Load initial data
@@ -99,9 +99,11 @@ export default function SimulatorPage() {
     const fetchHistory = async () => {
         try {
             const res = await api.get('/simulator/history');
-            setHistory(res.data.history || []);
+            const historyData = res.data.history || [];
+            setHistory(historyData);
         } catch (e) {
             console.error("Failed to load history", e);
+            setHistory([]);
         }
     };
 
