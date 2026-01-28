@@ -26,6 +26,7 @@ import { PokerGame } from './PokerGame';
 import { SportsGame } from './SportsGame';
 import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
 import { PokerChip } from '../ui/PokerChip';
+import { RouletteWheel } from '../ui/RouletteWheel';
 
 type TabType = 'slots' | 'tables' | 'electronic' | 'other' | 'reality';
 
@@ -1268,11 +1269,17 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngin
     );
 }
 
+
+// Import at top of file needed? No, I'll just rely on Next.js/React resolution or I might need to add import at top.
+// Wait, I should add the import first if it's not there.
+// But this tool call is for replacing content. I will replace the function first.
+
 function RouletteEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     const [isSpinning, setIsSpinning] = useState(false);
     const [lastNumber, setLastNumber] = useState<number | null>(null);
     const [bet, setBet] = useState<'red' | 'black' | null>(null);
     const [result, setResult] = useState('');
+    const [targetNumber, setTargetNumber] = useState<number | null>(null);
 
     const betSize = 25;
 
@@ -1285,11 +1292,20 @@ function RouletteEngine({ onAction, balance, setBalance, playSound }: GameEngine
         onAction(-betSize);
         playSound('spin');
 
-        await new Promise(r => setTimeout(r, 1500));
-
+        // Determine result immediately
         const num = Math.floor(Math.random() * 38);
+        setTargetNumber(num);
+        // The animation will take care of the delay.
+    };
+
+    const handleSpinComplete = () => {
+        setIsSpinning(false);
+        const num = targetNumber;
+        if (num === null) return;
+
         setLastNumber(num);
 
+        // Logic check
         const isRed = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36].includes(num);
         const isBlack = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35].includes(num);
         const isGreen = num === 0 || num === 37;
@@ -1304,37 +1320,26 @@ function RouletteEngine({ onAction, balance, setBalance, playSound }: GameEngine
             setResult(isGreen ? 'HOUSE WINS (0/00)' : 'LOSE');
             playSound('loss');
         }
-
-        setIsSpinning(false);
     };
 
     return (
         <div className="max-w-md w-full text-center">
-            <div className={`w-56 h-56 rounded-full border-[12px] border-slate-900 mx-auto mb-16 flex items-center justify-center text-7xl font-black relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-slate-950 ${isSpinning ? 'animate-spin-slow' : ''}`}>
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent z-10" />
-                <div className={`absolute inset-0 ${isSpinning ? 'opacity-20 transition-opacity' : 'opacity-100'}`}>
-                    <div className="absolute inset-0 border-[20px] border-green-900/10 rounded-full" />
-                </div>
-                <motion.span
-                    key={lastNumber}
-                    initial={{ scale: 0.5, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className={`relative z-20 ${lastNumber === 0 || lastNumber === 37 ? 'text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]' : [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36].includes(lastNumber as number) ? 'text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]' : 'text-slate-200'}`}
-                >
-                    {lastNumber === 37 ? '00' : lastNumber ?? '?'}
-                </motion.span>
-            </div>
+            <RouletteWheel
+                isSpinning={isSpinning}
+                targetNumber={targetNumber}
+                onSpinComplete={handleSpinComplete}
+            />
 
             <div className="grid grid-cols-2 gap-6 mb-12">
                 <button
                     onClick={() => { setBet('red'); playSound('click'); }}
-                    className={`py-8 rounded-[2rem] border-4 transition-all font-black text-2xl uppercase tracking-[0.2em] relative overflow-hidden ${bet === 'red' ? 'bg-red-600 border-white shadow-[0_0_30px_rgba(239,68,68,0.5)] text-white' : 'bg-red-900/10 border-red-900/30 text-red-500/40 hover:bg-red-900/20'}`}
+                    className={`py-6 rounded-[2rem] border-4 transition-all font-black text-2xl uppercase tracking-[0.2em] relative overflow-hidden ${bet === 'red' ? 'bg-red-600 border-white shadow-[0_0_30px_rgba(239,68,68,0.5)] text-white' : 'bg-red-900/10 border-red-900/30 text-red-500/40 hover:bg-red-900/20'}`}
                 >
                     Red
                 </button>
                 <button
                     onClick={() => { setBet('black'); playSound('click'); }}
-                    className={`py-8 rounded-[2rem] border-4 transition-all font-black text-2xl uppercase tracking-[0.2em] relative overflow-hidden ${bet === 'black' ? 'bg-slate-900 border-white shadow-[0_0_30px_rgba(255,255,255,0.1)] text-white' : 'bg-slate-950 border-slate-900/50 text-slate-700 hover:bg-slate-900'}`}
+                    className={`py-6 rounded-[2rem] border-4 transition-all font-black text-2xl uppercase tracking-[0.2em] relative overflow-hidden ${bet === 'black' ? 'bg-slate-900 border-white shadow-[0_0_30px_rgba(255,255,255,0.1)] text-white' : 'bg-slate-950 border-slate-900/50 text-slate-700 hover:bg-slate-900'}`}
                 >
                     Black
                 </button>
@@ -1346,7 +1351,7 @@ function RouletteEngine({ onAction, balance, setBalance, playSound }: GameEngine
                 className={`w-full py-5 rounded-3xl font-black text-3xl uppercase tracking-[0.3em] transition-all active:scale-95 shadow-2xl ${isSpinning || !bet ? 'bg-slate-800 text-slate-600' : 'bg-yellow-500 hover:bg-yellow-400 text-slate-950'
                     }`}
             >
-                {isSpinning ? 'Spinning...' : 'SPIN $25'}
+                {isSpinning ? 'SPINNING...' : 'SPIN $25'}
             </button>
 
             <AnimatePresence>
@@ -1369,6 +1374,7 @@ function RouletteEngine({ onAction, balance, setBalance, playSound }: GameEngine
         </div>
     );
 }
+
 
 function CrapsEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     const [gameState, setGameState] = useState<'comeout' | 'point'>('comeout');
