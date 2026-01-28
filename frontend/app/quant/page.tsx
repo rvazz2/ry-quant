@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Brain, Sigma, Activity, TestTube, TrendingUp } from 'lucide-react';
+import QuickStatsCards from '@/components/quant/QuickStatsCards';
+import OptionsStrategyBuilder from '@/components/quant/OptionsStrategyBuilder';
+import CorrelationMatrix from '@/components/quant/CorrelationMatrix';
 
 const VolSurface = dynamic(() => import('@/components/quant/VolSurface'), {
     loading: () => <div className="h-96 w-full bg-slate-900/50 animate-pulse rounded-xl border border-slate-800" />,
@@ -37,6 +40,9 @@ export default function QuantPage() {
                         Advanced derivatives modeling, portfolio optimization, and algorithmic backtesting.
                     </p>
                 </header>
+
+                {/* Quick Stats */}
+                <QuickStatsCards />
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* 1. MPT Optimization (Efficient Frontier) */}
@@ -97,6 +103,16 @@ export default function QuantPage() {
                             <p className="text-slate-400 text-sm">Test your alpha against historical data.</p>
                         </div>
                         <Backtester />
+                    </div>
+
+                    {/* Options Strategy Builder */}
+                    <div className="col-span-1 lg:col-span-2">
+                        <OptionsStrategyBuilder />
+                    </div>
+
+                    {/* Correlation Matrix */}
+                    <div className="col-span-1 lg:col-span-2">
+                        <CorrelationMatrix />
                     </div>
 
                     {/* Placeholder for Monte Carlo (Link to Planning) */}
