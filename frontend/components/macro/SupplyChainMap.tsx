@@ -165,6 +165,50 @@ const SupplyChainMap = () => {
                     </div>
                 </div>
             </div>
+
+            {/* NEW: Tharunomics Insight Section */}
+            <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-5">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-purple-500/10 rounded-lg">
+                        <Globe size={18} className="text-purple-400" />
+                    </div>
+                    <h3 className="text-sm font-bold text-slate-200 uppercase tracking-widest">Tharunomics Insight: The Fragility Trap</h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                        <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                            <strong className="text-slate-200">Just-in-Time is Dead:</strong> For decades, efficiency meant zero inventory. COVID-19 killed that model. We are shifting to <span className="text-cyan-400">"Just-in-Case"</span>, where redundancy is priced in as an insurance premium against geopolitical entropy.
+                        </p>
+                        <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                            The chart above isn't just logistics; it's a <span className="text-red-400">Heat Map of Geopolitical Risk</span>. A single node failure (e.g., TSMC blockade) creates a systemic cascade that no central bank can print their way out of.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <div className="text-[10px] uppercase text-slate-500 font-bold mb-1">Baltic Dry Index</div>
+                            <div className="text-lg font-mono text-emerald-400">1,450</div>
+                            <div className="text-[9px] text-emerald-500/80 mt-1">-12% YTD (Deflationary signal)</div>
+                        </div>
+                        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <div className="text-[10px] uppercase text-slate-500 font-bold mb-1">Chip Lead Times</div>
+                            <div className="text-lg font-mono text-orange-400">14 wks</div>
+                            <div className="text-[9px] text-orange-500/80 mt-1">Normalizing (Pre-2020: 12wks)</div>
+                        </div>
+                        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <div className="text-[10px] uppercase text-slate-500 font-bold mb-1">Supplier Delivery</div>
+                            <div className="text-lg font-mono text-cyan-400">48.2</div>
+                            <div className="text-[9px] text-slate-500 mt-1">PMI Sub-index (Contraction &lt;50)</div>
+                        </div>
+                        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <div className="text-[10px] uppercase text-slate-500 font-bold mb-1">Global Pressure</div>
+                            <div className="text-lg font-mono text-yellow-400">0.45</div>
+                            <div className="text-[9px] text-yellow-500/80 mt-1">Std Dev above mean</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
