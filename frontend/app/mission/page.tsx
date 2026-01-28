@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { TrendingUp, ArrowRight, ShieldAlert, Clock, Wallet, GraduationCap, Zap } from 'lucide-react';
 import FinancialQuiz from '../../components/mission/FinancialQuiz';
 import PremiumCard from '../../components/ui/premium/PremiumCard';
+import FeedbackModal from '../../components/mission/FeedbackModal';
 
 
 export default function MissionPage() {
@@ -218,6 +219,11 @@ export default function MissionPage() {
                     >
                         Start Using Professional Tools
                     </Link>
+
+                    {/* Feedback Button */}
+                    <div className="mt-12">
+                        <FeedbackModal />
+                    </div>
                 </div>
 
             </main>
