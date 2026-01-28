@@ -19,6 +19,10 @@ const EconomicCalendar = dynamic(() => import('@/components/macro/EconomicCalend
     loading: () => <div className="h-96 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
     ssr: false
 });
+const SupplyChainMap = dynamic(() => import('@/components/macro/SupplyChainMap'), {
+    loading: () => <div className="h-96 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
+    ssr: false
+});
 
 export default function MacroPage() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,6 +102,11 @@ export default function MacroPage() {
                             <MacroGlobe />
                             <EconomicCalendar />
                         </div>
+                    </div>
+
+                    {/* Supply Chain Map */}
+                    <div className="pb-8">
+                        <SupplyChainMap />
                     </div>
                 </div>
             </DashboardLayout>
