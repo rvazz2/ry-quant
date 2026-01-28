@@ -109,11 +109,39 @@ class TradeRequest(BaseModel):
     quantity: int
     rationale: str = ""
 
+class OptionTradeRequest(BaseModel):
+    ticker: str
+    action: str
+    option_type: str  # CALL or PUT
+    strike: float
+    expiry: str  # YYYY-MM-DD
+    contracts: int
+    premium: float
+    rationale: str = ""
+
 @router.post("/analyst/trade")
 async def log_analyst_trade(request: TradeRequest):
     try:
         from services.analyst import log_trade
         return await asyncio.to_thread(log_trade, request.ticker, request.action, request.price, request.quantity, request.rationale)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/analyst/option-trade")
+async def log_analyst_option_trade(request: OptionTradeRequest):
+    try:
+        from services.analyst import log_option_trade
+        return await asyncio.to_thread(
+            log_option_trade,
+            request.ticker,
+            request.action,
+            request.option_type,
+            request.strike,
+            request.expiry,
+            request.contracts,
+            request.premium,
+            request.rationale
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -124,3 +152,4 @@ async def get_analyst_record():
         return await asyncio.to_thread(get_track_record)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+

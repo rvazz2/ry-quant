@@ -295,6 +295,20 @@ export const logTrade = async (trade: { ticker: string, action: string, price: n
     return res.data;
 };
 
+export const logOptionTrade = async (trade: {
+    ticker: string,
+    action: string,
+    option_type: string,
+    strike: number,
+    expiry: string,
+    contracts: number,
+    premium: number,
+    rationale: string
+}) => {
+    const res = await api.post('/quant/analyst/option-trade', trade);
+    return res.data;
+};
+
 export const getAnalystRecord = async () => {
     const res = await api.get('/quant/analyst/record');
     return res.data;
