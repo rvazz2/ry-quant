@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, BookOpen, LineChart, Cpu, Activity, Zap, Bitcoin, PlayCircle } from 'lucide-react';
+import { ArrowRight, BookOpen, LineChart, Cpu, Activity, Zap, Bitcoin, PlayCircle, Sun, Moon, Sunset, CloudSun } from 'lucide-react';
 
 // --- BioModal Component ---
 interface Student {
@@ -64,6 +64,22 @@ BioModal.displayName = 'BioModal';
 export default function LandingPage() {
   const router = useRouter();
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [timeOfDay, setTimeOfDay] = useState<'morning' | 'day' | 'evening' | 'night'>('night');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const updateTime = () => {
+      const hour = new Date().getHours();
+      if (hour >= 6 && hour < 10) setTimeOfDay('morning');
+      else if (hour >= 10 && hour < 17) setTimeOfDay('day');
+      else if (hour >= 17 && hour < 20) setTimeOfDay('evening');
+      else setTimeOfDay('night');
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, []);
 
   const students = useMemo(() => [
     {
@@ -84,15 +100,61 @@ export default function LandingPage() {
     }
   ], []);
 
+  // Use gradient definitions for the Chicago Moods
+  // Morning: Sunrise Lake Michigan (Oranges, Pinks, Light Blues)
+  // Day: Chicago Loop Midday (Deep Sky Blues, Clean Whites, Structural)
+  // Evening: Adler Planetarium Golden Hour (Purples, Golds, Deep Blues)
+  // Night: Cosmic (Dark, Navy, Black)
+
+  const backgroundGradients = {
+    morning: (
+      <>
+        <div className="absolute top-[-10%] left-[20%] w-[800px] h-[800px] bg-orange-500/20 rounded-full blur-[120px] animate-pulse opacity-50 transition-all duration-1000" />
+        <div className="absolute bottom-[0%] right-[10%] w-[600px] h-[600px] bg-blue-400/20 rounded-full blur-[100px] animate-pulse delay-700 opacity-40 transition-all duration-1000" />
+        <div className="absolute top-[20%] right-[20%] w-[400px] h-[400px] bg-rose-400/20 rounded-full blur-[100px] opacity-40 mix-blend-screen transition-all duration-1000" />
+      </>
+    ),
+    day: (
+      <>
+        <div className="absolute top-[-20%] left-[10%] w-[900px] h-[900px] bg-sky-500/20 rounded-full blur-[130px] animate-pulse opacity-40 transition-all duration-1000" />
+        <div className="absolute bottom-[-10%] right-[0%] w-[700px] h-[700px] bg-cyan-400/10 rounded-full blur-[120px] animate-pulse delay-500 opacity-40 transition-all duration-1000" />
+        <div className="absolute top-[30%] left-[40%] w-[500px] h-[500px] bg-white/5 rounded-full blur-[80px] opacity-60 mix-blend-overlay transition-all duration-1000" />
+      </>
+    ),
+    evening: (
+      <>
+        <div className="absolute top-[-10%] left-[0%] w-[800px] h-[800px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse opacity-50 transition-all duration-1000" />
+        <div className="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[100px] animate-pulse delay-700 opacity-40 transition-all duration-1000" />
+        <div className="absolute top-[40%] right-[30%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[120px] opacity-40 mix-blend-screen transition-all duration-1000" />
+      </>
+    ),
+    night: (
+      <>
+        <div className="absolute top-[-10%] left-[10%] w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px] animate-pulse opacity-40" />
+        <div className="absolute bottom-[0%] right-[5%] w-[500px] h-[500px] bg-purple-900/10 rounded-full blur-[120px] animate-pulse delay-700 opacity-40" />
+        <div className="absolute top-[40%] left-[40%] w-[800px] h-[800px] bg-cyan-900/5 rounded-full blur-[150px] animate-pulse delay-1000" />
+      </>
+    )
+  };
+
+  const getGreeting = () => {
+    switch (timeOfDay) {
+      case 'morning': return { text: "Chicago Sunrise", icon: <Sun size={14} className="text-orange-400" /> };
+      case 'day': return { text: "Live from the Loop", icon: <CloudSun size={14} className="text-sky-400" /> };
+      case 'evening': return { text: "Golden Hour View", icon: <Sunset size={14} className="text-amber-400" /> };
+      default: return { text: "Institutional Grade Analytics", icon: <Moon size={14} className="text-cyan-400" /> };
+    }
+  };
+
+  const greeting = getGreeting();
+
   return (
-    <div className="min-h-screen bg-transparent text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden relative">
+    <div className={`min-h-screen bg-transparent text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden relative transition-colors duration-1000`}>
       <BioModal student={selectedStudent} isOpen={!!selectedStudent} onClose={() => setSelectedStudent(null)} />
 
-      {/* Enhanced Detail Background Elements */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] animate-pulse opacity-40" />
-        <div className="absolute bottom-[0%] right-[5%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] animate-pulse delay-700 opacity-40" />
-        <div className="absolute top-[40%] left-[40%] w-[800px] h-[800px] bg-cyan-500/5 rounded-full blur-[150px] animate-pulse delay-1000" />
+      {/* Dynamic Time-Lapse Background */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0 transition-all duration-1000">
+        {mounted && backgroundGradients[timeOfDay]}
       </div>
 
       {/* Navbar */}
@@ -119,10 +181,10 @@ export default function LandingPage() {
         <div className="text-center max-w-5xl mx-auto mb-28 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-[11px] font-bold uppercase tracking-widest mb-10 hover:bg-cyan-900/40 transition-all cursor-default shadow-[0_0_20px_rgba(34,211,238,0.1)] hover:shadow-[0_0_25px_rgba(34,211,238,0.2)]">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${timeOfDay === 'morning' ? 'bg-orange-400' : timeOfDay === 'evening' ? 'bg-amber-400' : 'bg-cyan-400'}`}></span>
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${timeOfDay === 'morning' ? 'bg-orange-500' : timeOfDay === 'evening' ? 'bg-amber-500' : 'bg-cyan-500'}`}></span>
             </span>
-            Institutional Grade Analytics
+            {greeting.text}
           </div>
 
           <h1 className="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[0.95] drop-shadow-2xl">
