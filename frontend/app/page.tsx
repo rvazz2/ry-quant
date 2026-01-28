@@ -128,16 +128,16 @@ export default function LandingPage() {
         {mounted && (
           <>
             <div className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${timeOfDay === 'morning' ? 'opacity-100' : 'opacity-0'}`}>
-              <Image src="/hero/morning.png" alt="Chicago Sunrise" fill className="object-cover" priority />
+              <Image src="/hero/morning.png" alt="Chicago Sunrise" fill className="object-cover" priority={timeOfDay === 'morning'} />
             </div>
             <div className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${timeOfDay === 'day' ? 'opacity-100' : 'opacity-0'}`}>
-              <Image src="/hero/day.png" alt="Chicago Day" fill className="object-cover" priority />
+              <Image src="/hero/day.png" alt="Chicago Day" fill className="object-cover" priority={timeOfDay === 'day'} />
             </div>
             <div className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${timeOfDay === 'evening' ? 'opacity-100' : 'opacity-0'}`}>
-              <Image src="/hero/evening.png" alt="Chicago Evening" fill className="object-cover" priority />
+              <Image src="/hero/evening.png" alt="Chicago Evening" fill className="object-cover" priority={timeOfDay === 'evening'} />
             </div>
             <div className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${timeOfDay === 'night' ? 'opacity-100' : 'opacity-0'}`}>
-              <Image src="/hero/night.png" alt="Chicago Night" fill className="object-cover" priority />
+              <Image src="/hero/night.png" alt="Chicago Night" fill className="object-cover" priority={timeOfDay === 'night'} />
             </div>
 
             {/* Overlay Gradient for Readability */}

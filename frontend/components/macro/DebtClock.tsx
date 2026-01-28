@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { DollarSign, User, TrendingUp, AlertTriangle } from 'lucide-react';
+import { DollarSign, User, TrendingUp, AlertTriangle, LucideIcon } from 'lucide-react';
 
-const Card = ({ label, value, subtext, color = "red", icon: Icon }: { label: string, value: string, subtext?: string, color?: "red" | "green" | "white", icon: any }) => (
+const Card = ({ label, value, subtext, color = "red", icon: Icon }: { label: string, value: string, subtext?: string, color?: "red" | "green" | "white", icon: LucideIcon }) => (
     <div className="bg-slate-900/80 border border-slate-700/50 rounded-xl p-5 relative overflow-hidden group">
         <div className={`absolute top-0 left-0 w-1 h-full ${color === 'red' ? 'bg-red-500' : color === 'green' ? 'bg-emerald-500' : 'bg-slate-400'}`} />
         <div className="flex justify-between items-start mb-2">
