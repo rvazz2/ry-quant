@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { X, Send, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { api } from '@/lib/api';
+
 
 const QUESTIONS = [
     {
@@ -48,22 +50,14 @@ export default function FeedbackModal() {
         }
 
         try {
-            const response = await fetch('/api/feedback/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    q1_answer: formData.q1_answer || "Skipped",
-                    q2_answer: formData.q2_answer || "Skipped",
-                    q3_answer: formData.q3_answer || "Skipped",
-                    q4_answer: formData.q4_answer || "Skipped",
-                    open_feedback: formData.open_feedback || "",
-                    // email: "user@example.com" // Optional: Capture if logged in
-                }),
+            const response = await api.post('/feedback/submit', {
+                q1_answer: formData.q1_answer || "Skipped",
+                q2_answer: formData.q2_answer || "Skipped",
+                q3_answer: formData.q3_answer || "Skipped",
+                q4_answer: formData.q4_answer || "Skipped",
+                open_feedback: formData.open_feedback || "",
+                // email: "user@example.com" // Optional: Capture if logged in
             });
-
-            if (!response.ok) throw new Error('Failed to submit');
 
             setSubmitStatus('success');
             setTimeout(() => {
