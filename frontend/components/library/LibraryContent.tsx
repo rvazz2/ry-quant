@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { LIBRARY_TOPICS, LibraryTopic } from '@/lib/library-data';
 import { Search, BookOpen, ChevronRight, X } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
 
@@ -17,14 +18,45 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
     const [selectedTopic, setSelectedTopic] = useState<LibraryTopic | null>(null);
     const [mounted, setMounted] = useState(false);
 
+    const searchParams = useSearchParams();
+
     React.useEffect(() => {
         setMounted(true);
     }, []);
+
+    // Deep Linking Effect
+    React.useEffect(() => {
+        if (!mounted) return;
+
+        const topicId = searchParams.get('topic');
+        const termName = searchParams.get('term');
+
+        if (topicId) {
+            const foundTopic = LIBRARY_TOPICS.find(t => t.id === topicId);
+            if (foundTopic) {
+                setSelectedTopic(foundTopic);
+
+                // If there's a term, wait for modal to open/render then scroll to it
+                if (termName) {
+                    setTimeout(() => {
+                        const element = document.getElementById(`term-${termName.replace(/\s+/g, '-').toLowerCase()}`);
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            // Highlight effect
+                            element.classList.add('ring-2', 'ring-cyan-500', 'bg-cyan-900/40');
+                            setTimeout(() => element.classList.remove('ring-2', 'ring-cyan-500', 'bg-cyan-900/40'), 3000);
+                        }
+                    }, 500); // Small delay to ensure modal animation completes
+                }
+            }
+        }
+    }, [searchParams, mounted]);
 
     // Add Escape key handler for modal
     React.useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && selectedTopic) {
+                // Clear URL params on close logic could go here but might be annoying if navigating back
                 setSelectedTopic(null);
             }
         };
@@ -147,7 +179,11 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                                     </h3>
                                     <div className="space-y-4">
                                         {selectedTopic.terms.map((term, idx) => (
-                                            <div key={idx} className="bg-slate-900/30 border border-slate-800/50 rounded-xl p-4 hover:border-cyan-500/20 transition-colors">
+                                            <div
+                                                key={idx}
+                                                id={`term-${term.term.replace(/\s+/g, '-').toLowerCase()}`}
+                                                className="bg-slate-900/30 border border-slate-800/50 rounded-xl p-4 hover:border-cyan-500/20 transition-all duration-300"
+                                            >
                                                 <div className="flex items-baseline gap-2 mb-2">
                                                     <h4 className="text-base font-semibold text-cyan-100">{term.term}</h4>
                                                 </div>

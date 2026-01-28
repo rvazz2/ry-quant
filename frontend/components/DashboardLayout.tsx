@@ -3,13 +3,16 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { LayoutDashboard, TrendingUp, Activity, Calculator, Search, Settings, SquareTerminal, BookOpen, BrainCircuit, Bitcoin, Menu, X, GraduationCap, HardDrive, FileSpreadsheet } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Activity, Calculator, Search, Settings, SquareTerminal, BookOpen, BrainCircuit, Bitcoin, Menu, X, GraduationCap, HardDrive, FileSpreadsheet, Command, Zap, FileText } from 'lucide-react';
 import { SearchResult } from '@/lib/types';
 import MarketStatus from './MarketStatus';
 import ErrorBoundary from './ErrorBoundary';
 import { useSettings } from "@/contexts/SettingsContext";
 import ConnectionStatus from './ConnectionStatus';
 import { CosmicBackground } from './ui/CosmicBackground';
+import Fuse from 'fuse.js';
+import { LIBRARY_TOPICS } from '@/lib/library-data';
+import { useRouter } from 'next/navigation';
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -167,15 +170,56 @@ const CommandItem = React.memo(({ icon, label, subLabel, href, onClick }: Comman
     </Link>
 ));
 
+const STATIC_PAGES = [
+    { title: "Dashboard Overview", url: "/dashboard?view=overview", category: "Pages", icon: <LayoutDashboard size={18} /> },
+    { title: "Crypto Command", url: "/crypto", category: "Pages", icon: <Bitcoin size={18} /> },
+    { title: "Stock Research", url: "/research", category: "Pages", icon: <Search size={18} /> },
+    { title: "Tharunomics (Macro)", url: "/macro", category: "Pages", icon: <Activity size={18} /> },
+    { title: "Valuation Sandbox", url: "/valuation", category: "Pages", icon: <Calculator size={18} /> },
+    { title: "Knowledge Library", url: "/dashboard?view=library", category: "Pages", icon: <BookOpen size={18} /> },
+    { title: "Financial Quiz", url: "/dashboard?view=quiz", category: "Pages", icon: <GraduationCap size={18} /> },
+    { title: "Excel Skills", url: "/excel", category: "Pages", icon: <FileSpreadsheet size={18} /> },
+    { title: "Financial Planning", url: "/planning", category: "Pages", icon: <BookOpen size={18} /> },
+    { title: "Behavioral Engine", url: "/behavioral", category: "Pages", icon: <BrainCircuit size={18} /> },
+    { title: "Settings", url: "/settings", category: "Pages", icon: <Settings size={18} /> },
+    { title: "System Health", url: "/system", category: "Pages", icon: <HardDrive size={18} /> },
+];
+
+const GLOSSARY_ITEMS = LIBRARY_TOPICS.flatMap(topic =>
+    topic.terms.map(term => ({
+        title: term.term,
+        description: term.definition,
+        category: "Glossary",
+        url: `/dashboard?view=library&topic=${topic.id}&term=${encodeURIComponent(term.term)}`,
+        icon: <FileText size={18} />
+    }))
+);
+
+const STATIC_INDEX = [...STATIC_PAGES, ...GLOSSARY_ITEMS];
+
+const fuseOptions = {
+    keys: [
+        { name: 'title', weight: 0.7 },
+        { name: 'description', weight: 0.3 },
+        { name: 'category', weight: 0.2 }
+    ],
+    threshold: 0.3,
+    ignoreLocation: true
+};
+
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+    const router = useRouter();
     // Command Palette State
     const [isCmdKOpen, setIsCmdKOpen] = React.useState(false);
     const [searchQuery, setSearchQuery] = React.useState("");
-    const [searchResults, setSearchResults] = React.useState<SearchResult[]>([]);
+    const [searchResults, setSearchResults] = React.useState<any[]>([]); // Unified results
     const [searching, setSearching] = React.useState(false);
 
     // Mobile Nav State
     const [isMobileNavOpen, setIsMobileNavOpen] = React.useState(false);
+
+    // Fuse Instance
+    const [fuse] = React.useState(() => new Fuse(STATIC_INDEX, fuseOptions));
 
     // Toggle Cmd+K
     React.useEffect(() => {
@@ -191,34 +235,65 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
     // Search Logic
     React.useEffect(() => {
-        const delayDebounceFn = setTimeout(async () => {
-            if (searchQuery.length > 1) {
-                setSearching(true);
-                try {
-                    // Import dynamically to avoid circular dependency issues if any
-                    const { searchTickers } = await import('@/lib/api');
-                    const results = await searchTickers(searchQuery);
-                    setSearchResults(results);
-                } catch (error) {
-                    console.error("Search failed", error);
-                } finally {
-                    setSearching(false);
-                }
-            } else {
+        const performSearch = async () => {
+            if (searchQuery.length < 2) {
                 setSearchResults([]);
+                return;
             }
-        }, 300);
 
+            setSearching(true);
+
+            // 1. Static Search (Sync)
+            const staticResults = fuse.search(searchQuery).map(result => result.item);
+
+            // 2. Stock Search (Async)
+            let stockResults: any[] = [];
+            try {
+                const { searchTickers } = await import('@/lib/api');
+                const tickers = await searchTickers(searchQuery);
+                stockResults = tickers.map(t => ({
+                    title: t.symbol,
+                    description: t.name,
+                    category: 'Stocks',
+                    url: `/research?ticker=${t.symbol}`,
+                    icon: <Zap size={18} className="text-yellow-400" />
+                }));
+            } catch (error) {
+                console.error("API Search failed", error);
+            }
+
+            // Combine Results
+            // Sort order: Pages -> Stocks -> Glossary
+            const consolidated = [
+                ...staticResults.filter(r => r.category === 'Pages'),
+                ...stockResults,
+                ...staticResults.filter(r => r.category === 'Glossary')
+            ].slice(0, 50); // Limit total results for performance
+
+            setSearchResults(consolidated);
+            setSearching(false);
+        };
+
+        const delayDebounceFn = setTimeout(performSearch, 300);
         return () => clearTimeout(delayDebounceFn);
-    }, [searchQuery]);
+    }, [searchQuery, fuse]);
 
     const [mounted, setMounted] = React.useState(false);
     React.useEffect(() => {
         setMounted(true);
     }, []);
 
+    const handleSelect = (result: any) => {
+        setIsCmdKOpen(false);
+        if (result.category === 'Stocks') {
+            // For stocks, we might want a full page reload or handled by router if internal
+            router.push(result.url);
+        } else {
+            router.push(result.url);
+        }
+    };
+
     return (
-        // Added suppressHydrationWarning to handle potential server/client mismatches during dev
         <div suppressHydrationWarning className="min-h-screen bg-transparent text-slate-100 flex font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden">
             {/* Background Ambient Glow */}
             <CosmicBackground />
@@ -322,25 +397,20 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         className="absolute inset-0 bg-black/70 backdrop-blur-md animate-in fade-in duration-300"
                         onClick={() => setIsCmdKOpen(false)}
                     />
-                    <div className="relative w-full max-w-2xl bg-[#0f1115] border border-white/10 rounded-2xl shadow-2xl shadow-cyan-900/20 overflow-hidden animate-in zoom-in-95 duration-200 ring-1 ring-white/5">
-                        <div className="flex items-center border-b border-white/10 px-5 py-5">
-                            <Search className="text-cyan-500 mr-4" size={24} />
+                    <div className="relative w-full max-w-2xl bg-[#0f1115] border border-white/10 rounded-2xl shadow-2xl shadow-cyan-900/20 overflow-hidden animate-in zoom-in-95 duration-200 ring-1 ring-white/5 max-h-[70vh] flex flex-col">
+                        <div className="flex items-center border-b border-white/10 px-5 py-5 shrink-0">
+                            <Command className="text-cyan-500 mr-4" size={24} />
                             <input
                                 autoFocus
                                 type="text"
-                                placeholder="Search tickers, analysis tools, or execute commands..."
+                                placeholder="Search tickers, glossary terms, or pages..."
                                 className="flex-1 bg-transparent border-none outline-none text-slate-100 placeholder-slate-600 text-xl font-light"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         if (searchResults.length > 0) {
-                                            const first = searchResults[0];
-                                            setIsCmdKOpen(false);
-                                            window.location.href = `/research?ticker=${first.symbol}`;
-                                        } else if (searchQuery.length > 1) {
-                                            setIsCmdKOpen(false);
-                                            window.location.href = `/research?ticker=${searchQuery.toUpperCase()}`;
+                                            handleSelect(searchResults[0]);
                                         }
                                     }
                                 }}
@@ -348,55 +418,61 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                             <div className="text-[10px] font-bold text-slate-500 border border-slate-700/50 rounded px-2 py-1 bg-slate-800/50">ESC</div>
                         </div>
 
-                        <div className="max-h-[60vh] overflow-y-auto p-3 custom-scrollbar">
+                        <div className="overflow-y-auto p-2 custom-scrollbar flex-1">
                             {/* Quick Links (if no search) */}
                             {searchQuery.length < 2 && (
-                                <div className="space-y-1">
+                                <div className="space-y-1 p-2">
                                     <div className="px-3 py-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Suggested Tools</div>
                                     <CommandItem icon={<LayoutDashboard size={18} />} label="Overview" href="/dashboard?view=overview" onClick={() => setIsCmdKOpen(false)} />
                                     <CommandItem icon={<Search size={18} />} label="Stock Research" href="/research" onClick={() => setIsCmdKOpen(false)} />
                                     <CommandItem icon={<Bitcoin size={18} />} label="Crypto Command" href="/crypto" onClick={() => setIsCmdKOpen(false)} />
                                     <CommandItem icon={<Calculator size={18} />} label="Valuation Sandbox" href="/valuation" onClick={() => setIsCmdKOpen(false)} />
-                                    <CommandItem icon={<Activity size={18} />} label="Backtester" href="/dashboard?view=backtester" onClick={() => setIsCmdKOpen(false)} />
                                 </div>
                             )}
 
                             {/* Search Results */}
                             {searchQuery.length >= 2 && (
-                                <div className="space-y-1">
-                                    <div className="px-3 py-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Results</div>
-                                    {searching ? (
+                                <div className="space-y-4 p-2">
+                                    {searching && searchResults.length === 0 ? (
                                         <div className="px-4 py-12 flex flex-col items-center justify-center text-slate-500 gap-3">
                                             <div className="w-6 h-6 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
-                                            <span className="text-sm">Searching markets...</span>
+                                            <span className="text-sm">Searching ecosystem...</span>
                                         </div>
                                     ) : searchResults.length > 0 ? (
-                                        searchResults.map((result) => (
-                                            <CommandItem
-                                                key={result.symbol}
-                                                icon={<span className={`font-bold text-[10px] w-6 py-0.5 text-center rounded ${result.type === 'ETF' ? 'bg-purple-500/20 text-purple-300' : 'bg-cyan-500/20 text-cyan-300'}`}>{result.type === 'ETF' ? 'ETF' : 'STK'}</span>}
-                                                label={result.symbol}
-                                                subLabel={result.name}
-                                                href={`/research?ticker=${result.symbol}`}
-                                                onClick={() => {
-                                                    setIsCmdKOpen(false);
-                                                    window.location.href = `/research?ticker=${result.symbol}`;
-                                                }}
-                                            />
-                                        ))
+                                        <>
+                                            {/* Group by Category */}
+                                            {['Pages', 'Stocks', 'Glossary'].map(category => {
+                                                const items = searchResults.filter(r => r.category === category);
+                                                if (items.length === 0) return null;
+                                                return (
+                                                    <div key={category} className="space-y-1">
+                                                        <div className="px-3 py-1.5 text-[10px] font-bold text-slate-600 uppercase tracking-widest bg-slate-900/50 rounded md:w-fit">{category}</div>
+                                                        {items.map((result, idx) => (
+                                                            <CommandItem
+                                                                key={`${category}-${idx}`}
+                                                                icon={result.icon || <Search size={18} />}
+                                                                label={result.title}
+                                                                subLabel={result.description}
+                                                                onClick={() => handleSelect(result)}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                )
+                                            })}
+                                        </>
                                     ) : (
-                                        <div className="px-4 py-12 text-center text-slate-500 text-sm">No results found for &quot;{searchQuery}&quot;.</div>
+                                        !searching && <div className="px-4 py-12 text-center text-slate-500 text-sm">No results found for &quot;{searchQuery}&quot;.</div>
                                     )}
                                 </div>
                             )}
                         </div>
 
-                        <div className="bg-[#0a0a0c] border-t border-white/5 px-4 py-3 text-[10px] text-slate-600 flex justify-between items-center">
+                        <div className="bg-[#0a0a0c] border-t border-white/5 px-4 py-3 text-[10px] text-slate-600 flex justify-between items-center shrink-0">
                             <div className="flex gap-4">
                                 <span><strong className="text-slate-400">↑↓</strong> to navigate</span>
                                 <span><strong className="text-slate-400">↵</strong> to select</span>
                             </div>
-                            <span className="opacity-50">QuantDash Terminal v2.1</span>
+                            <span className="opacity-50">Global Index Active</span>
                         </div>
                     </div>
                 </div>
