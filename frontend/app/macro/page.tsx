@@ -6,6 +6,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { getMacroSummary, getYieldCurves } from '@/lib/api';
 import MacroIndicators from '@/components/macro/MacroIndicators';
 import { Globe, RefreshCw, TrendingDown } from 'lucide-react';
+import DebtClock from '@/components/macro/DebtClock';
 
 const YieldCurveChart = dynamic(() => import('@/components/macro/YieldCurveChart'), {
     loading: () => <div className="h-64 w-full bg-slate-900/50 animate-pulse rounded-xl" />,
@@ -80,6 +81,10 @@ export default function MacroPage() {
                     <div>
                         <h2 className="text-lg font-bold text-slate-200 mb-4 border-l-4 border-purple-500 pl-3">Key Commodities & Indices</h2>
                         <MacroIndicators data={summary} />
+                    </div>
+
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+                        <DebtClock />
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

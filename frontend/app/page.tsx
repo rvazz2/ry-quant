@@ -100,41 +100,12 @@ export default function LandingPage() {
     }
   ], []);
 
-  // Use gradient definitions for the Chicago Moods
-  // Morning: Sunrise Lake Michigan (Oranges, Pinks, Light Blues)
-  // Day: Chicago Loop Midday (Deep Sky Blues, Clean Whites, Structural)
-  // Evening: Adler Planetarium Golden Hour (Purples, Golds, Deep Blues)
-  // Night: Cosmic (Dark, Navy, Black)
-
-  const backgroundGradients = {
-    morning: (
-      <>
-        <div className="absolute top-[-10%] left-[20%] w-[800px] h-[800px] bg-orange-500/20 rounded-full blur-[120px] animate-pulse opacity-50 transition-all duration-1000" />
-        <div className="absolute bottom-[0%] right-[10%] w-[600px] h-[600px] bg-blue-400/20 rounded-full blur-[100px] animate-pulse delay-700 opacity-40 transition-all duration-1000" />
-        <div className="absolute top-[20%] right-[20%] w-[400px] h-[400px] bg-rose-400/20 rounded-full blur-[100px] opacity-40 mix-blend-screen transition-all duration-1000" />
-      </>
-    ),
-    day: (
-      <>
-        <div className="absolute top-[-20%] left-[10%] w-[900px] h-[900px] bg-sky-500/20 rounded-full blur-[130px] animate-pulse opacity-40 transition-all duration-1000" />
-        <div className="absolute bottom-[-10%] right-[0%] w-[700px] h-[700px] bg-cyan-400/10 rounded-full blur-[120px] animate-pulse delay-500 opacity-40 transition-all duration-1000" />
-        <div className="absolute top-[30%] left-[40%] w-[500px] h-[500px] bg-white/5 rounded-full blur-[80px] opacity-60 mix-blend-overlay transition-all duration-1000" />
-      </>
-    ),
-    evening: (
-      <>
-        <div className="absolute top-[-10%] left-[0%] w-[800px] h-[800px] bg-purple-600/20 rounded-full blur-[120px] animate-pulse opacity-50 transition-all duration-1000" />
-        <div className="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[100px] animate-pulse delay-700 opacity-40 transition-all duration-1000" />
-        <div className="absolute top-[40%] right-[30%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[120px] opacity-40 mix-blend-screen transition-all duration-1000" />
-      </>
-    ),
-    night: (
-      <>
-        <div className="absolute top-[-10%] left-[10%] w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px] animate-pulse opacity-40" />
-        <div className="absolute bottom-[0%] right-[5%] w-[500px] h-[500px] bg-purple-900/10 rounded-full blur-[120px] animate-pulse delay-700 opacity-40" />
-        <div className="absolute top-[40%] left-[40%] w-[800px] h-[800px] bg-cyan-900/5 rounded-full blur-[150px] animate-pulse delay-1000" />
-      </>
-    )
+  // Use generated Chicago images for the Chicago Moods
+  const backgroundImages = {
+    morning: "/hero/morning.png",
+    day: "/hero/day.png",
+    evening: "/hero/evening.png",
+    night: "/hero/night.png"
   };
 
   const getGreeting = () => {
@@ -149,12 +120,30 @@ export default function LandingPage() {
   const greeting = getGreeting();
 
   return (
-    <div className={`min-h-screen bg-transparent text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden relative transition-colors duration-1000`}>
+    <div className={`min-h-screen bg-slate-950 text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden relative`}>
       <BioModal student={selectedStudent} isOpen={!!selectedStudent} onClose={() => setSelectedStudent(null)} />
 
-      {/* Dynamic Time-Lapse Background */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0 transition-all duration-1000">
-        {mounted && backgroundGradients[timeOfDay]}
+      {/* Dynamic Time-Lapse Background Images */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        {mounted && (
+          <>
+            <div className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${timeOfDay === 'morning' ? 'opacity-100' : 'opacity-0'}`}>
+              <Image src="/hero/morning.png" alt="Chicago Sunrise" fill className="object-cover" priority />
+            </div>
+            <div className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${timeOfDay === 'day' ? 'opacity-100' : 'opacity-0'}`}>
+              <Image src="/hero/day.png" alt="Chicago Day" fill className="object-cover" priority />
+            </div>
+            <div className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${timeOfDay === 'evening' ? 'opacity-100' : 'opacity-0'}`}>
+              <Image src="/hero/evening.png" alt="Chicago Evening" fill className="object-cover" priority />
+            </div>
+            <div className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${timeOfDay === 'night' ? 'opacity-100' : 'opacity-0'}`}>
+              <Image src="/hero/night.png" alt="Chicago Night" fill className="object-cover" priority />
+            </div>
+
+            {/* Overlay Gradient for Readability */}
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/90" />
+          </>
+        )}
       </div>
 
       {/* Navbar */}
