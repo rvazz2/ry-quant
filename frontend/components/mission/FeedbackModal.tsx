@@ -84,7 +84,7 @@ export default function FeedbackModal() {
             {/* Trigger Button - Fixed Floating */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-8 right-8 z-[90] group inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-full transition-all border border-white/10 hover:border-cyan-500/50 shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+                className="fixed bottom-8 right-8 z-[9999] group inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-full transition-all border border-white/10 hover:border-cyan-500/50 shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
             >
                 <div className="relative">
                     <MessageSquare size={20} className="group-hover:text-cyan-400 transition-colors" />

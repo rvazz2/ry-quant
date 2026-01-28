@@ -13,6 +13,7 @@ import { CosmicBackground } from './ui/CosmicBackground';
 import Fuse from 'fuse.js';
 import { LIBRARY_TOPICS } from '@/lib/library-data';
 import { useRouter } from 'next/navigation';
+import FeedbackModal from './mission/FeedbackModal';
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -501,6 +502,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 </div>
             )}
             <ConnectionStatus />
+            <FeedbackModal />
         </div>
     );
 };

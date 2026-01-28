@@ -56,10 +56,10 @@ function DashboardContent() {
                                         </svg>
                                     </div>
                                     <div>
-                                        <h4 className="text-amber-400 font-bold mb-1">Beta Disclaimer</h4>
+                                        <h4 className="text-amber-400 font-bold mb-1">Beta Access</h4>
                                         <p className="text-amber-200/80 text-sm leading-relaxed">
-                                            Please note that not all information displayed here may be 100% correct at this time.
-                                            Our team is actively working on verifying data accuracy and improving system stability.
+                                            QuantDash is currently in active beta. Real-time data and metrics are continuously verified but may vary.
+                                            We are optimizing system stability daily to bring you institutional-grade reliability.
                                         </p>
                                     </div>
                                 </div>
