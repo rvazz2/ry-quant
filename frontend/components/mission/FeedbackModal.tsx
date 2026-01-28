@@ -81,17 +81,19 @@ export default function FeedbackModal() {
 
     return (
         <>
-            {/* Trigger Button */}
+            {/* Trigger Button - Fixed Floating */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="group relative inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-full transition-all border border-white/5 hover:border-cyan-500/30"
+                className="fixed bottom-8 right-8 z-[90] group inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-full transition-all border border-white/10 hover:border-cyan-500/50 shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
             >
-                <MessageSquare size={18} className="group-hover:text-cyan-400 transition-colors" />
-                <span className="font-medium">Mission Debrief</span>
-                <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
-                </span>
+                <div className="relative">
+                    <MessageSquare size={20} className="group-hover:text-cyan-400 transition-colors" />
+                    <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
+                    </span>
+                </div>
+                <span className="font-bold tracking-wide">Mission Debrief</span>
             </button>
 
             {/* Modal */}
