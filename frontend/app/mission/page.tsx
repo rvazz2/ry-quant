@@ -2,10 +2,13 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { TrendingUp, ArrowRight, ShieldAlert, Clock, Wallet, GraduationCap, Zap } from 'lucide-react';
+import { TrendingUp, ArrowRight, ShieldAlert, Clock, Wallet, GraduationCap, Zap, Sparkles, Timer, Target } from 'lucide-react';
 import FinancialQuiz from '../../components/mission/FinancialQuiz';
 import PremiumCard from '../../components/ui/premium/PremiumCard';
 import FeedbackModal from '../../components/mission/FeedbackModal';
+import StatsCounter from '../../components/mission/StatsCounter';
+import ComparisonCalculator from '../../components/mission/ComparisonCalculator';
+import NewsletterSignup from '../../components/mission/NewsletterSignup';
 
 
 export default function MissionPage() {
@@ -50,7 +53,8 @@ export default function MissionPage() {
                     </p>
                 </div>
 
-
+                {/* Stats Counter */}
+                <StatsCounter />
 
                 {/* The Reality Check */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
@@ -146,6 +150,9 @@ export default function MissionPage() {
                     </div>
                 </div>
 
+                {/* Interactive Calculator */}
+                <ComparisonCalculator />
+
                 {/* The Solution / Section */}
                 <div className="bg-gradient-to-b from-slate-900 to-slate-950 rounded-[3rem] p-8 md:p-20 border border-white/5 relative overflow-hidden mb-24">
                     <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-cyan-500/5 via-transparent to-transparent" />
@@ -193,22 +200,91 @@ export default function MissionPage() {
 
                     <div className="space-y-4">
                         {[
-                            { icon: <Wallet size={20} />, title: "Open a Roth IRA", desc: "Tax-free growth. The government&apos;s gift to young people." },
-                            { icon: <Zap size={20} />, title: "Kill High-Interest Debt", desc: "Credit card debt is a financial emergency. Treat it like one." },
-                            { icon: <TrendingUp size={20} />, title: "Buy the S&P 500", desc: "Don&apos;t pick stocks until you have a foundation. Bet on America." }
+                            {
+                                icon: <Wallet size={20} />,
+                                title: "Open a Roth IRA",
+                                desc: "Tax-free growth. The government&apos;s gift to young people.",
+                                difficulty: "Easy",
+                                time: "15 min",
+                                roi: "High",
+                                link: "/planning"
+                            },
+                            {
+                                icon: <Zap size={20} />,
+                                title: "Kill High-Interest Debt",
+                                desc: "Credit card debt is a financial emergency. Treat it like one.",
+                                difficulty: "Medium",
+                                time: "Ongoing",
+                                roi: "Critical",
+                                link: "/planning"
+                            },
+                            {
+                                icon: <TrendingUp size={20} />,
+                                title: "Buy the S&P 500",
+                                desc: "Don&apos;t pick stocks until you have a foundation. Bet on America.",
+                                difficulty: "Easy",
+                                time: "10 min",
+                                roi: "High",
+                                link: "/research"
+                            },
+                            {
+                                icon: <GraduationCap size={20} />,
+                                title: "Learn the Fundamentals",
+                                desc: "Master DCF models, financial statements, and valuation techniques.",
+                                difficulty: "Hard",
+                                time: "1-2 weeks",
+                                roi: "Very High",
+                                link: "/dashboard?view=library"
+                            },
+                            {
+                                icon: <Target size={20} />,
+                                title: "Set Clear Financial Goals",
+                                desc: "Define your number. What does financial freedom look like for you?",
+                                difficulty: "Easy",
+                                time: "30 min",
+                                roi: "High",
+                                link: "/planning"
+                            }
                         ].map((item, i) => (
-                            <div key={i} className="flex items-center gap-6 p-6 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:scale-[1.02] transition-all">
-                                <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-cyan-400 shrink-0">
+                            <a
+                                key={i}
+                                href={item.link}
+                                className="flex items-start gap-6 p-6 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:scale-[1.02] hover:border-cyan-500/30 transition-all group cursor-pointer"
+                            >
+                                <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-cyan-400 shrink-0 group-hover:bg-cyan-500/20 transition-colors">
                                     {item.icon}
                                 </div>
-                                <div>
-                                    <h4 className="text-lg font-bold text-white">{item.title}</h4>
-                                    <p className="text-slate-400 text-sm">{item.desc}</p>
+                                <div className="flex-1">
+                                    <div className="flex items-start justify-between mb-2">
+                                        <h4 className="text-lg font-bold text-white group-hover:text-cyan-100 transition-colors">{item.title}</h4>
+                                        <ArrowRight size={20} className="text-slate-600 group-hover:text-cyan-400 transition-colors" />
+                                    </div>
+                                    <p className="text-slate-400 text-sm mb-3">{item.desc}</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-800/50 rounded-full text-xs">
+                                            <Sparkles size={12} className="text-cyan-400" />
+                                            <span className="text-slate-300">{item.difficulty}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-800/50 rounded-full text-xs">
+                                            <Timer size={12} className="text-cyan-400" />
+                                            <span className="text-slate-300">{item.time}</span>
+                                        </div>
+                                        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${item.roi === 'Critical' ? 'bg-rose-500/20 text-rose-400' :
+                                                item.roi === 'Very High' ? 'bg-emerald-500/20 text-emerald-400' :
+                                                    'bg-cyan-500/20 text-cyan-400'
+                                            }`}>
+                                            <Target size={12} />
+                                            <span>ROI: {item.roi}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         ))}
                     </div>
                 </div>
+
+                {/* Newsletter Signup */}
+                <NewsletterSignup />
 
                 {/* CTA */}
                 <div className="text-center">
