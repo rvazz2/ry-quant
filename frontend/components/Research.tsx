@@ -168,9 +168,9 @@ const Research = () => {
                         <h2 className="text-2xl font-bold text-slate-100">Market Research</h2>
                         <button
                             onClick={() => setGuideOpen(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 rounded-lg transition-colors border border-cyan-500/20"
+                            className="flex items-center gap-2 px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transform hover:scale-105"
                         >
-                            <BookOpen size={18} />
+                            <BookOpen size={20} className="text-slate-900" />
                             How to Analyze
                         </button>
                     </div>
