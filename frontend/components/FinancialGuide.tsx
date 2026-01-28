@@ -172,13 +172,13 @@ const FinancialGuide = ({ isOpen, onClose }: FinancialGuideProps) => {
                                 <Section title="The Three Statements" icon={<BookOpen className="text-indigo-400" />}>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <Card title="Income Statement" icon={<Activity size={16} />} color="emerald">
-                                            <p className="text-xs text-slate-300"><strong>"The Scorecard"</strong>. Revenue, Expenses, and Net Income (Profit). Shows performance over a period.</p>
+                                            <p className="text-xs text-slate-300"><strong>&quot;The Scorecard&quot;</strong>. Revenue, Expenses, and Net Income (Profit). Shows performance over a period.</p>
                                         </Card>
                                         <Card title="Balance Sheet" icon={<Layers size={16} />} color="blue">
-                                            <p className="text-xs text-slate-300"><strong>"The Snapshot"</strong>. Assets = Liabilities + Equity. Shows financial health at a specific moment.</p>
+                                            <p className="text-xs text-slate-300"><strong>&quot;The Snapshot&quot;</strong>. Assets = Liabilities + Equity. Shows financial health at a specific moment.</p>
                                         </Card>
                                         <Card title="Cash Flow" icon={<ArrowDownRight size={16} />} color="yellow">
-                                            <p className="text-xs text-slate-300"><strong>"The Truth"</strong>. Cash in vs. Cash out. Harder to fake than Net Income.</p>
+                                            <p className="text-xs text-slate-300"><strong>&quot;The Truth&quot;</strong>. Cash in vs. Cash out. Harder to fake than Net Income.</p>
                                         </Card>
                                     </div>
                                 </Section>
@@ -229,14 +229,14 @@ const FinancialGuide = ({ isOpen, onClose }: FinancialGuideProps) => {
                             <div className="space-y-8 animate-in slide-in-from-right-4 duration-300">
                                 <Section title="The Big Picture" icon={<Globe className="text-blue-400" />}>
                                     <p className="text-slate-300 mb-6">
-                                        Macroeconomics drives the bus; individual stocks are just passengers. Understanding the "Macro" environment is crucial for knowing when to be aggressive and when to be defensive.
+                                        Macroeconomics drives the bus; individual stocks are just passengers. Understanding the &quot;Macro&quot; environment is crucial for knowing when to be aggressive and when to be defensive.
                                     </p>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <Card title="The Federal Reserve" icon={<Landmark size={16} />} color="slate">
                                             <ul className="text-sm text-slate-300 space-y-2">
-                                                <li><strong>Interest Rates:</strong> The "Cost of Money". Higher rates hurt stocks (especially tech) but help savers.</li>
-                                                <li><strong>QE / QT:</strong> "Printing Money" (QE) boosts assets. "Burning Money" (QT) depresses them.</li>
-                                                <li><strong>"Don't Fight the Fed":</strong> If they are easing, buy. If they are tightening, beware.</li>
+                                                <li><strong>Interest Rates:</strong> The &quot;Cost of Money&quot;. Higher rates hurt stocks (especially tech) but help savers.</li>
+                                                <li><strong>QE / QT:</strong> &quot;Printing Money&quot; (QE) boosts assets. &quot;Burning Money&quot; (QT) depresses them.</li>
+                                                <li><strong>&quot;Don&apos;t Fight the Fed&quot;:</strong> If they are easing, buy. If they are tightening, beware.</li>
                                             </ul>
                                         </Card>
                                         <Card title="Key Indicators" icon={<Activity size={16} />} color="cyan">
@@ -262,7 +262,7 @@ const FinancialGuide = ({ isOpen, onClose }: FinancialGuideProps) => {
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <Card title="Position Sizing" icon={<Layers size={16} />} color="blue">
-                                            <p className="text-xs text-slate-300">Never risk more than 1-2% of your total account on a single trade. This prevents "blowing up".</p>
+                                            <p className="text-xs text-slate-300">Never risk more than 1-2% of your total account on a single trade. This prevents &quot;blowing up&quot;.</p>
                                         </Card>
                                         <Card title="Stop Losses" icon={<AlertTriangle size={16} />} color="yellow">
                                             <p className="text-xs text-slate-300">Know your exit BEFORE you enter. A mental or hard stop loss is your insurance policy.</p>
@@ -285,10 +285,10 @@ const FinancialGuide = ({ isOpen, onClose }: FinancialGuideProps) => {
                                     </p>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <Card title="Mean Reversion" icon={<Activity size={16} />} color="cyan">
-                                            <p className="text-xs text-slate-400">"What goes up must come down." Betting on price returning to average.</p>
+                                            <p className="text-xs text-slate-400">&quot;What goes up must come down.&quot; Betting on price returning to average.</p>
                                         </Card>
                                         <Card title="Momentum" icon={<Zap size={16} />} color="yellow">
-                                            <p className="text-xs text-slate-400">"The trend is your friend." Buying breakouts and riding the wave.</p>
+                                            <p className="text-xs text-slate-400">&quot;The trend is your friend.&quot; Buying breakouts and riding the wave.</p>
                                         </Card>
                                         <Card title="Arbitrage" icon={<Globe size={16} />} color="green">
                                             <p className="text-xs text-slate-400">Risk-free profit from price differences across exchanges.</p>
