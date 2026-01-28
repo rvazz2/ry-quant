@@ -9,16 +9,16 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 
 // Strategy Definitions
 const STRATEGIES = {
-    'long_call': { name: 'Long Call', legs: [{ type: 'call', position: 'long', qty: 1 }] },
-    'long_put': { name: 'Long Put', legs: [{ type: 'put', position: 'long', qty: 1 }] },
-    'short_call': { name: 'Short Call (⚠️ Risky)', legs: [{ type: 'call', position: 'short', qty: 1 }] },
-    'short_put': { name: 'Short Put (⚠️ Risky)', legs: [{ type: 'put', position: 'short', qty: 1 }] },
+    'long_call': { name: 'Long Call', legs: [{ type: 'call', position: 'long', qty: 1, strikeOffset: 0 }] },
+    'long_put': { name: 'Long Put', legs: [{ type: 'put', position: 'long', qty: 1, strikeOffset: 0 }] },
+    'short_call': { name: 'Short Call (⚠️ Risky)', legs: [{ type: 'call', position: 'short', qty: 1, strikeOffset: 0 }] },
+    'short_put': { name: 'Short Put (⚠️ Risky)', legs: [{ type: 'put', position: 'short', qty: 1, strikeOffset: 0 }] },
     'bull_call_spread': { name: 'Bull Call Spread', legs: [{ type: 'call', position: 'long', qty: 1, strikeOffset: 0 }, { type: 'call', position: 'short', qty: 1, strikeOffset: 5 }] },
     'bear_put_spread': { name: 'Bear Put Spread', legs: [{ type: 'put', position: 'long', qty: 1, strikeOffset: 5 }, { type: 'put', position: 'short', qty: 1, strikeOffset: 0 }] },
     'iron_condor': { name: 'Iron Condor', legs: [{ type: 'put', position: 'long', qty: 1, strikeOffset: -10 }, { type: 'put', position: 'short', qty: 1, strikeOffset: -5 }, { type: 'call', position: 'short', qty: 1, strikeOffset: 5 }, { type: 'call', position: 'long', qty: 1, strikeOffset: 10 }] },
-    'straddle': { name: 'Long Straddle', legs: [{ type: 'call', position: 'long', qty: 1 }, { type: 'put', position: 'long', qty: 1 }] },
+    'straddle': { name: 'Long Straddle', legs: [{ type: 'call', position: 'long', qty: 1, strikeOffset: 0 }, { type: 'put', position: 'long', qty: 1, strikeOffset: 0 }] },
     'strangle': { name: 'Long Strangle', legs: [{ type: 'call', position: 'long', qty: 1, strikeOffset: 5 }, { type: 'put', position: 'long', qty: 1, strikeOffset: -5 }] },
-    'butterfly': { name: 'Butterfly Spread', legs: [{ type: 'call', position: 'long', qty: 1, strikeOffset: -5 }, { type: 'call', position: 'short', qty: 2 }, { type: 'call', position: 'long', qty: 1, strikeOffset: 5 }] },
+    'butterfly': { name: 'Butterfly Spread', legs: [{ type: 'call', position: 'long', qty: 1, strikeOffset: -5 }, { type: 'call', position: 'short', qty: 2, strikeOffset: 0 }, { type: 'call', position: 'long', qty: 1, strikeOffset: 5 }] },
 };
 
 const PayoffChart = React.memo(({ data, breakeven, maxProfit, maxLoss, strategy }: { data: any[], breakeven: number[], maxProfit: number, maxLoss: number, strategy: string }) => (
