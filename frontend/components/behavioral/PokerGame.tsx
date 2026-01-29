@@ -115,14 +115,24 @@ export function PokerGame({ onAction, balance, setBalance, playSound }: PokerGam
     return (
         <div className="max-w-4xl w-full text-center">
             {/* Pot Display with Rake Warning */}
-            <div className="mb-8 p-6 bg-gradient-to-br from-violet-900/30 to-slate-950 rounded-3xl border-2 border-violet-500/30 relative overflow-hidden">
+            <div className="mb-8 p-6 bg-gradient-to-br from-violet-900/30 to-slate-950 rounded-3xl border-2 border-violet-500/30 relative overflow-hidden flex flex-col items-center">
                 <div className="absolute inset-0 bg-violet-500/5 animate-pulse" />
+
+                {/* 3D Chip Stack Visual (CSS) */}
+                <div className="relative z-10 mb-4 flex -space-x-2">
+                    {[1, 2, 3].map((_, i) => (
+                        <div key={i} className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-400 to-violet-700 border-4 border-dashed border-white/20 shadow-xl flex items-center justify-center transform hover:-translate-y-2 transition-transform">
+                            <div className="w-8 h-8 rounded-full border border-white/30 bg-violet-600/50" />
+                        </div>
+                    ))}
+                </div>
+
                 <div className="relative z-10">
                     <div className="text-[10px] font-black text-violet-300 uppercase tracking-widest mb-2">Total Pot</div>
-                    <div className="text-5xl font-black text-white mb-2">${pot}</div>
-                    <div className="flex items-center justify-center gap-2 text-xs text-red-400 font-medium">
+                    <div className="text-5xl font-black text-white mb-2 filter drop-shadow-[0_0_10px_rgba(139,92,246,0.5)]">${pot}</div>
+                    <div className="flex items-center justify-center gap-2 text-xs text-red-400 font-medium bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20">
                         <TrendingDown size={14} />
-                        <span>5% Rake Will Be Taken (${(pot * rakePct).toFixed(0)})</span>
+                        <span>5% Rake: ${(pot * rakePct).toFixed(0)}</span>
                     </div>
                 </div>
             </div>
@@ -145,14 +155,14 @@ export function PokerGame({ onAction, balance, setBalance, playSound }: PokerGam
                             </div>
                         </div>
                     )}
-                    <div className="flex justify-center gap-2 h-36 items-center">
+                    <div className="flex justify-center gap-2 h-36 items-center perspective-1000">
                         <AnimatePresence mode="popLayout">
                             {opponentHand.map((c, i) => (
                                 <motion.div
                                     key={i}
-                                    initial={{ opacity: 0, y: -50, rotateY: 180 }}
-                                    animate={{ opacity: 1, y: 0, rotateY: 0 }}
-                                    transition={{ delay: i * 0.1, type: 'spring' }}
+                                    initial={{ opacity: 0, y: -100, rotateY: 180, scale: 0.5 }}
+                                    animate={{ opacity: 1, y: 0, rotateY: 0, scale: 1 }}
+                                    transition={{ delay: i * 0.15, type: 'spring', damping: 12 }}
                                 >
                                     <PlayingCard suit={c.suit} rank={c.rank} size="sm" />
                                 </motion.div>
@@ -173,14 +183,14 @@ export function PokerGame({ onAction, balance, setBalance, playSound }: PokerGam
                             </div>
                         </div>
                     )}
-                    <div className="flex justify-center gap-2 h-36 items-center">
+                    <div className="flex justify-center gap-2 h-36 items-center perspective-1000">
                         <AnimatePresence mode="popLayout">
                             {playerHand.map((c, i) => (
                                 <motion.div
                                     key={i}
-                                    initial={{ opacity: 0, y: 50, rotateY: 180 }}
-                                    animate={{ opacity: 1, y: 0, rotateY: 0 }}
-                                    transition={{ delay: i * 0.1, type: 'spring' }}
+                                    initial={{ opacity: 0, y: 150, rotateY: 180, scale: 0.5 }}
+                                    animate={{ opacity: 1, y: 0, rotateY: 0, scale: 1 }}
+                                    transition={{ delay: i * 0.15 + 0.5, type: 'spring', damping: 12 }}
                                     whileHover={{ y: -10, scale: 1.05 }}
                                 >
                                     <PlayingCard suit={c.suit} rank={c.rank} size="sm" />

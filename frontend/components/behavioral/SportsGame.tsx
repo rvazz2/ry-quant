@@ -51,56 +51,69 @@ export function SportsGame({ onAction, balance, setBalance, playSound }: SportsG
 
     return (
         <div className="max-w-2xl w-full text-center">
-            <div className="p-8 bg-gradient-to-br from-orange-900/20 to-slate-950 rounded-[3rem] border-4 border-orange-800/20 shadow-[0_0_60px_rgba(249,115,22,0.2)] mb-12">
-                <h3 className="text-2xl font-black text-orange-400 uppercase tracking-widest mb-8">🏈 Bet Slip</h3>
+            <div className="p-8 bg-slate-900 rounded-[3rem] border-4 border-slate-800 shadow-2xl mb-12 relative overflow-hidden group">
+                <div className="absolute top-0 left-0 right-0 h-4 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNSIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDE1IDE1Ij48cGF0aCBkPSJNOSA3LjUgMTUgMTUgMTUgMCA5IDcuNSAyMi41IDAgMCAwIDAgMTUgNy41IDcuNSAxNSAwIDE1IDE1IDAgMCAwIDAgMTV6IiBmaWxsPSIjMWUxZTFlIi8+PC9zdmc+')] bg-repeat-x opacity-50"></div>
 
-                <div className="space-y-4 mb-8">
-                    {bets.map((bet) => (
-                        <button
-                            key={bet.id}
-                            onClick={() => { setSelectedBet(bet.id); playSound('click'); }}
-                            className={`w-full p-6 rounded-2xl border-2 transition-all text-left ${selectedBet === bet.id
-                                    ? 'bg-orange-600 border-white shadow-[0_0_30px_rgba(249,115,22,0.5)] text-white'
-                                    : 'bg-slate-900 border-orange-900/30 text-slate-300 hover:bg-slate-800'
-                                }`}
-                        >
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <div className="text-lg font-bold">{bet.team} vs {bet.opponent}</div>
-                                    <div className="text-xs text-slate-400 mt-1">Risk $110 to win ${bet.payout}</div>
+                <div className="relative z-10 flex flex-col items-center">
+                    <h3 className="text-3xl font-black text-slate-200 uppercase tracking-widest mb-2 font-mono">SPORTSBOOK</h3>
+                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mb-8">Ticket #{Math.floor(Math.random() * 999999)}</div>
+
+                    <div className="space-y-4 mb-8 w-full">
+                        {bets.map((bet) => (
+                            <button
+                                key={bet.id}
+                                onClick={() => { setSelectedBet(bet.id); playSound('click'); }}
+                                className={`w-full p-6 rounded transition-all text-left relative overflow-hidden group/ticket ${selectedBet === bet.id
+                                    ? 'bg-orange-500 text-slate-950 shadow-lg scale-[1.02]'
+                                    : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                                    }`}
+                            >
+                                <div className="flex justify-between items-center relative z-10">
+                                    <div className="flex flex-col items-start">
+                                        <div className="text-xl font-black uppercase italic tracking-tighter">{bet.team} <span className="text-xs opacity-50 not-italic align-middle mx-1">vs</span> {bet.opponent}</div>
+                                        <div className="text-[10px] font-bold opacity-70 mt-1 uppercase tracking-widest">Risk $110 / Win ${bet.payout}</div>
+                                    </div>
+                                    <div className={`text-2xl font-mono font-black tracking-tighter ${selectedBet === bet.id ? 'text-slate-900' : 'text-orange-500'}`}>
+                                        {bet.odds}
+                                    </div>
                                 </div>
-                                <div className={`text-3xl font-black ${selectedBet === bet.id ? 'text-white' : 'text-orange-500'}`}>{bet.odds}</div>
-                            </div>
-                        </button>
-                    ))}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="bg-slate-950/50 border border-slate-800 rounded-xl p-4 mb-8 text-xs text-slate-400 font-mono w-full text-left">
+                        <span className="text-orange-500 font-bold uppercase mr-2">WARN:</span>
+                        The VIG (Juice) requires a 52.4% win rate to break even. Most "sharps" only hit 55%. The math is against you.
+                    </div>
+
+                    <button
+                        onClick={placeBet}
+                        disabled={!selectedBet || isBetting || balance < betSize}
+                        className={`w-full py-6 rounded-xl font-black text-2xl uppercase tracking-[0.2em] transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3 ${isBetting || !selectedBet
+                            ? 'bg-slate-800 text-slate-600 cursor-not-allowed'
+                            : 'bg-orange-500 hover:bg-orange-400 text-slate-900'
+                            }`}
+                    >
+                        {isBetting ? <span className="animate-pulse">PROCESSING...</span> : <span>PRINT TICKET ($110)</span>}
+                    </button>
+
+                    <AnimatePresence>
+                        {result && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                                className={`absolute inset-0 bg-slate-900/95 flex items-center justify-center z-50 backdrop-blur-sm`}
+                            >
+                                <div className={`px-12 py-8 rounded-2xl border-4 text-5xl font-black italic uppercase tracking-tighter transform -rotate-12 shadow-2xl ${result.includes('WIN') ? 'border-orange-500 text-orange-500 rotate-12' : 'border-red-500 text-red-500'}`}>
+                                    {result.includes('WIN') ? 'WINNER' : 'VOID'}
+                                    <div className="text-lg font-bold tracking-widest mt-2 text-center opacity-80 not-italic font-mono">
+                                        {result.includes('WIN') ? `PAID: $${bets.find(b => b.id === selectedBet)?.payout}` : '-$110.00'}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
-
-                <div className="bg-orange-500/10 border-2 border-orange-500/20 rounded-xl p-4 mb-8 text-sm text-orange-400">
-                    <strong>The Vig Explained:</strong> You must risk $110 to win $100. That extra $10 is the &quot;vig&quot; (vigorish) - the house&apos;s cut. You need to win 52.4% of bets just to break even.
-                </div>
-
-                <button
-                    onClick={placeBet}
-                    disabled={!selectedBet || isBetting || balance < betSize}
-                    className={`w-full py-6 rounded-3xl font-black text-3xl uppercase tracking-widest transition-all shadow-2xl active:scale-95 ${isBetting || !selectedBet
-                            ? 'bg-slate-800 text-slate-600'
-                            : 'bg-orange-600 hover:bg-orange-500 text-white'
-                        }`}
-                >
-                    {isBetting ? 'Placing Bet...' : 'PLACE BET ($110)'}
-                </button>
-
-                <AnimatePresence>
-                    {result && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className={`mt-10 text-4xl font-black italic ${result.includes('WIN') ? 'text-orange-400' : 'text-red-500'}`}
-                        >
-                            {result}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
             </div>
 
             <div className="px-6 py-4 bg-orange-500/5 rounded-2xl border border-orange-500/10 max-w-lg mx-auto">

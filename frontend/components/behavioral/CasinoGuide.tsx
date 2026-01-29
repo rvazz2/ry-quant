@@ -592,10 +592,11 @@ export function CasinoGuide() {
                                 </div>
                             </div>
 
-                            <div className="inline-flex p-3 bg-yellow-500/10 rounded-2xl mb-4 border border-yellow-500/20">
-                                <Dices className="text-yellow-500" size={32} />
+                            <div className="inline-flex p-3 bg-yellow-500/10 rounded-2xl mb-4 border border-yellow-500/20 relative">
+                                <div className="absolute inset-0 bg-yellow-500/20 blur-xl rounded-full" />
+                                <Dices className="text-yellow-500 relative z-10" size={32} />
                             </div>
-                            <h2 className="text-5xl font-black text-white tracking-tight mb-2 italic">Ryans Casino</h2>
+                            <h2 className="text-5xl font-black text-white tracking-tight mb-2 italic drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]">Ryans Casino</h2>
                             <p className="text-2xl font-bold text-yellow-500/80 tracking-wide">&quot;Good Luck,&quot;</p>
                         </div>
 
@@ -682,6 +683,12 @@ export function CasinoGuide() {
                                 exit={{ opacity: 0 }}
                                 className="fixed inset-0 z-[500] bg-black overflow-y-auto custom-scrollbar flex flex-col"
                             >
+                                {/* CRT Scanline Overlay */}
+                                <div className="fixed inset-0 pointer-events-none z-[1000] opacity-10" style={{
+                                    background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+                                    backgroundSize: '100% 2px, 3px 100%'
+                                }} />
+                                <div className="fixed inset-0 pointer-events-none z-[1000] opacity-20 bg-[radial-gradient(circle_at_center,transparent_50%,black_100%)]" />
                                 {/* Inject styles to suppress the rest of the site */}
                                 <style>
                                     {`
