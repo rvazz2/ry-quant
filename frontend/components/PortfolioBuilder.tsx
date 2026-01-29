@@ -59,18 +59,26 @@ const PortfolioBuilder = () => {
                 viewsDict[v.ticker] = parseFloat(v.return) / 100;
             });
 
-            // Use longer timeframe (2020-2024) to capture bear markets
+
+            // Use dynamic date range (last 3 years for better data quality)
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() - 3);
+
+            const formatDate = (date: Date) => date.toISOString().split('T')[0];
+
             const result = await getEfficientFrontier(
                 tickerList,
-                "2020-01-01",
-                "2024-01-01",
+                formatDate(startDate),
+                formatDate(endDate),
                 constraints,
                 Object.keys(viewsDict).length > 0 ? viewsDict : undefined
             );
             setData(result);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error calculating frontier", error);
-            setError("Failed to optimize portfolio. Please check tickers and try again.");
+            const errorMsg = error?.response?.data?.detail || error?.message || "Unknown error occurred";
+            setError(`Failed to optimize: ${errorMsg}. Please check tickers and try again.`);
         } finally {
             setLoading(false);
         }
