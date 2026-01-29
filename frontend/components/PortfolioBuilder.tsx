@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { getEfficientFrontier, Constraints } from '@/lib/api';
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend } from 'recharts';
+import { Search } from 'lucide-react';
 
 interface View {
     ticker: string;
@@ -199,12 +200,27 @@ const PortfolioBuilder = () => {
                 </div>
 
                 <div className="space-y-4">
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Universe</label>
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                            <label className="text-xs font-bold text-slate-500 uppercase">Universe</label>
+                            <select
+                                className="bg-slate-900 border border-slate-700 text-xs text-cyan-400 rounded px-2 py-1 outline-none focus:border-cyan-500"
+                                onChange={(e) => {
+                                    if (e.target.value) setTickers(e.target.value);
+                                }}
+                            >
+                                <option value="">Load Preset...</option>
+                                <option value="AAPL,MSFT,GOOG,AMZN,NVDA,META,TSLA">Magnificent Seven</option>
+                                <option value="KO,PEP,JNJ,PG,VZ,MCD,WMT">Defensive Yield</option>
+                                <option value="NVDA,AMD,TSM,AVGO,INTC,QCOM,MU">Semiconductors</option>
+                                <option value="PLTR,COIN,DKNG,ROKU,SQ,TSLA,ARKK">High Goth/Beta</option>
+                                <option value="TLT,GLD,SPY,EEM,VNQ,DBC">Macro Asset Class</option>
+                            </select>
+                        </div>
                         <textarea
                             value={tickers}
                             onChange={(e) => setTickers(e.target.value)}
-                            className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 h-24 focus:border-cyan-500 transition-colors resize-none"
+                            className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 h-24 focus:border-cyan-500 transition-colors resize-none font-mono"
                             placeholder="AAPL, MSFT..."
                         />
                     </div>
@@ -362,7 +378,51 @@ const PortfolioBuilder = () => {
                         </div>
 
 
-                        {/* 3. Correlation Matrix */}
+                        {/* 3. AI Strategy Consultant */}
+                        <div className="bg-gradient-to-br from-indigo-900/20 to-slate-900 rounded-xl p-6 border border-indigo-500/30 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-4 opacity-10">
+                                <span className="text-6xl">🧠</span>
+                            </div>
+                            <h4 className="text-indigo-400 font-bold mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                                AI Strategy Consultant
+                            </h4>
+                            <div className="space-y-3 text-sm text-slate-300">
+                                {data.max_sharpe.volatility > 0.25 && (
+                                    <div className="flex gap-3 items-start">
+                                        <span className="text-amber-400">⚠️</span>
+                                        <p><strong>High Volatility Detected ({(data.max_sharpe.volatility * 100).toFixed(1)}%):</strong> This portfolio is aggressive. Consider adding uncorrelated assets like Gold (GLD) or Utilities (XLU) to dampen drawdowns.</p>
+                                    </div>
+                                )}
+                                {data.max_sharpe.sharpe < 1.0 && (
+                                    <div className="flex gap-3 items-start">
+                                        <span className="text-blue-400">ℹ️</span>
+                                        <p><strong>Suboptimal Efficiency:</strong> Sharpe ratio is below 1.0. The selected assets may be highly correlated. Try mixing sectors (e.g., Tech + Healthcare).</p>
+                                    </div>
+                                )}
+                                {Math.max(...Object.values(data.max_sharpe.weights) as number[]) > 0.4 && (
+                                    <div className="flex gap-3 items-start">
+                                        <span className="text-rose-400">🚨</span>
+                                        <p><strong>Concentration Risk:</strong> One position exceeds 40% weight. This creates single-stock failure risk regardless of the mathematical optimum.</p>
+                                    </div>
+                                )}
+                                <div className="flex gap-3 items-start">
+                                    <span className="text-emerald-400">✅</span>
+                                    <p><strong>Optimization Complete:</strong> Searched {data.scatter_data.length} potential combinations to find the mathematical ceiling for risk-adjusted returns.</p>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 pt-4 border-t border-slate-800/50 flex gap-4">
+                                <button className="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all">
+                                    Generate Report
+                                </button>
+                                <button className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all border border-slate-700">
+                                    Run Backtest
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* 4. Correlation Matrix */}
                         <div className="bg-slate-900/30 rounded-xl p-6 border border-slate-800">
                             <h4 className="text-slate-200 font-bold mb-4 text-sm uppercase tracking-wider flex justify-between items-center">
                                 Correlation Matrix
