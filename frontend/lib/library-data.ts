@@ -26,6 +26,10 @@ export interface LibraryTopic {
     title: string;
     icon: LucideIcon;
     description: string;
+    category: string;
+    difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+    tags: string[];
+    relatedTopics?: string[];
     terms: {
         term: string;
         definition: string;
@@ -39,6 +43,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Corporate Finance',
         icon: Building2,
         description: 'Managing capital structure, funding and financial decisions.',
+        category: 'Finance',
+        difficulty: 'Intermediate',
+        tags: ['Corporate', 'Finance', 'Capital', 'Investment'],
+        relatedTopics: ['financial-management', 'financial-modeling', 'private-equity'],
         terms: [
             { term: 'WACC', definition: 'Weighted Average Cost of Capital - the average rate a company expects to pay to finance its assets.', example: 'If a company has 60% equity at 10% cost and 40% debt at 5% cost, WACC = (0.6 × 0.10) + (0.4 × 0.05) = 8%' },
             { term: 'NPV', definition: 'Net Present Value - the difference between the present value of cash inflows and outflows.', example: 'A project requiring $100k upfront that generates $120k in present value terms has NPV = $20k' },
@@ -56,6 +64,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Financial Accounting',
         icon: FileText,
         description: 'Reporting financial information to external users.',
+        category: 'Accounting',
+        difficulty: 'Beginner',
+        tags: ['Accounting', 'GAAP', 'Financial Statements'],
+        relatedTopics: ['accounting-principles', 'managerial-accounting', 'financial-statement-analysis'],
         terms: [
             { term: 'GAAP', definition: 'Generally Accepted Accounting Principles - standard accounting rules used in the US.', example: 'Companies must recognize revenue when earned, not when cash is received (accrual basis)' },
             { term: 'Accrual Basis', definition: 'Method of recording accounting transactions for revenue when earned and expenses when incurred.', example: 'Recording a sale in December even though payment arrives in January' },
@@ -73,6 +85,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Financial Management',
         icon: Calculator,
         description: 'Strategic planning, organizing, directing, and controlling of financial undertakings.',
+        category: 'Finance',
+        difficulty: 'Intermediate',
+        tags: ['Management', 'Working Capital', 'Cash Flow'],
+        relatedTopics: ['corporate-finance', 'managerial-accounting'],
         terms: [
             { term: 'Working Capital', definition: 'The difference between a company\'s current assets and current liabilities.', example: 'Current Assets of $500k minus Current Liabilities of $300k = $200k Working Capital' },
             { term: 'Cash Conversion Cycle', definition: 'Time it takes to convert inventory and receivables into cash.', example: 'Days Inventory Outstanding (60) + Days Sales Outstanding (30) - Days Payable Outstanding (45) = 45 days' },
@@ -88,6 +104,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Banking & Finance',
         icon: Landmark,
         description: 'Study of financial institutions and markets.',
+        category: 'Banking',
+        difficulty: 'Intermediate',
+        tags: ['Banking', 'Lending', 'Interest Rates'],
+        relatedTopics: ['financial-market', 'macroeconomics'],
         terms: [
             { term: 'Spread', definition: 'The difference between the interest rate a bank pays to depositors and the interest rate it receives from loans.', example: 'Bank pays 2% on deposits, charges 6% on loans = 4% spread' },
             { term: 'Fractional Reserve Banking', definition: 'System where banks hold only a fraction of deposits as reserves.', example: 'With 10% reserve requirement, $1000 deposit allows $900 in new loans' },
@@ -104,6 +124,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Financial Market',
         icon: TrendingUp,
         description: 'Marketplace for trading financial assets.',
+        category: 'Markets',
+        difficulty: 'Intermediate',
+        tags: ['Trading', 'Markets', 'Liquidity'],
+        relatedTopics: ['investments', 'banking-finance'],
         terms: [
             { term: 'Liquidity', definition: 'How easily an asset can be bought or sold without affecting its price.', example: 'Large-cap stocks like Apple are more liquid than penny stocks' },
             { term: 'Bid-Ask Spread', definition: 'Difference between the highest price a buyer will pay (bid) and lowest price a seller will accept (ask).', example: 'Stock with bid $100.00 and ask $100.05 has a $0.05 spread' },
@@ -120,6 +144,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Statement Analysis',
         icon: BarChart3,
         description: 'Analyzing a company\'s financial statements for decision-making.',
+        category: 'Accounting',
+        difficulty: 'Advanced',
+        tags: ['Analysis', 'Ratios', 'Financial Statements'],
+        relatedTopics: ['financial-accounting', 'quantitative-analysis'],
         terms: [
             { term: 'Horizontal Analysis', definition: 'Comparison of historical financial information over a series of reporting periods.', example: 'Revenue growing from $100M (2022) to $120M (2023) = 20% growth' },
             { term: 'Vertical Analysis', definition: 'Expressing each line item as a percentage of a base figure.', example: 'Cost of Goods Sold as 60% of Revenue' },
@@ -135,6 +163,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Macroeconomics',
         icon: Globe,
         description: 'Performance, structure, behavior, and decision-making of an economy as a whole.',
+        category: 'Economics',
+        difficulty: 'Intermediate',
+        tags: ['Economics', 'GDP', 'Monetary Policy'],
+        relatedTopics: ['microeconomics', 'international-finance', 'economics'],
         terms: [
             { term: 'GDP', definition: 'Gross Domestic Product - total value of goods and services produced within a country.', example: 'US GDP of $25 trillion means all economic output adds up to that value' },
             { term: 'Inflation', definition: 'The rate at which prices for goods and services rise.', example: 'CPI increasing from 100 to 103 = 3% annual inflation' },
@@ -152,6 +184,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'International Finance',
         icon: Globe,
         description: 'Monetary interactions between two or more countries.',
+        category: 'Finance',
+        difficulty: 'Advanced',
+        tags: ['Currency', 'Exchange Rates', 'Global Finance'],
+        relatedTopics: ['macroeconomics', 'banking-finance'],
         terms: [
             { term: 'Exchange Rate', definition: 'The value of one currency for the purpose of conversion to another.', example: 'EUR/USD = 1.10 means 1 euro equals $1.10' },
             { term: 'Purchasing Power Parity', definition: 'Theory that exchange rates should equalize the purchasing power of different currencies.', example: 'Big Mac costing $5 in US and £4 in UK suggests GBP/USD should be 1.25' },
@@ -167,6 +203,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Microeconomics',
         icon: Target,
         description: 'Behavior of individuals and firms in making decisions.',
+        category: 'Economics',
+        difficulty: 'Beginner',
+        tags: ['Microeconomics', 'Supply', 'Demand', 'Market Forces'],
+        relatedTopics: ['macroeconomics', 'economics'],
         terms: [
             { term: 'Elasticity', definition: 'A measure of a variable\'s sensitivity to a change in another variable.', example: 'If 10% price increase causes 20% decrease in demand, elasticity = -2' },
             { term: 'Supply and Demand', definition: 'Economic model determining price in a market based on quantity supplied and demanded.', example: 'High demand + low supply = higher prices (PS5 shortage in 2020)' },
@@ -183,6 +223,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Investments',
         icon: PiggyBank,
         description: 'Allocation of money with the expectation of a positive benefit/return.',
+        category: 'Investing',
+        difficulty: 'Intermediate',
+        tags: ['Investing', 'Portfolio', 'Risk Management'],
+        relatedTopics: ['investment-management', 'portfolio-management', 'financial-market'],
         terms: [
             { term: 'Diversification', definition: 'Risk management strategy that mixes a wide variety of investments within a portfolio.', example: 'Holding stocks, bonds, real estate, and commodities instead of just stocks' },
             { term: 'Beta', definition: 'Measure of a stock\'s volatility in relation to the overall market.', example: 'Beta of 1.5 means stock moves 1.5% for every 1% move in market' },
@@ -199,6 +243,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Management Comm.',
         icon: Users,
         description: 'Communication within an organization.',
+        category: 'Business',
+        difficulty: 'Beginner',
+        tags: ['Communication', 'Corporate Governance', 'Leadership'],
+        relatedTopics: ['organizational-behavior'],
         terms: [
             { term: 'Stakeholder', definition: 'A party that has an interest in a company and can either affect or be affected by the business.', example: 'Shareholders, employees, customers, suppliers, and communities' },
             { term: 'Corporate Governance', definition: 'System of rules, practices, and processes directing and controlling a company.', example: 'Board of directors overseeing management on behalf of shareholders' },
@@ -213,9 +261,15 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Real Estate',
         icon: Home,
         description: 'Property consisting of land and the buildings on it.',
+        category: 'Real Estate',
+        difficulty: 'Intermediate',
+        tags: ['Real Estate', 'Property', 'REITs'],
+        relatedTopics: ['investments', 'taxation'],
         terms: [
             { term: 'REIT', definition: 'Real Estate Investment Trust - a company that owns, operates, or finances income-generating real estate.', example: 'Simon Property Group owning shopping malls and distributing 90%+ income as dividends' },
-            { term: 'Cap Rate', definition: 'Capitalization Rate - rate of return on real estate investment based on net operating income.', example: 'Property generating $100k NOI worth $1M has 10% cap rate' },
+            {
+                term: 'Cap Rate', definition: 'Capitalization Rate - rate of return on real estate investment based on net operating income.', example: 'Property generating $100k NOI worth $1M has 10% cap rate'
+            },
             { term: 'Gross Rent Multiplier', definition: 'Price of property divided by gross annual rental income.', example: 'Property priced at $600k with $50k annual rent = GRM of 12' },
             { term: 'Net Operating Income', definition: 'Revenue from property minus operating expenses (excluding debt service).', example: 'Rental income $150k - expenses $50k = $100k NOI' },
             { term: 'Cash-on-Cash Return', definition: 'Annual pre-tax cash flow divided by total cash invested.', example: 'Invest $100k, receive $8k annual cash flow = 8% cash-on-cash return' },
@@ -228,6 +282,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Taxation',
         icon: FileText,
         description: 'System of raising money to finance government.',
+        category: 'Tax',
+        difficulty: 'Intermediate',
+        tags: ['Taxation', 'Tax Planning', 'IRS'],
+        relatedTopics: ['accounting-principles', 'financial-accounting'],
         terms: [
             { term: 'Capital Gains Tax', definition: 'Tax on the profit realized on the sale of a non-inventory asset.', example: 'Buying stock at $50, selling at $100 creates $50 taxable gain' },
             { term: 'Progressive Tax', definition: 'Tax system where the tax rate increases as the taxable amount increases.', example: 'Federal income tax with brackets at 10%, 12%, 22%, 24%, 32%, 35%, 37%' },
@@ -243,6 +301,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Accounting Principles',
         icon: BookOpen,
         description: 'Foundational rules of accounting.',
+        category: 'Accounting',
+        difficulty: 'Beginner',
+        tags: ['Accounting', 'GAAP', 'Principles'],
+        relatedTopics: ['financial-accounting', 'managerial-accounting'],
         terms: [
             { term: 'Matching Principle', definition: 'Requirement that expenses be reported in the same period as the revenues they helped generate.', example: 'Recording cost of goods sold in same month as sales revenue' },
             { term: 'Revenue Recognition', definition: 'Principle determining when revenue is recorded in financial statements.', example: 'Software company recognizing subscription revenue monthly as service is delivered' },
@@ -257,6 +319,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Business Ethics',
         icon: Gavel,
         description: 'Moral principles playing a role in business activity.',
+        category: 'Business',
+        difficulty: 'Beginner',
+        tags: ['Ethics', 'CSR', 'Compliance'],
+        relatedTopics: ['management-communication'],
         terms: [
             { term: 'CSR', definition: 'Corporate Social Responsibility - a business model that helps a company be socially accountable.', example: 'Patagonia donating 1% of sales to environmental causes' },
             { term: 'Fiduciary Duty', definition: 'Legal obligation to act in the best interest of another party.', example: 'Board of directors acting in shareholders\' best interests' },
@@ -271,6 +337,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Economics',
         icon: LineChart,
         description: 'Social science that studies the production, distribution, and consumption of goods and services.',
+        category: 'Economics',
+        difficulty: 'Beginner',
+        tags: ['Economics', 'Cost-Benefit', 'Trade'],
+        relatedTopics: ['macroeconomics', 'microeconomics'],
         terms: [
             { term: 'Opportunity Cost', definition: 'The loss of potential gain from other alternatives when one alternative is chosen.', example: 'Choosing to go to college means giving up 4 years of potential earnings' },
             { term: 'Absolute Advantage', definition: 'Ability to produce more of a good using the same resources.', example: 'Country A producing 100 cars vs Country B producing 50 with same inputs' },
@@ -285,6 +355,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Investment Mgmt',
         icon: Briefcase,
         description: 'Professional asset management of various securities.',
+        category: 'Investing',
+        difficulty: 'Advanced',
+        tags: ['Asset Management', 'Alpha', 'Performance'],
+        relatedTopics: ['investments', 'portfolio-management'],
         terms: [
             { term: 'Alpha', definition: 'Measure of performance on a risk-adjusted basis - excess return relative to benchmark.', example: 'Fund returning 15% when market returned 10% has 5% alpha' },
             { term: 'Active Management', definition: 'Attempting to outperform the market through stock selection and timing.', example: 'Hedge fund manager picking individual stocks instead of buying index' },
@@ -299,6 +373,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Managerial Acct.',
         icon: Calculator,
         description: 'Accounting for internal use by management.',
+        category: 'Accounting',
+        difficulty: 'Intermediate',
+        tags: ['Managerial Accounting', 'Cost Analysis', 'Budgeting'],
+        relatedTopics: ['financial-accounting', 'accounting-principles'],
         terms: [
             { term: 'Cost Center', definition: 'A department or other unit within an organization to which costs may be charged.', example: 'IT department tracked separately to monitor technology spending' },
             { term: 'Contribution Margin', definition: 'Sales revenue minus variable costs.', example: 'Selling price $50 - variable costs $30 = $20 contribution margin per unit' },
@@ -313,6 +391,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Marketing',
         icon: Target,
         description: 'Action or business of promoting and selling products.',
+        category: 'Business',
+        difficulty: 'Beginner',
+        tags: ['Marketing', 'Branding', 'Strategy'],
+        relatedTopics: [],
         terms: [
             { term: '4 Ps', definition: 'Price, Product, Promotion, and Place - the four key elements of marketing.', example: 'Apple pricing premium (Price), innovative products (Product), sleek advertising (Promotion), retail stores (Place)' },
             { term: 'Market Segmentation', definition: 'Dividing market into distinct groups of buyers with different needs.', example: 'Car companies targeting luxury buyers vs economy buyers' },
@@ -326,6 +408,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Org. Behavior',
         icon: Users,
         description: 'Study of human behavior in organizational settings.',
+        category: 'Business',
+        difficulty: 'Intermediate',
+        tags: ['Organization', 'Leadership', 'Culture'],
+        relatedTopics: ['management-communication'],
         terms: [
             { term: 'Corporate Culture', definition: 'The beliefs and behaviors that determine how a company\'s employees and management interact.', example: 'Google\'s innovative, open culture vs traditional hierarchy' },
             { term: 'Organizational Structure', definition: 'System defining how activities are directed toward achieving organizational aims.', example: 'Flat structure with few management levels vs hierarchical pyramid' },
@@ -339,6 +425,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Portfolio Mgmt',
         icon: PieChart,
         description: 'Art and science of selecting and overseeing a group of investments.',
+        category: 'Investing',
+        difficulty: 'Advanced',
+        tags: ['Portfolio', 'Asset Allocation', 'Diversification'],
+        relatedTopics: ['investments', 'investment-management'],
         terms: [
             { term: 'Asset Allocation', definition: 'Strategy that aims to balance risk and reward by apportioning a portfolio\'s assets according to an individual\'s goals.', example: '60% stocks, 30% bonds, 10% real estate based on risk tolerance' },
             { term: 'Risk Tolerance', definition: 'Degree of variability in investment returns an investor is willing to withstand.', example: 'Young investor comfortable with 100% stocks vs retiree wanting stable income' },
@@ -353,6 +443,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Private Equity',
         icon: DollarSign,
         description: 'Capital that is not listed on a public exchange.',
+        category: 'Finance',
+        difficulty: 'Advanced',
+        tags: ['Private Equity', 'LBO', 'Buyouts'],
+        relatedTopics: ['corporate-finance', 'financial-modeling'],
         terms: [
             { term: 'LBO', definition: 'Leveraged Buyout - the acquisition of another company using a significant amount of borrowed money.', example: 'KKR buying RJR Nabisco for $25B in 1989 using mostly debt' },
             { term: 'Carried Interest', definition: 'Share of profits that general partners receive as compensation.', example: 'PE firm receiving 20% of profits above hurdle rate' },
@@ -368,6 +462,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'General Finance',
         icon: Wallet,
         description: 'Broad range of finance-related subjects.',
+        category: 'Finance',
+        difficulty: 'Beginner',
+        tags: ['Finance', 'Personal Finance', 'Basics'],
+        relatedTopics: [],
         terms: [
             { term: 'Fintech', definition: 'Financial Technology - innovation that aims to compete with traditional financial methods.', example: 'Robinhood disrupting brokerage with commission-free trading' },
             { term: 'Compound Interest', definition: 'Interest calculated on initial principal and accumulated interest.', example: '$1000 at 10% annually grows to $2594 in 10 years' },
@@ -382,6 +480,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Behavioral Finance',
         icon: Users,
         description: 'Psychological influences on financial practitioners and markets.',
+        category: 'Finance',
+        difficulty: 'Intermediate',
+        tags: ['Psychology', 'Behavioral Economics', 'Biases'],
+        relatedTopics: ['investments', 'economics'],
         terms: [
             { term: 'Loss Aversion', definition: 'The tendency to prefer avoiding losses to acquiring equivalent gains.', example: 'Feeling the pain of losing $100 twice as intensely as the joy of finding $100' },
             { term: 'Confirmation Bias', definition: 'Tendency to search for and interpret information in a way that confirms one\'s prior beliefs.', example: 'Only reading news articles that support a stock you already own' },
@@ -398,6 +500,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Quantitative Analysis',
         icon: Calculator,
         description: 'Use of mathematical and statistical modeling taking place in financial markets.',
+        category: 'Finance',
+        difficulty: 'Advanced',
+        tags: ['Quant', 'Analysis', 'Trading', 'Statistics'],
+        relatedTopics: ['financial-statement-analysis', 'investments'],
         terms: [
             { term: 'Algorithmic Trading', definition: 'Use of computer programs to execute trades at high speeds and volumes.', example: 'HFT firms making thousands of trades per second based on arbitrage opportunities' },
             { term: 'Backtesting', definition: 'Testing a predictive model on historical data.', example: 'Running a trading strategy on data from 2010-2020 to see how it would have performed' },
@@ -414,6 +520,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Crypto Assets',
         icon: Wallet,
         description: 'Digital or virtual currencies secured by cryptography.',
+        category: 'Investing',
+        difficulty: 'Intermediate',
+        tags: ['Cryptocurrency', 'Blockchain', 'Digital Assets'],
+        relatedTopics: ['finance-topics'],
         terms: [
             { term: 'Blockchain', definition: 'Distributed ledger technology that records all transactions across a network.', example: 'Ethereum blockchain recording smart contract executions' },
             { term: 'DeFi', definition: 'Decentralized Finance - financial services on public blockchains without intermediaries.', example: 'Uniswap allowing trading without a centralized exchange' },
@@ -430,6 +540,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Supply Chain',
         icon: Globe,
         description: 'Management of the flow of goods and services.',
+        category: 'Business',
+        difficulty: 'Intermediate',
+        tags: ['Supply Chain', 'Operations', 'Logistics'],
+        relatedTopics: [],
         terms: [
             { term: 'Just-in-Time (JIT)', definition: 'Inventory strategy to increase efficiency by receiving goods only as they are needed.', example: 'Toyota receiving car parts hours before assembly' },
             { term: 'Bullwhip Effect', definition: 'Phenomenon where small fluctuations in demand at the retail level cause progressively larger fluctuations at the wholesale and manufacturer levels.', example: 'Panic buying of toilet paper causing massive overproduction orders' },
@@ -444,6 +558,10 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         title: 'Financial Modeling',
         icon: Building,
         description: 'Summary of a company\'s expenses and earnings in a spreadsheet.',
+        category: 'Finance',
+        difficulty: 'Advanced',
+        tags: ['Modeling', 'Valuation', 'DCF'],
+        relatedTopics: ['corporate-finance', 'financial-statement-analysis'],
         terms: [
             { term: 'DCF', definition: 'Discounted Cash Flow - a valuation method used to estimate the value of an investment based on its expected future cash flows.', example: 'Projecting 5 years of free cash flows and discounting to present value at WACC' },
             { term: 'Three Statement Model', definition: 'Financial model linking income statement, balance sheet, and cash flow statement.', example: 'Net income flowing to equity, driving cash and retained earnings' },
