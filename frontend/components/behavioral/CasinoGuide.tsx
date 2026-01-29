@@ -22,6 +22,9 @@ import {
     Trophy,
     User
 } from 'lucide-react';
+import { SpadesGame } from './SpadesGame';
+import { HeartsGame } from './HeartsGame';
+import { RummyGame } from './RummyGame';
 import { PokerGame } from './PokerGame';
 import { SportsGame } from './SportsGame';
 import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
@@ -196,7 +199,7 @@ export function CasinoGuide() {
         { id: 'slots', label: 'Slots', icon: <CircleDollarSign size={18} /> },
         { id: 'tables', label: 'Table Games', icon: <Dices size={18} /> },
         { id: 'electronic', label: 'Electronic', icon: <Gamepad2 size={18} /> },
-        { id: 'other', label: 'Other', icon: <MoreHorizontal size={18} /> },
+        { id: 'other', label: 'Card Room', icon: <MoreHorizontal size={18} /> },
         { id: 'reality', label: 'The Reality Check', icon: <AlertTriangle size={18} /> },
     ];
 
@@ -250,20 +253,23 @@ export function CasinoGuide() {
                     <MoreHorizontal className="text-indigo-500" size={28} />
                 </div>
                 <div>
-                    <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">Ancillary Options</h4>
-                    <p className="text-slate-400 text-sm font-medium tracking-wide">PVP rooms and high-margin distractions.</p>
+                    <h4 className="text-2xl font-black text-white tracking-tight uppercase italic">The Card Room & Extras</h4>
+                    <p className="text-slate-400 text-sm font-medium tracking-wide">PVP rooms, parlor games, and high-margin distractions.</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                    { name: "Poker Rooms", desc: "Player vs Player. The house takes a 'rake' (fee) from every pot.", id: 'poker', icon: "🃏" },
-                    { name: "Sportsbooks", desc: "The 'Vig' (juice) makes winning long-term extremely difficult.", id: 'sports', icon: "🏈" },
+                    { name: "Texas Hold'em", desc: "Classic PVP Poker. The house rakes 5% of every pot.", id: 'poker', icon: "🃏" },
+                    { name: "Spades", desc: "Cutthroat 1v1 Spades. Bid on tricks, avoid bags.", id: 'spades', icon: "♠️" },
+                    { name: "Hearts", desc: "Avoid the Queen of Spades and Hearts. Shoot the moon.", id: 'hearts', icon: "♥️" },
+                    { name: "Gin Rummy", desc: "Form sets and runs. Knock before your opponent.", id: 'rummy', icon: "♦️" },
+                    { name: "Sportsbook", desc: "The 'Vig' (juice) makes winning long-term extremely difficult.", id: 'sports', icon: "🏈" },
                     { name: "Keno / Bingo", desc: "The ultimate mathematical 'donation'. 25%+ house edge.", id: 'keno', icon: "🔢" }
                 ].map((o, i) => (
                     <button
                         key={i}
-                        onClick={() => { if (['poker', 'sports', 'keno'].includes(o.id)) { setActiveGame(o.id); playSound('click'); } }}
+                        onClick={() => { if (['poker', 'sports', 'keno', 'spades', 'hearts', 'rummy'].includes(o.id)) { setActiveGame(o.id); playSound('click'); } }}
                         className="group relative p-6 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] hover:border-indigo-500/40 transition-all overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -934,6 +940,9 @@ export function CasinoGuide() {
                                     {activeGame === 'keno' && <KenoEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'poker' && <PokerGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'sports' && <SportsGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                                    {activeGame === 'spades' && <SpadesGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                                    {activeGame === 'hearts' && <HeartsGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                                    {activeGame === 'rummy' && <RummyGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                 </div>
                             </motion.div>
                         )}
