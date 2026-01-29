@@ -8,6 +8,7 @@ import Providers from "../providers";
 import { ThemeProvider } from "next-themes";
 import { CommandMenu } from "@/components/CommandMenu";
 import { LibraryDrawer } from "@/components/LibraryDrawer";
+import { MarketHeartbeatProvider } from "@/components/ui/MarketHeartbeatProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,12 +40,14 @@ export default function RootLayout({
         <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
           <Providers>
             <SettingsProvider>
-              <ErrorBoundary>
-                {children}
-                <CommandMenu />
-                <LibraryDrawer />
-                <Analytics />
-              </ErrorBoundary>
+              <MarketHeartbeatProvider>
+                <ErrorBoundary>
+                  {children}
+                  <CommandMenu />
+                  <LibraryDrawer />
+                  <Analytics />
+                </ErrorBoundary>
+              </MarketHeartbeatProvider>
             </SettingsProvider>
           </Providers>
         </ThemeProvider>
