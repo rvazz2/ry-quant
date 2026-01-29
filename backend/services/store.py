@@ -2,11 +2,12 @@ import json
 import os
 from typing import Any, Dict, Optional
 
-DATA_FILE = "data/store.json"
+DATA_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "store.json")
 
 def _ensure_data_dir():
-    if not os.path.exists("data"):
-        os.makedirs("data")
+    directory = os.path.dirname(DATA_FILE)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     if not os.path.exists(DATA_FILE):
         with open(DATA_FILE, "w") as f:
             json.dump({}, f)

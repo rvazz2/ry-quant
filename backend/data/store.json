@@ -8,10 +8,20 @@
   },
   "simulator_portfolio": [
     {
-      "symbol": "AAPL",
-      "shares": 20,
-      "avgCost": 276.44
+      "symbol": "TSLA",
+      "shares": 1,
+      "avgCost": 200.0
     }
   ],
-  "simulator_cash": 94471.20000000001
+  "simulator_cash": 99800.0,
+  "simulator_history": [
+    {
+      "timestamp": "2026-01-29T13:27:14.746593",
+      "action": "BUY",
+      "symbol": "TSLA",
+      "shares": 1,
+      "price": 200.0,
+      "total": 200.0
+    }
+  ]
 }
