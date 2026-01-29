@@ -210,160 +210,161 @@ export default function LandingPage() {
             </button>
           </div>
         </motion.div>
+      </div>
 
-        {/* Founders Section - Updated with strong glassmorphism */}
-        <motion.div
-          id="mission"
-          className="max-w-6xl mx-auto scroll-mt-24"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7 }}
-        >
-          <h3 className="text-[13px] font-bold text-slate-500 uppercase tracking-[0.3em] text-center mb-16">Built By Students, For Students</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      {/* Founders Section - Updated with strong glassmorphism */}
+      <motion.div
+        id="mission"
+        className="max-w-6xl mx-auto scroll-mt-24"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.7 }}
+      >
+        <h3 className="text-[13px] font-bold text-slate-500 uppercase tracking-[0.3em] text-center mb-16">Built By Students, For Students</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
-            {students.map((student, idx) => (
-              <motion.div
-                key={idx}
-                whileHover={{ y: -5, scale: 1.02 }}
-                onClick={() => setSelectedStudent(student)}
-                className="group relative glass-panel glass-panel-hover p-10 cursor-pointer flex items-center gap-8"
-              >
-                <div className="absolute top-6 right-6 text-slate-600 group-hover:text-cyan-400 transition-colors">
-                  <ArrowRight size={28} className="group-hover:translate-x-1 transition-transform" />
-                </div>
-
-                <div className="w-24 h-24 rounded-2xl bg-slate-900/50 flex items-center justify-center border border-white/5 group-hover:border-cyan-500/30 transition-all shadow-xl group-hover:shadow-[0_0_25px_rgba(34,211,238,0.2)] shrink-0">
-                  {student.icon}
-                </div>
-
-                <div className="min-w-0">
-                  <h4 className="text-5xl font-cursive text-white mb-3 group-hover:text-cyan-400 transition-colors pt-2 leading-none">{student.name}</h4>
-                  <p className="text-xs text-cyan-500 font-bold uppercase tracking-wider mb-2 border border-cyan-500/20 bg-cyan-500/5 inline-block px-2 py-1 rounded">{student.role}</p>
-                  <p className="text-xs text-slate-500 truncate max-w-[240px] italic">{student.college}</p>
-                </div>
-              </motion.div>
-            ))}
-
-          </div>
-        </motion.div>
-
-        {/* The Problem */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center mt-56"
-        >
-          <div className="space-y-10">
-            <h2 className="text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.1]">
-              The Problem with <br />
-              <span className="text-rose-500 drop-shadow-[0_0_20px_rgba(244,63,94,0.4)]">Modern Education</span>
-            </h2>
-            <div className="prose prose-invert text-lg text-slate-300 leading-relaxed font-light space-y-6">
-              <p>
-                You spent 16 years in school learning about mitochondria and calculus. But the day you graduated, <strong className="text-white font-semibold decoration-rose-500 decoration-2 underline underline-offset-4">nobody told you how to manage debt, file taxes, or grow your money.</strong>
-              </p>
-              <p className="border-l-4 border-rose-500 pl-6 italic text-slate-400">
-                &quot;You were thrown into the deep end of capitalism without a life jacket.&quot;
-              </p>
-            </div>
-          </div>
-
-          <div className="glass-panel p-10 md:p-14 relative overflow-hidden border-l-4 border-l-rose-500 shadow-[0_0_60px_-10px_rgba(244,63,94,0.15)] group">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-rose-600/10 rounded-full blur-[80px] -z-10 group-hover:bg-rose-600/20 transition-colors duration-1000" />
-
-            <div className="space-y-10 relative z-10">
-              <div className="flex gap-7 items-start">
-                <span className="text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] grayscale group-hover:grayscale-0 transition-all duration-500">📉</span>
-                <div>
-                  <h3 className="font-bold text-white text-2xl mb-2">Inflation is Eating You</h3>
-                  <p className="text-slate-400 leading-relaxed">Your savings lose value every single day you don&apos;t invest. Cash is trash.</p>
-                </div>
+          {students.map((student, idx) => (
+            <motion.div
+              key={idx}
+              whileHover={{ y: -5, scale: 1.02 }}
+              onClick={() => setSelectedStudent(student)}
+              className="group relative glass-panel glass-panel-hover p-10 cursor-pointer flex items-center gap-8"
+            >
+              <div className="absolute top-6 right-6 text-slate-600 group-hover:text-cyan-400 transition-colors">
+                <ArrowRight size={28} className="group-hover:translate-x-1 transition-transform" />
               </div>
-              <div className="flex gap-7 items-start">
-                <span className="text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] grayscale group-hover:grayscale-0 transition-all duration-500 delay-100">💸</span>
-                <div>
-                  <h3 className="font-bold text-white text-2xl mb-2">Debt is Compounding</h3>
-                  <p className="text-slate-400 leading-relaxed">Student loans are designed to keep you working until you&apos;re 70. Break the cycle.</p>
-                </div>
-              </div>
-              <div className="flex gap-7 items-start">
-                <span className="text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] grayscale group-hover:grayscale-0 transition-all duration-500 delay-200">🚫</span>
-                <div>
-                  <h3 className="font-bold text-white text-2xl mb-2">The &quot;Standard Path&quot; is Broken</h3>
-                  <p className="text-slate-400 leading-relaxed">Work until 65 then retire? That math doesn&apos;t work anymore.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
 
-        {/* The Solution */}
-        <motion.div
-          id="features"
-          className="glass-panel p-12 md:p-24 border-t border-cyan-500/30 text-center space-y-16 relative overflow-visible group mt-56 scroll-mt-24"
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-70"></div>
-          <div className="absolute -top-40 -right-40 bg-cyan-500/10 w-[600px] h-[600px] rounded-full blur-[100px] group-hover:bg-cyan-500/20 transition-all duration-1000"></div>
-          <div className="absolute -bottom-40 -left-40 bg-blue-500/10 w-[600px] h-[600px] rounded-full blur-[100px] group-hover:bg-blue-500/20 transition-all duration-1000"></div>
+              <div className="w-24 h-24 rounded-2xl bg-slate-900/50 flex items-center justify-center border border-white/5 group-hover:border-cyan-500/30 transition-all shadow-xl group-hover:shadow-[0_0_25px_rgba(34,211,238,0.2)] shrink-0">
+                {student.icon}
+              </div>
 
-          <div className="relative z-10">
-            <div className="inline-block px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-cyan-400 text-sm font-bold uppercase tracking-[0.2em] mb-8 shadow-[0_0_15px_rgba(34,211,238,0.2)]">The Antidote</div>
-            <h2 className="text-5xl md:text-7xl font-black text-white mb-8">The Solution: <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 neon-text-cyan">QuantDash</span></h2>
-            <p className="text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto font-light leading-relaxed">
-              This isn&apos;t just a stock tracker. It&apos;s your cheat sheet for the real world. We provide the institutional-grade tools usually reserved for Wall Street, simplified for your dorm room.
+              <div className="min-w-0">
+                <h4 className="text-5xl font-cursive text-white mb-3 group-hover:text-cyan-400 transition-colors pt-2 leading-none">{student.name}</h4>
+                <p className="text-xs text-cyan-500 font-bold uppercase tracking-wider mb-2 border border-cyan-500/20 bg-cyan-500/5 inline-block px-2 py-1 rounded">{student.role}</p>
+                <p className="text-xs text-slate-500 truncate max-w-[240px] italic">{student.college}</p>
+              </div>
+            </motion.div>
+          ))}
+
+        </div>
+      </motion.div>
+
+      {/* The Problem */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center mt-56"
+      >
+        <div className="space-y-10">
+          <h2 className="text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.1]">
+            The Problem with <br />
+            <span className="text-rose-500 drop-shadow-[0_0_20px_rgba(244,63,94,0.4)]">Modern Education</span>
+          </h2>
+          <div className="prose prose-invert text-lg text-slate-300 leading-relaxed font-light space-y-6">
+            <p>
+              You spent 16 years in school learning about mitochondria and calculus. But the day you graduated, <strong className="text-white font-semibold decoration-rose-500 decoration-2 underline underline-offset-4">nobody told you how to manage debt, file taxes, or grow your money.</strong>
+            </p>
+            <p className="border-l-4 border-rose-500 pl-6 italic text-slate-400">
+              &quot;You were thrown into the deep end of capitalism without a life jacket.&quot;
             </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pt-8 relative z-10">
-            {[
-              { title: "Institutional Data", icon: LineChart, desc: "Real-time market analytics used by hedge funds.", link: "/research", color: "text-cyan-400", bg: "bg-cyan-500/10", border: "hover:border-cyan-500/50" },
-              { title: "Crypto Command", icon: Bitcoin, desc: "Live DeFi yields, whale alerts, and token analytics.", link: "/crypto", color: "text-amber-400", bg: "bg-amber-500/10", border: "hover:border-amber-500/50" },
-              { title: "Financial Literacy", icon: BookOpen, desc: "Test your knowledge with our Interactive Quiz.", link: "/dashboard?view=quiz", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "hover:border-emerald-500/50" },
-              { title: "Algorithmic Tools", icon: Cpu, desc: "Tools to optimize your portfolio mathematically.", link: "/quant", color: "text-purple-400", bg: "bg-purple-500/10", border: "hover:border-purple-500/50" }
-            ].map((feature, i) => (
-              <Link
-                key={i}
-                href={feature.link}
-                className={`bg-black/40 border border-white/5 p-8 rounded-3xl ${feature.border} transition-all cursor-pointer hover:-translate-y-3 hover:shadow-2xl group/card flex flex-col items-center text-center backdrop-blur-md`}
-              >
-                <div className={`w-20 h-20 rounded-2xl bg-slate-900 flex items-center justify-center border border-white/10 ${feature.color} mb-6 group-hover/card:scale-110 group-hover/card:${feature.bg} transition-all duration-300 shadow-lg`}>
-                  <feature.icon size={36} />
-                </div>
-                <h3 className={`font-bold text-white text-xl mb-3 group-hover/card:${feature.color} transition-colors`}>{feature.title}</h3>
-                <p className="text-slate-400 leading-relaxed font-light">{feature.desc}</p>
-              </Link>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* The Goal */}
-        <div className="text-center py-32 mt-32 relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
-
-          <h2 className="text-3xl font-bold text-slate-400 mb-10 tracking-[0.2em] uppercase">Our Goal for You</h2>
-          <p className="text-4xl md:text-6xl text-slate-200 font-thin mb-16 max-w-5xl mx-auto leading-tight">
-            Turn <span className="text-rose-400 font-bold decoration-wavy underline decoration-rose-500/30">&quot;Broke Student&quot;</span> into <span className="text-emerald-400 font-bold decoration-wavy underline decoration-emerald-500/30">&quot;Wealthy Adult&quot;</span>.
-          </p>
-          <Link href="/planning" className="inline-flex px-8 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cyan-500/30 text-cyan-400 hover:text-cyan-300 font-bold text-lg items-center gap-3 transition-all hover:scale-105 shadow-[0_0_20px_rgba(0,0,0,0.2)]">
-            See how we do it <ArrowRight size={20} />
-          </Link>
         </div>
 
-        {/* Footer */}
-        <footer className="relative z-10 py-12 text-center text-slate-600 text-sm border-t border-white/5 mt-32">
-          <p>© {new Date().getFullYear()} Ry Quant. All rights reserved.</p>
-          <p className="mt-2 text-xs opacity-50">QuantDash™ is a trademark of Ry Quant.</p>
-        </footer>
+        <div className="glass-panel p-10 md:p-14 relative overflow-hidden border-l-4 border-l-rose-500 shadow-[0_0_60px_-10px_rgba(244,63,94,0.15)] group">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-rose-600/10 rounded-full blur-[80px] -z-10 group-hover:bg-rose-600/20 transition-colors duration-1000" />
 
-      </div >
+          <div className="space-y-10 relative z-10">
+            <div className="flex gap-7 items-start">
+              <span className="text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] grayscale group-hover:grayscale-0 transition-all duration-500">📉</span>
+              <div>
+                <h3 className="font-bold text-white text-2xl mb-2">Inflation is Eating You</h3>
+                <p className="text-slate-400 leading-relaxed">Your savings lose value every single day you don&apos;t invest. Cash is trash.</p>
+              </div>
+            </div>
+            <div className="flex gap-7 items-start">
+              <span className="text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] grayscale group-hover:grayscale-0 transition-all duration-500 delay-100">💸</span>
+              <div>
+                <h3 className="font-bold text-white text-2xl mb-2">Debt is Compounding</h3>
+                <p className="text-slate-400 leading-relaxed">Student loans are designed to keep you working until you&apos;re 70. Break the cycle.</p>
+              </div>
+            </div>
+            <div className="flex gap-7 items-start">
+              <span className="text-5xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] grayscale group-hover:grayscale-0 transition-all duration-500 delay-200">🚫</span>
+              <div>
+                <h3 className="font-bold text-white text-2xl mb-2">The &quot;Standard Path&quot; is Broken</h3>
+                <p className="text-slate-400 leading-relaxed">Work until 65 then retire? That math doesn&apos;t work anymore.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* The Solution */}
+      <motion.div
+        id="features"
+        className="glass-panel p-12 md:p-24 border-t border-cyan-500/30 text-center space-y-16 relative overflow-visible group mt-56 scroll-mt-24"
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+      >
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-70"></div>
+        <div className="absolute -top-40 -right-40 bg-cyan-500/10 w-[600px] h-[600px] rounded-full blur-[100px] group-hover:bg-cyan-500/20 transition-all duration-1000"></div>
+        <div className="absolute -bottom-40 -left-40 bg-blue-500/10 w-[600px] h-[600px] rounded-full blur-[100px] group-hover:bg-blue-500/20 transition-all duration-1000"></div>
+
+        <div className="relative z-10">
+          <div className="inline-block px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-cyan-400 text-sm font-bold uppercase tracking-[0.2em] mb-8 shadow-[0_0_15px_rgba(34,211,238,0.2)]">The Antidote</div>
+          <h2 className="text-5xl md:text-7xl font-black text-white mb-8">The Solution: <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 neon-text-cyan">QuantDash</span></h2>
+          <p className="text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto font-light leading-relaxed">
+            This isn&apos;t just a stock tracker. It&apos;s your cheat sheet for the real world. We provide the institutional-grade tools usually reserved for Wall Street, simplified for your dorm room.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pt-8 relative z-10">
+          {[
+            { title: "Institutional Data", icon: LineChart, desc: "Real-time market analytics used by hedge funds.", link: "/research", color: "text-cyan-400", bg: "bg-cyan-500/10", border: "hover:border-cyan-500/50" },
+            { title: "Crypto Command", icon: Bitcoin, desc: "Live DeFi yields, whale alerts, and token analytics.", link: "/crypto", color: "text-amber-400", bg: "bg-amber-500/10", border: "hover:border-amber-500/50" },
+            { title: "Financial Literacy", icon: BookOpen, desc: "Test your knowledge with our Interactive Quiz.", link: "/dashboard?view=quiz", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "hover:border-emerald-500/50" },
+            { title: "Algorithmic Tools", icon: Cpu, desc: "Tools to optimize your portfolio mathematically.", link: "/quant", color: "text-purple-400", bg: "bg-purple-500/10", border: "hover:border-purple-500/50" }
+          ].map((feature, i) => (
+            <Link
+              key={i}
+              href={feature.link}
+              className={`bg-black/40 border border-white/5 p-8 rounded-3xl ${feature.border} transition-all cursor-pointer hover:-translate-y-3 hover:shadow-2xl group/card flex flex-col items-center text-center backdrop-blur-md`}
+            >
+              <div className={`w-20 h-20 rounded-2xl bg-slate-900 flex items-center justify-center border border-white/10 ${feature.color} mb-6 group-hover/card:scale-110 group-hover/card:${feature.bg} transition-all duration-300 shadow-lg`}>
+                <feature.icon size={36} />
+              </div>
+              <h3 className={`font-bold text-white text-xl mb-3 group-hover/card:${feature.color} transition-colors`}>{feature.title}</h3>
+              <p className="text-slate-400 leading-relaxed font-light">{feature.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* The Goal */}
+      <div className="text-center py-32 mt-32 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+        <h2 className="text-3xl font-bold text-slate-400 mb-10 tracking-[0.2em] uppercase">Our Goal for You</h2>
+        <p className="text-4xl md:text-6xl text-slate-200 font-thin mb-16 max-w-5xl mx-auto leading-tight">
+          Turn <span className="text-rose-400 font-bold decoration-wavy underline decoration-rose-500/30">&quot;Broke Student&quot;</span> into <span className="text-emerald-400 font-bold decoration-wavy underline decoration-emerald-500/30">&quot;Wealthy Adult&quot;</span>.
+        </p>
+        <Link href="/planning" className="inline-flex px-8 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cyan-500/30 text-cyan-400 hover:text-cyan-300 font-bold text-lg items-center gap-3 transition-all hover:scale-105 shadow-[0_0_20px_rgba(0,0,0,0.2)]">
+          See how we do it <ArrowRight size={20} />
+        </Link>
+      </div>
+
+      {/* Footer */}
+      <footer className="relative z-10 py-12 text-center text-slate-600 text-sm border-t border-white/5 mt-32">
+        <p>© {new Date().getFullYear()} Ry Quant. All rights reserved.</p>
+        <p className="mt-2 text-xs opacity-50">QuantDash™ is a trademark of Ry Quant.</p>
+      </footer>
+
+
     </div >
   );
 }
