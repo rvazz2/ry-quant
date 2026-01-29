@@ -658,7 +658,12 @@ export default function SimulatorPage() {
                                                         <Zap size={12} /> {isShort ? 'Cover 10' : 'Buy 10'}
                                                     </button>
                                                     <button
-                                                        onClick={() => handleQuickTrade(pos.symbol, 'SELL', 10)}
+                                                        onClick={() => {
+                                                            // If Short: We are adding to short, so just Sell 10 (or whatever amount).
+                                                            // If Long: We are selling to close, so max is current shares.
+                                                            const sharesToSell = isShort ? 10 : Math.min(10, pos.shares);
+                                                            handleQuickTrade(pos.symbol, 'SELL', sharesToSell);
+                                                        }}
                                                         className="flex-1 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 text-xs py-1.5 rounded border border-rose-500/30 transition-colors flex items-center justify-center gap-1"
                                                     >
                                                         <Zap size={12} /> {isShort ? 'Short More 10' : 'Sell 10'}
