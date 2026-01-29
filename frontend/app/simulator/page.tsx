@@ -598,20 +598,53 @@ export default function SimulatorPage() {
                                     <div className="text-center text-slate-600 py-8 italic">No positions yet.</div>
                                 ) : (
                                     sortedPortfolio.map((pos) => {
-                                        const marketVal = pos.shares * (pos.currentPrice || 0);
+                                        const isShort = pos.shares < 0;
+                                        const shares = Math.abs(pos.shares);
+                                        const currentPrice = pos.currentPrice || 0;
+
+                                        // Market Value
+                                        // If Long: Shares * Price
+                                        // If Short: Liability = Shares * Price (Displayed as positive liability usually, or negative value)
+                                        // For UI consistency, let's show the "Value" of the position as signed.
+                                        const marketVal = pos.shares * currentPrice;
+
+                                        // Cost Basis
+                                        // If Long: Shares * AvgCost
+                                        // If Short: -Shares * AvgCost (The proceeds we got) -> displayed as signed
                                         const costBasis = pos.shares * pos.avgCost;
+
+                                        // Gain
+                                        // Long: Market - Cost
+                                        // Short: Cost - Market (Entry - Current) * Shares? 
+                                        // Actually: (EntryPrice - CurrentPrice) * Shares
+                                        // Existing Math: 
+                                        // gain = marketVal - costBasis
+                                        // If Short: (-10 * 80) - (-10 * 100) = -800 - (-1000) = -800 + 1000 = +200.
+                                        // So the Math holds up!
                                         const gain = marketVal - costBasis;
-                                        const gainPct = (gain / costBasis) * 100;
+
+                                        // Gain %
+                                        // Long: Gain / CostBasis
+                                        // Short: Gain / |CostBasis| (Return on exposure/margin used?)
+                                        // Usually Short Return = (Entry - Current) / Entry
+                                        const gainPct = isShort
+                                            ? ((pos.avgCost - currentPrice) / pos.avgCost) * 100
+                                            : (gain / costBasis) * 100;
 
                                         return (
-                                            <div key={pos.symbol} className="bg-slate-900/50 p-3 rounded border border-slate-800">
+                                            <div key={pos.symbol} className={`p-3 rounded border ${isShort ? 'bg-rose-900/10 border-rose-900/30' : 'bg-slate-900/50 border-slate-800'}`}>
                                                 <div className="flex justify-between items-start mb-2">
                                                     <div>
-                                                        <div className="font-bold text-white">{pos.symbol}</div>
-                                                        <div className="text-xs text-slate-500">{pos.shares} shs @ ${pos.avgCost.toFixed(2)}</div>
+                                                        <div className="font-bold text-white flex items-center gap-2">
+                                                            {pos.symbol}
+                                                            {isShort && <span className="text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Short</span>}
+                                                        </div>
+                                                        <div className="text-xs text-slate-500">
+                                                            {shares} shs @ ${pos.avgCost.toFixed(2)}
+                                                        </div>
                                                     </div>
                                                     <div className="text-right">
-                                                        <div className="font-mono text-white">${marketVal.toLocaleString()}</div>
+                                                        <div className="font-mono text-white">${Math.abs(marketVal).toLocaleString()} {isShort && <span className="text-slate-500 text-[10px]">(Liab)</span>}</div>
                                                         <div className={`text-xs font-bold ${gain >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                                                             {gain >= 0 ? '+' : ''}${gain.toLocaleString(undefined, { maximumFractionDigits: 0 })} ({gainPct.toFixed(1)}%)
                                                         </div>
@@ -622,13 +655,13 @@ export default function SimulatorPage() {
                                                         onClick={() => handleQuickTrade(pos.symbol, 'BUY', 10)}
                                                         className="flex-1 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs py-1.5 rounded border border-emerald-500/30 transition-colors flex items-center justify-center gap-1"
                                                     >
-                                                        <Zap size={12} /> Quick Buy 10
+                                                        <Zap size={12} /> {isShort ? 'Cover 10' : 'Buy 10'}
                                                     </button>
                                                     <button
-                                                        onClick={() => handleQuickTrade(pos.symbol, 'SELL', Math.min(10, pos.shares))}
+                                                        onClick={() => handleQuickTrade(pos.symbol, 'SELL', 10)}
                                                         className="flex-1 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 text-xs py-1.5 rounded border border-rose-500/30 transition-colors flex items-center justify-center gap-1"
                                                     >
-                                                        <Zap size={12} /> Quick Sell {Math.min(10, pos.shares)}
+                                                        <Zap size={12} /> {isShort ? 'Short More 10' : 'Sell 10'}
                                                     </button>
                                                 </div>
                                             </div>

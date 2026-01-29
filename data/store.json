@@ -1,0 +1,30 @@
+{
+  "simulator_portfolio": [],
+  "simulator_cash": 100150.0,
+  "simulator_history": [
+    {
+      "timestamp": "2026-01-29T13:11:23.856632",
+      "action": "BUY",
+      "symbol": "AMD",
+      "shares": 5,
+      "price": 100.0,
+      "total": 500.0
+    },
+    {
+      "timestamp": "2026-01-29T13:11:23.869766",
+      "action": "SELL",
+      "symbol": "AMD",
+      "shares": 10,
+      "price": 110.0,
+      "total": 1100.0
+    },
+    {
+      "timestamp": "2026-01-29T13:11:23.886711",
+      "action": "BUY",
+      "symbol": "AMD",
+      "shares": 5,
+      "price": 90.0,
+      "total": 450.0
+    }
+  ]
+}
