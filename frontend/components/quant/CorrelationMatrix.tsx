@@ -16,11 +16,7 @@ export default function CorrelationMatrix() {
     const [correlations, setCorrelations] = useState<CorrelationData>({});
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchCorrelations();
-    }, [tickers]);
-
-    const fetchCorrelations = async () => {
+    const fetchCorrelations = React.useCallback(async () => {
         setLoading(true);
 
         // Simulated correlation matrix data
@@ -42,7 +38,11 @@ export default function CorrelationMatrix() {
             setCorrelations(mockCorrelations);
             setLoading(false);
         }, 500);
-    };
+    }, [tickers]);
+
+    useEffect(() => {
+        fetchCorrelations();
+    }, [fetchCorrelations]);
 
     const getCorrelationColor = (value: number) => {
         if (value === 1) return 'bg-purple-600 text-white';

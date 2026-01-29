@@ -164,13 +164,14 @@ export interface BacktestResult {
 }
 
 export interface OptionPriceResult {
-    price: number;
+    call_price: number;
+    put_price: number;
     greeks: {
-        delta: number;
+        delta: { call: number; put: number };
         gamma: number;
-        theta: number;
+        theta: { call: number; put: number };
         vega: number;
-        rho: number;
+        rho: { call: number; put: number };
     };
 }
 

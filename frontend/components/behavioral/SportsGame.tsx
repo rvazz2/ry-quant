@@ -14,6 +14,7 @@ export function SportsGame({ onAction, balance, setBalance, playSound }: SportsG
     const [selectedBet, setSelectedBet] = useState<string | null>(null);
     const [result, setResult] = useState('');
     const [isBetting, setIsBetting] = useState(false);
+    const [ticketId] = useState(() => Math.floor(Math.random() * 999999));
 
     const betSize = 110;
 
@@ -56,7 +57,7 @@ export function SportsGame({ onAction, balance, setBalance, playSound }: SportsG
 
                 <div className="relative z-10 flex flex-col items-center">
                     <h3 className="text-3xl font-black text-slate-200 uppercase tracking-widest mb-2 font-mono">SPORTSBOOK</h3>
-                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mb-8">Ticket #{Math.floor(Math.random() * 999999)}</div>
+                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mb-8">Ticket #{ticketId}</div>
 
                     <div className="space-y-4 mb-8 w-full">
                         {bets.map((bet) => (

@@ -41,7 +41,7 @@ export default function SystemPage() {
             await api.post("/system/cache/clear");
             setMessage("Cache cleared successfully!");
             fetchStatus();
-        } catch (_) {
+        } catch {
             setMessage("Failed to clear cache.");
         } finally {
             setLoading(false);

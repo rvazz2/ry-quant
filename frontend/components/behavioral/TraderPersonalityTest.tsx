@@ -3,10 +3,25 @@ import { getPersonalityTest } from '@/lib/api';
 import { motion } from 'framer-motion';
 import { User, CheckCircle2, ArrowRight } from 'lucide-react';
 
+interface Option {
+    text: string;
+    points: Record<string, number>;
+}
+
+interface Question {
+    id: string;
+    text: string;
+    options: Option[];
+}
+
+interface QuizData {
+    questions: Question[];
+}
+
 export default function TraderPersonalityTest() {
-    const [quiz, setQuiz] = useState<any>(null);
+    const [quiz, setQuiz] = useState<QuizData | null>(null);
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [answers, setAnswers] = useState<any>({});
+    const [answers, setAnswers] = useState<Record<string, number>>({});
     const [result, setResult] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -26,35 +41,35 @@ export default function TraderPersonalityTest() {
         }
     };
 
-    const handleAnswer = (points: any) => {
+    const handleAnswer = (points: Record<string, number>) => {
         // Accumulate points
         const newAnswers = { ...answers };
         for (const [key, value] of Object.entries(points)) {
-            newAnswers[key] = (newAnswers[key] || 0) + (value as number);
+            newAnswers[key] = (newAnswers[key] || 0) + value;
         }
         setAnswers(newAnswers);
 
-        if (currentQuestion < quiz.questions.length - 1) {
+        if (quiz && currentQuestion < quiz.questions.length - 1) {
             setCurrentQuestion(currentQuestion + 1);
         } else {
             calculateResult(newAnswers);
         }
     };
 
-    const calculateResult = (finalAnswers: any) => {
+    const calculateResult = (finalAnswers: Record<string, number>) => {
         // Simple logic: find max category
         let maxCategory = "Balanced";
         let maxScore = -1;
 
         for (const [category, score] of Object.entries(finalAnswers)) {
-            if ((score as number) > maxScore) {
-                maxScore = score as number;
+            if (score > maxScore) {
+                maxScore = score;
                 maxCategory = category;
             }
         }
 
         // Map category to Title
-        const titles: any = {
+        const titles: Record<string, string> = {
             risk_taker: "The Maverick",
             risk_averse: "The Guardian",
             analytical: "The Strategist",
@@ -103,7 +118,7 @@ export default function TraderPersonalityTest() {
                         </h4>
 
                         <div className="space-y-3">
-                            {quiz.questions[currentQuestion].options.map((option: any, idx: number) => (
+                            {quiz.questions[currentQuestion].options.map((option: Option, idx: number) => (
                                 <button
                                     key={idx}
                                     onClick={() => handleAnswer(option.points)}

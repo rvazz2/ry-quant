@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { calculateOptionPrice } from '@/lib/api';
+import { OptionPriceResult } from '@/lib/types';
 import { BookOpen, TrendingUp, TrendingDown, Zap, AlertCircle, Info, BarChart3, PieChart as PieChartIcon } from 'lucide-react';
 import AnalysisCard from './AnalysisCard';
 
@@ -65,7 +66,7 @@ const PayoffChart = React.memo(({ data, breakeven, maxProfit, maxLoss, strategy 
 ));
 PayoffChart.displayName = 'PayoffChart';
 
-const ProbabilitySection = React.memo(({ result, inputs }: { result: any, inputs: any }) => {
+const ProbabilitySection = React.memo(({ result, inputs }: { result: OptionPriceResult, inputs: any }) => {
     const itmProb = (result.greeks.delta.call * 100);
     const expectedMove = inputs.S * inputs.sigma * Math.sqrt(inputs.T);
 
@@ -99,7 +100,7 @@ const ProbabilitySection = React.memo(({ result, inputs }: { result: any, inputs
 });
 ProbabilitySection.displayName = 'ProbabilitySection';
 
-const DeepDiveSection = React.memo(({ result, inputs }: { result: any, inputs: any }) => (
+const DeepDiveSection = React.memo(({ result, inputs }: { result: OptionPriceResult, inputs: any }) => (
     <div className="space-y-6 border-t border-slate-800 pt-6">
         <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">
             <BookOpen size={20} className="text-cyan-400" />
@@ -161,21 +162,21 @@ const OptionCalculator = () => {
         sigma: 0.2 // Volatility
     });
     const [strategy, setStrategy] = useState('long_call');
-    const [result, setResult] = useState<any>(null);
+    const [result, setResult] = useState<OptionPriceResult | null>(null);
     const [autoCalculate, setAutoCalculate] = useState(true);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputs({ ...inputs, [e.target.name]: parseFloat(e.target.value) });
     };
 
-    const handleCalculate = async () => {
+    const handleCalculate = React.useCallback(async () => {
         try {
             const res = await calculateOptionPrice(inputs.S, inputs.K, inputs.T, inputs.r, inputs.sigma);
             setResult(res);
         } catch (error) {
             console.error("Error calculating option price", error);
         }
-    };
+    }, [inputs]);
 
     // Auto-calculate on input change
     useEffect(() => {
@@ -185,12 +186,12 @@ const OptionCalculator = () => {
             }, 300); // Debounce
             return () => clearTimeout(timer);
         }
-    }, [inputs, autoCalculate]);
+    }, [inputs, autoCalculate, handleCalculate]);
 
     // Initial calculation
     useEffect(() => {
         handleCalculate();
-    }, []);
+    }, [handleCalculate]);
 
     // Calculate strategy P/L
     const strategyData = useMemo(() => {

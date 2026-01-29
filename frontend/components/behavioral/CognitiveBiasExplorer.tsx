@@ -3,8 +3,16 @@ import { getCognitiveBiases } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, ChevronLeft, ChevronRight, Lightbulb, Zap } from 'lucide-react';
 
+interface CognitiveBias {
+    id: string;
+    name: string;
+    definition: string;
+    example: string;
+    tip: string;
+}
+
 export default function CognitiveBiasExplorer() {
-    const [biases, setBiases] = useState<any[]>([]);
+    const [biases, setBiases] = useState<CognitiveBias[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
     const [loading, setLoading] = useState(true);

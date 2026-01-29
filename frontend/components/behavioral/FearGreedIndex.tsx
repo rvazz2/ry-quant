@@ -3,8 +3,18 @@ import { getFearGreedIndex } from '@/lib/api';
 import { RefreshCw, TrendingUp, Activity, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+interface FearGreedData {
+    score: number;
+    label: string;
+    components?: {
+        momentum?: number;
+        volatility?: number;
+    };
+    error?: string;
+}
+
 export default function FearGreedIndex() {
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<FearGreedData | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

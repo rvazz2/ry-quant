@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Dices, Check, X, AlertCircle } from 'lucide-react';
+import { Dices, Check, X } from 'lucide-react';
 
 const SCENARIOS = [
     {
