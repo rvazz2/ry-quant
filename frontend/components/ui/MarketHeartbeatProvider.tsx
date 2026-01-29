@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { api, getMacroSummary } from '@/lib/api';
 
 type MarketMood = 'calm' | 'volatile' | 'extreme'; // VIX < 20, 20-30, > 30
 
@@ -22,21 +23,25 @@ export function MarketHeartbeatProvider({ children }: { children: React.ReactNod
     const [stats, setStats] = useState({ vix: 14.5 }); // Start calm
     const [mounted, setMounted] = useState(false);
 
+
+
     useEffect(() => {
         setMounted(true);
-        // Simulate VIX changes or fetch real API
-        // For demo purposes, we will oscillate or allow manual override
-        const interval = setInterval(() => {
-            // Mock VIX fluctuation
-            setStats(prev => {
-                // Random walk
-                const change = (Math.random() - 0.5) * 2;
-                let newVix = prev.vix + change;
-                if (newVix < 10) newVix = 10;
-                if (newVix > 40) newVix = 40;
-                return { vix: newVix };
-            });
-        }, 3000);
+
+        const fetchVIX = async () => {
+            try {
+                const data = await getMacroSummary();
+                const vixItem = data.find((item: any) => item.symbol === '^VIX');
+                if (vixItem && vixItem.price) {
+                    setStats({ vix: vixItem.price });
+                }
+            } catch (error) {
+                console.error("Failed to fetch VIX:", error);
+            }
+        };
+
+        fetchVIX();
+        const interval = setInterval(fetchVIX, 60000); // Poll every minute
 
         return () => clearInterval(interval);
     }, []);
