@@ -12,7 +12,6 @@ import ConnectionStatus from './ConnectionStatus';
 import { CosmicBackground } from './ui/CosmicBackground';
 import Fuse from 'fuse.js';
 import { LIBRARY_TOPICS } from '@/lib/library-data';
-import { useRouter } from 'next/navigation';
 import { CommandMenu } from './CommandMenu';
 
 interface DashboardLayoutProps {
