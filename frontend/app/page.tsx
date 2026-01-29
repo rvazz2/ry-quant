@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, LineChart, Cpu, Activity, Zap, Bitcoin, PlayCircle, Sun, Moon, Sunset, CloudSun } from 'lucide-react';
 import FeedbackModal from '@/components/mission/FeedbackModal';
 
@@ -168,7 +169,12 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-32">
-        <div className="text-center max-w-5xl mx-auto mb-28 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-center max-w-5xl mx-auto mb-28"
+        >
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-[11px] font-bold uppercase tracking-widest mb-10 hover:bg-cyan-900/40 transition-all cursor-default shadow-[0_0_20px_rgba(34,211,238,0.1)] hover:shadow-[0_0_25px_rgba(34,211,238,0.2)]">
             <span className="relative flex h-2 w-2">
               <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${timeOfDay === 'morning' ? 'bg-orange-400' : timeOfDay === 'evening' ? 'bg-amber-400' : 'bg-cyan-400'}`}></span>
@@ -203,16 +209,24 @@ export default function LandingPage() {
               Our Philosophy
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Founders Section - Updated with strong glassmorphism */}
-        <div id="mission" className="max-w-6xl mx-auto scroll-mt-24">
+        <motion.div
+          id="mission"
+          className="max-w-6xl mx-auto scroll-mt-24"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7 }}
+        >
           <h3 className="text-[13px] font-bold text-slate-500 uppercase tracking-[0.3em] text-center mb-16">Built By Students, For Students</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
             {students.map((student, idx) => (
-              <div
+              <motion.div
                 key={idx}
+                whileHover={{ y: -5, scale: 1.02 }}
                 onClick={() => setSelectedStudent(student)}
                 className="group relative glass-panel glass-panel-hover p-10 cursor-pointer flex items-center gap-8"
               >
@@ -229,14 +243,20 @@ export default function LandingPage() {
                   <p className="text-xs text-cyan-500 font-bold uppercase tracking-wider mb-2 border border-cyan-500/20 bg-cyan-500/5 inline-block px-2 py-1 rounded">{student.role}</p>
                   <p className="text-xs text-slate-500 truncate max-w-[240px] italic">{student.college}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
 
           </div>
-        </div>
+        </motion.div>
 
         {/* The Problem */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center mt-56">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center mt-56"
+        >
           <div className="space-y-10">
             <h2 className="text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.1]">
               The Problem with <br />
@@ -279,10 +299,17 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* The Solution */}
-        <div id="features" className="glass-panel p-12 md:p-24 border-t border-cyan-500/30 text-center space-y-16 relative overflow-visible group mt-56 scroll-mt-24">
+        <motion.div
+          id="features"
+          className="glass-panel p-12 md:p-24 border-t border-cyan-500/30 text-center space-y-16 relative overflow-visible group mt-56 scroll-mt-24"
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
           <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-70"></div>
           <div className="absolute -top-40 -right-40 bg-cyan-500/10 w-[600px] h-[600px] rounded-full blur-[100px] group-hover:bg-cyan-500/20 transition-all duration-1000"></div>
           <div className="absolute -bottom-40 -left-40 bg-blue-500/10 w-[600px] h-[600px] rounded-full blur-[100px] group-hover:bg-blue-500/20 transition-all duration-1000"></div>
@@ -315,7 +342,7 @@ export default function LandingPage() {
               </Link>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* The Goal */}
         <div className="text-center py-32 mt-32 relative">
@@ -336,7 +363,7 @@ export default function LandingPage() {
           <p className="mt-2 text-xs opacity-50">QuantDash™ is a trademark of Ry Quant.</p>
         </footer>
 
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }

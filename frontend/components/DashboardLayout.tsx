@@ -3,6 +3,7 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutDashboard, TrendingUp, Activity, Calculator, Search, Settings, SquareTerminal, BookOpen, BrainCircuit, Bitcoin, Menu, X, GraduationCap, HardDrive, FileSpreadsheet, Command, Zap, FileText } from 'lucide-react';
 import { SearchResult } from '@/lib/types';
 import MarketStatus from './MarketStatus';
@@ -210,6 +211,9 @@ const CommandItem = ({ icon, label, subLabel, href, onClick }: { icon: React.Rea
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const fullKey = pathname + (searchParams?.toString() || "");
     // Command Palette State
     const [isCmdKOpen, setIsCmdKOpen] = React.useState(false);
     const [searchQuery, setSearchQuery] = React.useState("");
@@ -386,7 +390,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
                 <div className="p-8 pb-32 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out max-w-[1920px] mx-auto">
                     <ErrorBoundary name="Dashboard Content">
-                        {children}
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={fullKey}
+                                initial={{ opacity: 0, y: 15, scale: 0.99 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.25, ease: "easeOut" }}
+                                className="h-full"
+                            >
+                                {children}
+                            </motion.div>
+                        </AnimatePresence>
                     </ErrorBoundary>
                 </div>
             </main>
