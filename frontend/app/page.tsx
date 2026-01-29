@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, BookOpen, LineChart, Cpu, Activity, Zap, Bitcoin, PlayCircle, Sun, Moon, Sunset, CloudSun } from 'lucide-react';
+import FeedbackModal from '@/components/mission/FeedbackModal';
 
 // --- BioModal Component ---
 interface Student {
@@ -185,8 +186,8 @@ export default function LandingPage() {
             Professional-grade financial modeling, automated DCF valuation, and proprietary alpha-generating signals.
             <span className="text-white font-medium block mt-3 drop-shadow-md">Built for the retail trader who demands an edge.</span>
           </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <FeedbackModal />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
             <Link
               href="/dashboard"
               className="px-10 py-5 bg-cyan-500 hover:bg-cyan-400 text-slate-900 text-xl font-bold rounded-2xl transition-all shadow-[0_0_30px_-5px_rgba(6,182,212,0.6)] hover:shadow-[0_0_50px_-5px_rgba(6,182,212,0.8)] hover:scale-105 w-full sm:w-auto flex items-center justify-center gap-3 group"

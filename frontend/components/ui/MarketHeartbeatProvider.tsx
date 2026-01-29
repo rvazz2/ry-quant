@@ -75,7 +75,7 @@ export function MarketHeartbeatProvider({ children }: { children: React.ReactNod
                 {/* VIX Indicator (absolute top right or bottom right) */}
                 <button
                     onClick={toggleMood}
-                    className="fixed bottom-4 right-4 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-950/80 border border-slate-800 backdrop-blur-md shadow-2xl transition-all duration-500 hover:scale-105 cursor-pointer"
+                    className="fixed bottom-4 left-4 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-950/80 border border-slate-800 backdrop-blur-md shadow-2xl transition-all duration-500 hover:scale-105 cursor-pointer"
                     style={{
                         borderColor: 'var(--accent-glow)',
                         boxShadow: `0 0 20px var(--shadow-color)`
