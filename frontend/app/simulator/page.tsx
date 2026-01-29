@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import PriceChart from '../../components/PriceChart';
-import MarketNews from '../../components/MarketNews';
+// import MarketNews from '../../components/MarketNews';
 import { api, getTickerHistory, checkBackendHealth } from '../../lib/api';
 import { Position, TradeHistoryItem } from '../../lib/types';
 import SimulatorWatchlist from '@/components/simulator/SimulatorWatchlist';
@@ -163,6 +163,14 @@ export default function SimulatorPage() {
         <DashboardLayout>
             <div className="max-w-[1600px] mx-auto p-4 space-y-4">
 
+                {/* 0. Page Header */}
+                <div className="flex items-center justify-between mb-2">
+                    <div>
+                        <h1 className="text-2xl font-bold text-white tracking-tight">Paper Trading Simulator</h1>
+                        <p className="text-slate-400 text-sm">Practice trading stocks, options, and crypto with virtual currency.</p>
+                    </div>
+                </div>
+
                 {/* 1. Header & Account Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="glass-panel p-4 flex items-center justify-between col-span-3">
@@ -207,17 +215,13 @@ export default function SimulatorPage() {
                     </div>
 
                     {/* Center: Chart */}
-                    <div className="col-span-12 md:col-span-7 h-full flex flex-col gap-4">
-                        <div className="glass-panel p-1 flex-1">
+                    <div className="col-span-12 md:col-span-7 h-full flex flex-col">
+                        <div className="glass-panel p-1 h-full w-full">
                             <PriceChart
                                 symbol={ticker}
-                                height={350}
+                                height={580}
                                 prevClose={prevClose || undefined}
                             />
-                        </div>
-                        <div className="glass-panel p-4 flex-1 overflow-y-auto custom-scrollbar">
-                            <h3 className="text-sm font-bold text-slate-300 mb-3 uppercase tracking-wider">News: {ticker}</h3>
-                            <MarketNews symbol={ticker} />
                         </div>
                     </div>
 
