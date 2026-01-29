@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Play, RotateCcw } from 'lucide-react';
 
 interface SimulatorProps {
-    type: 'SUM' | 'VLOOKUP' | 'IF';
+    type: 'SUM' | 'VLOOKUP' | 'IF' | 'PIVOT' | 'CONDITIONAL_FORMATTING' | 'DYNAMIC_ARRAY' | 'MACRO';
 }
 
 interface CellData {
@@ -46,6 +46,38 @@ export default function ExcelSimulator({ type }: SimulatorProps) {
                 'A1': { value: 'Name', isHeader: true }, 'B1': { value: 'Score', isHeader: true }, 'C1': { value: 'Result', isHeader: true },
                 'A2': { value: 'Alice' }, 'B2': { value: 85 }, 'C2': { value: '' },
                 'A3': { value: 'Bob' }, 'B3': { value: 40 }, 'C3': { value: '' },
+            };
+        } else if (type === 'PIVOT') {
+            newGrid = {
+                'A1': { value: 'Region', isHeader: true }, 'B1': { value: 'Sales', isHeader: true },
+                'A2': { value: 'East' }, 'B2': { value: 500 },
+                'A3': { value: 'West' }, 'B3': { value: 1200 },
+                'A4': { value: 'East' }, 'B4': { value: 300 },
+                'A5': { value: 'West' }, 'B5': { value: 450 },
+                'D1': { value: '', style: 'bg-transparent' }, // Placeholder for Pivot result
+            };
+        } else if (type === 'CONDITIONAL_FORMATTING') {
+            newGrid = {
+                'A1': { value: 'Student', isHeader: true }, 'B1': { value: 'Grade', isHeader: true },
+                'A2': { value: 'Tom' }, 'B2': { value: 95 },
+                'A3': { value: 'Jerry' }, 'B3': { value: 62 },
+                'A4': { value: 'Spike' }, 'B4': { value: 88 },
+                'A5': { value: 'Tyke' }, 'B5': { value: 45 },
+            };
+        } else if (type === 'DYNAMIC_ARRAY') {
+            newGrid = {
+                'A1': { value: 'Raw List', isHeader: true }, 'C1': { value: 'Unique List', isHeader: true },
+                'A2': { value: 'Apple' }, 'C2': { value: '' },
+                'A3': { value: 'Banana' },
+                'A4': { value: 'Apple' },
+                'A5': { value: 'Orange' },
+                'A6': { value: 'Banana' },
+            };
+        } else if (type === 'MACRO') {
+            newGrid = {
+                'A1': { value: 'monthly_report' },
+                'A2': { value: 'id' }, 'B2': { value: 'rev' },
+                'A3': { value: '101' }, 'B3': { value: '5000' },
             };
         }
         setGrid(newGrid);
@@ -112,7 +144,7 @@ export default function ExcelSimulator({ type }: SimulatorProps) {
                 if (step === 0) {
                     setSelection('C2'); setActiveCell('C2'); setStep(1); timeout = setTimeout(runStep, 800);
                 } else if (step === 1) {
-                    setFormulaBar('=IF(B2>=50, "Pass", "Fail")'); // Simplified typing for demo
+                    setFormulaBar('=IF(B2>=50, "Pass", "Fail")');
                     setStep(2); timeout = setTimeout(runStep, 1500);
                 } else if (step === 2) {
                     setGrid(prev => ({ ...prev, 'C2': { value: 'Pass' } }));
@@ -122,6 +154,82 @@ export default function ExcelSimulator({ type }: SimulatorProps) {
                 } else if (step === 3) { // AutoFill or Copy
                     setFormulaBar('=IF(B3>=50, "Pass", "Fail")');
                     setGrid(prev => ({ ...prev, 'C3': { value: 'Fail' } }));
+                    setIsPlaying(false);
+                }
+            } else if (type === 'PIVOT') {
+                if (step === 0) {
+                    setSelection('A1:B5'); setStep(1); timeout = setTimeout(runStep, 1000); // Select Data
+                } else if (step === 1) {
+                    // Simulate "Insert Pivot" action conceptually
+                    setFormulaBar("Insert > PivotTable..."); setStep(2); timeout = setTimeout(runStep, 1000);
+                } else if (step === 2) {
+                    // Show Pivot Result appearance
+                    setGrid(prev => ({
+                        ...prev,
+                        'D1': { value: 'Row Labels', isHeader: true, style: 'bg-emerald-900 text-white' },
+                        'E1': { value: 'Sum of Sales', isHeader: true, style: 'bg-emerald-900 text-white' },
+                        'D2': { value: 'East' }, 'E2': { value: 800 },
+                        'D3': { value: 'West' }, 'E3': { value: 1650 },
+                        'D4': { value: 'Grand Total', style: 'font-bold' }, 'E4': { value: 2450, style: 'font-bold' }
+                    }));
+                    setSelection('D1:E4');
+                    setFormulaBar("");
+                    setIsPlaying(false);
+                }
+            } else if (type === 'CONDITIONAL_FORMATTING') {
+                if (step === 0) {
+                    setSelection('B2:B5'); setStep(1); timeout = setTimeout(runStep, 1000);
+                } else if (step === 1) {
+                    setFormulaBar("Home > Cond. Formatting > Less Than 60..."); setStep(2); timeout = setTimeout(runStep, 1200);
+                } else if (step === 2) {
+                    setGrid(prev => ({
+                        ...prev,
+                        'B5': { value: 45, style: 'bg-red-500/50 text-red-200' } // Highlight fail
+                    }));
+                    setStep(3); timeout = setTimeout(runStep, 800);
+                } else if (step === 3) {
+                    setFormulaBar("Home > Cond. Formatting > Greater Than 90..."); setStep(4); timeout = setTimeout(runStep, 1200);
+                } else if (step === 4) {
+                    setGrid(prev => ({
+                        ...prev,
+                        'B2': { value: 95, style: 'bg-green-500/50 text-green-200' } // Highlight top
+                    }));
+                    setFormulaBar("");
+                    setIsPlaying(false);
+                }
+            } else if (type === 'DYNAMIC_ARRAY') {
+                if (step === 0) {
+                    setSelection('C2'); setActiveCell('C2'); setStep(1); timeout = setTimeout(runStep, 800);
+                } else if (step === 1) {
+                    setFormulaBar("=UNIQUE(A2:A6)"); setStep(2); timeout = setTimeout(runStep, 1000);
+                } else if (step === 2) {
+                    // Spill result
+                    setGrid(prev => ({
+                        ...prev,
+                        'C2': { value: 'Apple', style: 'border-2 border-blue-500/50' },
+                        'C3': { value: 'Banana' },
+                        'C4': { value: 'Orange' }
+                    }));
+                    setSelection('C2:C4'); // Highlight spill range
+                    setIsPlaying(false);
+                }
+            } else if (type === 'MACRO') {
+                if (step === 0) {
+                    setFormulaBar("Developer > Record Macro..."); setStep(1); timeout = setTimeout(runStep, 1000);
+                } else if (step === 1) {
+                    setSelection('A1'); setActiveCell('A1'); setStep(2); timeout = setTimeout(runStep, 500);
+                } else if (step === 2) {
+                    setGrid(prev => ({ ...prev, 'A1': { value: 'MONTHLY REPORT', style: 'font-bold text-lg bg-slate-800' } }));
+                    setFormulaBar("Formatting Header...");
+                    setStep(3); timeout = setTimeout(runStep, 800);
+                } else if (step === 3) {
+                    setSelection('A2:B2'); setStep(4); timeout = setTimeout(runStep, 500);
+                } else if (step === 4) {
+                    setGrid(prev => ({ ...prev, 'A2': { value: 'ID', isHeader: true }, 'B2': { value: 'REV', isHeader: true } }));
+                    setStep(5); timeout = setTimeout(runStep, 800);
+                } else if (step === 5) {
+                    setFormulaBar("Developer > Stop Recording");
+                    setSelection(null);
                     setIsPlaying(false);
                 }
             }

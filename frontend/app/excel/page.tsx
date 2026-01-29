@@ -45,7 +45,7 @@ interface SkillItem {
   commonPitfalls?: string[];
   advancedTechniques?: string[];
   bestPractices?: string[];
-  simulation?: 'SUM' | 'VLOOKUP' | 'IF';
+  simulation?: 'SUM' | 'VLOOKUP' | 'IF' | 'PIVOT' | 'CONDITIONAL_FORMATTING' | 'DYNAMIC_ARRAY' | 'MACRO';
 }
 
 interface LevelData {
@@ -403,6 +403,7 @@ const roadmapData: LevelData[] = [
         scenario: "Summarizing total sales by Region and then breaking it down by Sales Rep.",
         exampleStr: "Insert > Pivot Table > Drag 'Region' to Rows, 'Sales' to Values",
         proTip: "Use 'Slicers' instead of standard filters to make your Pivot Tables interactive and dashboard-ready.",
+        simulation: 'PIVOT',
         keyboardShortcuts: [
           { key: "Alt + N + V", description: "Insert Pivot Table", mac: "Alt + N + V" },
           { key: "Alt + J + T", description: "Open PivotTable Tools", mac: "Alt + J + T" },
@@ -445,6 +446,7 @@ const roadmapData: LevelData[] = [
         scenario: "Highlighting any student grade below 70 in red.",
         exampleStr: "Home > Conditional Formatting > Highlight Cells Rules > Less Than... 70",
         proTip: "Use 'Data Bars' to create mini-bar charts directly inside your cells to visualize magnitude.",
+        simulation: 'CONDITIONAL_FORMATTING',
         keyboardShortcuts: [
           { key: "Alt + H + L", description: "Open Conditional Formatting menu", mac: "Alt + H + L" },
           { key: "Alt + H + L + C", description: "Clear rules from selected cells", mac: "Alt + H + L + C" },
@@ -532,6 +534,7 @@ const roadmapData: LevelData[] = [
         scenario: "Extracting a list of unique customer names from a column of 1000 duplicates.",
         exampleStr: "=UNIQUE(A2:A1000)",
         proTip: "Combine functions! =SORT(UNIQUE(range)) gives you a sorted, clean list in one go.",
+        simulation: 'DYNAMIC_ARRAY',
         keyboardShortcuts: [
           { key: "Ctrl + Shift + Enter", description: "Legacy array formula (not needed for new functions)", mac: "Cmd + Shift + Enter" },
           { key: "F9", description: "Evaluate array formula", mac: "F9" },
@@ -620,6 +623,7 @@ const roadmapData: LevelData[] = [
         scenario: "Formatting a report the exact same way every morning.",
         exampleStr: "Developer Tab > Record Macro",
         proTip: "Save your workbook as .xlsm (Macro-Enabled) or your code will be lost!",
+        simulation: 'MACRO',
         keyboardShortcuts: [
           { key: "Alt + F8", description: "Run macro dialog", mac: "Alt + F8" },
           { key: "Alt + F11", description: "Open VBA Editor", mac: "Alt + F11" },
