@@ -20,12 +20,17 @@ import {
   Lightbulb,
   X,
   Keyboard,
-  Play
+  Play,
+  Target,
+  Wand2
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import clsx from 'clsx';
 import ExcelSimulator from '@/components/guide/ExcelSimulator';
+import FormulaChallenge from '@/components/guide/FormulaChallenge';
+import ShortcutTrainer from '@/components/guide/ShortcutTrainer';
+import FormulaBuilder from '@/components/guide/FormulaBuilder';
 
 type Level = 'Beginner' | 'Intermediate' | 'Advanced';
 
@@ -672,6 +677,7 @@ const roadmapData: LevelData[] = [
 export default function ExcelDashboard() {
   const [activeTab, setActiveTab] = useState<Level>('Beginner');
   const [selectedSkill, setSelectedSkill] = useState<SkillItem | null>(null);
+  const [activeToolPanel, setActiveToolPanel] = useState<'challenge' | 'shortcuts' | 'builder' | null>(null);
 
   const currentLevelData = roadmapData.find(d => d.id === activeTab) || roadmapData[0];
 
@@ -710,6 +716,73 @@ export default function ExcelDashboard() {
           <p className="text-slate-400 text-lg">
             A comprehensive curriculum designed to take you from data entry basics to advanced automation and modeling.
           </p>
+        </div>
+
+        {/* Interactive Tools Section */}
+        <div className="mb-12">
+          <h3 className="text-2xl font-bold text-white mb-6 text-center">🎮 Interactive Learning Tools</h3>
+
+          {activeToolPanel ? (
+            <div className="relative">
+              <button
+                onClick={() => setActiveToolPanel(null)}
+                className="absolute top-4 right-4 z-20 p-2 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
+              >
+                <X className="text-white" size={20} />
+              </button>
+
+              {activeToolPanel === 'challenge' && <FormulaChallenge />}
+              {activeToolPanel === 'shortcuts' && <ShortcutTrainer />}
+              {activeToolPanel === 'builder' && <FormulaBuilder />}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <button
+                onClick={() => setActiveToolPanel('challenge')}
+                className="group p-6 bg-gradient-to-br from-emerald-950/30 to-transparent border border-emerald-500/30 hover:border-emerald-500 rounded-xl transition-all hover:shadow-lg hover:shadow-emerald-500/20"
+              >
+                <Target className="text-emerald-400 mb-4 group-hover:scale-110 transition-transform" size={40} />
+                <h4 className="text-xl font-bold text-white mb-2">Formula Challenge</h4>
+                <p className="text-slate-400 text-sm mb-3">
+                  Test your formula skills with real-world problems. Instant feedback + explanations.
+                </p>
+                <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium">
+                  Launch Challenge
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </button>
+
+              <button
+                onClick={() => setActiveToolPanel('shortcuts')}
+                className="group p-6 bg-gradient-to-br from-cyan-950/30 to-transparent border border-cyan-500/30 hover:border-cyan-500 rounded-xl transition-all hover:shadow-lg hover:shadow-cyan-500/20"
+              >
+                <Keyboard className="text-cyan-400 mb-4 group-hover:scale-110 transition-transform" size={40} />
+                <h4 className="text-xl font-bold text-white mb-2">Shortcut Trainer</h4>
+                <p className="text-slate-400 text-sm mb-3">
+                  Master Excel shortcuts with practice & timed modes. 20+ essential shortcuts.
+                </p>
+                <div className="flex items-center gap-2 text-cyan-400 text-sm font-medium">
+                  Start Training
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </button>
+
+              <button
+                onClick={() => setActiveToolPanel('builder')}
+                className="group p-6 bg-gradient-to-br from-purple-950/30 to-transparent border border-purple-500/30 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg hover:shadow-purple-500/20"
+              >
+                <Wand2 className="text-purple-400 mb-4 group-hover:scale-110 transition-transform" size={40} />
+                <h4 className="text-xl font-bold text-white mb-2">Formula Builder</h4>
+                <p className="text-slate-400 text-sm mb-3">
+                  Build complex formulas step-by-step. Real-time preview & copy to clipboard.
+                </p>
+                <div className="flex items-center gap-2 text-purple-400 text-sm font-medium">
+                  Build Formula
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Tab Navigation */}
