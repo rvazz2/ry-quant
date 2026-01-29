@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Trash2, Plus, TrendingUp, TrendingDown } from 'lucide-react';
 import { api } from '@/lib/api';
-import { ShimmerSkeleton } from '@/components/ui/LoadingSkeleton';
+import { ShimmerSkeleton } from '@/components/LoadingSkeleton';
 
 interface WatchlistItem {
     symbol: string;
