@@ -401,6 +401,27 @@ export const getCryptoArbitrage = async (): Promise<any[]> => {
     }, 15); // 15s cache
 };
 
+export const getCryptoGlobalStats = async (): Promise<any> => {
+    return fetchWithCache('crypto_global_stats', async () => {
+        const response = await api.get('/crypto/global-stats');
+        return response.data;
+    }, 60); // 1 min cache
+};
+
+export const getCryptoOnChain = async (): Promise<any> => {
+    return fetchWithCache('crypto_onchain', async () => {
+        const response = await api.get('/crypto/onchain');
+        return response.data;
+    }, 120); // 2 min cache
+};
+
+export const getCryptoNews = async (): Promise<any[]> => {
+    return fetchWithCache('crypto_news', async () => {
+        const response = await api.get('/crypto/news');
+        return response.data;
+    }, 300); // 5 min cache
+};
+
 export const getBeneishScore = async (ticker: string) => {
     const response = await api.get(`/accounting/beneish/${ticker}`);
     return response.data;

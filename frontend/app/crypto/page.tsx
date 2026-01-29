@@ -13,12 +13,24 @@ const ArbitrageScanner = dynamic(() => import('@/components/crypto/ArbitrageScan
     ssr: false
 });
 
+const MarketStatsBar = dynamic(() => import('@/components/crypto/MarketStatsBar'), {
+    loading: () => <div className="h-24 animate-pulse" />,
+    ssr: false
+});
+
+const MorphingPriceBackground = dynamic(() => import('@/components/crypto/MorphingPriceBackground'), {
+    ssr: false
+});
+
 import DashboardLayout from '@/components/DashboardLayout';
 
 export default function CryptoPage() {
     return (
         <DashboardLayout>
-            <div className="space-y-6">
+            {/* Morphing Price Background */}
+            <MorphingPriceBackground className="z-0" />
+
+            <div className="space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 mb-2">
@@ -34,6 +46,9 @@ export default function CryptoPage() {
                         </span>
                     </div>
                 </div>
+
+                {/* Market Stats Bar */}
+                <MarketStatsBar />
 
                 {/* Arbitrage Scanner Section */}
                 <div className="h-[400px]">

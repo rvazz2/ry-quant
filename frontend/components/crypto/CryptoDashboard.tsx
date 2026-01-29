@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CryptoEducation from './CryptoEducation';
+import OnChainMetrics from './OnChainMetrics';
+import CryptoNews from './CryptoNews';
 import { getCryptoTop, getCryptoDefi, getCryptoWhaleAlerts } from '@/lib/api';
 import { TrendingUp, TrendingDown, Layers, Wallet, ArrowUpRight } from 'lucide-react';
 
@@ -73,33 +75,47 @@ export default function CryptoDashboard() {
                                     <tr className="text-left text-xs text-gray-500 border-b border-[#333]">
                                         <th className="pb-3 pl-2">Asset</th>
                                         <th className="pb-3 text-right">Price</th>
-                                        <th className="pb-3 text-right">24h Change</th>
-                                        <th className="pb-3 text-right">Volume (USDT)</th>
+                                        <th className="pb-3 text-right">24h</th>
+                                        <th className="pb-3 text-right hidden md:table-cell">Market Cap</th>
+                                        <th className="pb-3 text-right hidden lg:table-cell">ATH</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-sm">
-                                    {coins.map((coin) => (
-                                        <tr key={coin.symbol} className="border-b border-[#222]/50 hover:bg-[#1A1A1A] transition-colors">
-                                            <td className="py-4 pl-2 font-medium text-gray-200 flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-600 flex items-center justify-center text-[10px] text-white font-bold">
-                                                    {coin.symbol.split('/')[0].substring(0, 1)}
-                                                </div>
-                                                {coin.symbol}
-                                            </td>
-                                            <td className="py-4 text-right font-mono text-gray-300">
-                                                ${parseFloat(coin.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
-                                            </td>
-                                            <td className={`py-4 text-right font-medium ${parseFloat(coin.change_24h) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                                <div className="flex items-center justify-end gap-1">
-                                                    {parseFloat(coin.change_24h) >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                                                    {parseFloat(coin.change_24h).toFixed(2)}%
-                                                </div>
-                                            </td>
-                                            <td className="py-4 text-right text-gray-500">
-                                                {(parseFloat(coin.volume) / 1000000).toFixed(1)}M
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {coins.map((coin) => {
+                                        const athDist = coin.ath_distance || 0;
+                                        const athColor = athDist > -20 ? 'text-green-500' : athDist > -50 ? 'text-yellow-500' : 'text-red-500';
+
+                                        return (
+                                            <tr key={coin.symbol} className="border-b border-[#222]/50 hover:bg-[#1A1A1A] transition-colors">
+                                                <td className="py-4 pl-2 font-medium text-gray-200 flex items-center gap-2">
+                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-600 flex items-center justify-center text-[10px] text-white font-bold">
+                                                        {coin.symbol.split('/')[0].substring(0, 1)}
+                                                    </div>
+                                                    <div>
+                                                        <div>{coin.symbol}</div>
+                                                        {coin.name && (
+                                                            <div className="text-[9px] text-gray-600">{coin.name}</div>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 text-right font-mono text-gray-300">
+                                                    ${parseFloat(coin.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
+                                                </td>
+                                                <td className={`py-4 text-right font-medium ${parseFloat(coin.change_24h) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                                    <div className="flex items-center justify-end gap-1">
+                                                        {parseFloat(coin.change_24h) >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                                                        {parseFloat(coin.change_24h).toFixed(2)}%
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 text-right text-gray-500 hidden md:table-cell">
+                                                    {coin.market_cap ? `$${(coin.market_cap / 1e9).toFixed(1)}B` : 'N/A'}
+                                                </td>
+                                                <td className={`py-4 text-right text-xs hidden lg:table-cell ${athColor}`}>
+                                                    {athDist.toFixed(1)}%
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
@@ -135,6 +151,12 @@ export default function CryptoDashboard() {
                         ))}
                     </CardContent>
                 </Card>
+
+                {/* On-Chain Metrics Section */}
+                <OnChainMetrics />
+
+                {/* Crypto News Section */}
+                <CryptoNews />
 
                 {/* Dynamic Whale Alerts */}
                 <div className="space-y-3">

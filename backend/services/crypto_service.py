@@ -32,7 +32,8 @@ class CryptoService:
             "order": "market_cap_desc",
             "per_page": limit,
             "page": 1,
-            "sparkline": "false"
+            "sparkline": "true",  # Enable sparkline data
+            "price_change_percentage": "7d"
         }
         
         try:
@@ -44,6 +45,11 @@ class CryptoService:
                 results = []
                 
                 for coin in data:
+                    # Calculate distance from ATH
+                    ath = coin.get('ath', 0)
+                    current = coin.get('current_price', 0)
+                    ath_distance = ((current - ath) / ath * 100) if ath > 0 else 0
+                    
                     results.append({
                         "symbol": f"{coin['symbol'].upper()}/USD",
                         "price": coin.get('current_price', 0),
@@ -52,7 +58,14 @@ class CryptoService:
                         "high": coin.get('high_24h', 0),
                         "low": coin.get('low_24h', 0),
                         "image": coin.get('image', ''),
-                        "name": coin.get('name', '')
+                        "name": coin.get('name', ''),
+                        # NEW FIELDS
+                        "market_cap": coin.get('market_cap', 0),
+                        "circulating_supply": coin.get('circulating_supply', 0),
+                        "ath": ath,
+                        "ath_distance": ath_distance,
+                        "sparkline": coin.get('sparkline_in_7d', {}).get('price', []),
+                        "change_7d": coin.get('price_change_percentage_7d_in_currency', 0)
                     })
                     
                 return results
@@ -253,6 +266,127 @@ class CryptoService:
 
         except Exception as e:
             print(f"Error in arbitrage scanner: {e}")
+            return []
+
+    @staticmethod
+    async def get_global_stats() -> Dict[str, Any]:
+        """
+        Fetches global cryptocurrency market statistics from CoinGecko.
+        """
+        try:
+            import httpx
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.get("https://api.coingecko.com/api/v3/global", timeout=10.0)
+                
+            if response.status_code == 200:
+                data = response.json()
+                global_data = data.get('data', {})
+                
+                return {
+                    "total_market_cap_usd": global_data.get('total_market_cap', {}).get('usd', 0),
+                    "total_volume_24h_usd": global_data.get('total_volume', {}).get('usd', 0),
+                    "btc_dominance": global_data.get('market_cap_percentage', {}).get('btc', 0),
+                    "eth_dominance": global_data.get('market_cap_percentage', {}).get('eth', 0),
+                    "market_cap_change_24h": global_data.get('market_cap_change_percentage_24h_usd', 0),
+                    "active_cryptocurrencies": global_data.get('active_cryptocurrencies', 0),
+                    "markets": global_data.get('markets', 0),
+                    "updated_at": global_data.get('updated_at', 0)
+                }
+            else:
+                print(f"Global stats API error: {response.status_code}")
+                return {}
+        except Exception as e:
+            print(f"Error fetching global stats: {e}")
+            return {}
+
+    @staticmethod
+    async def get_onchain_metrics() -> Dict[str, Any]:
+        """
+        Fetches on-chain metrics for BTC and ETH.
+        Using blockchain.com for BTC and Etherscan for ETH gas.
+        """
+        try:
+            import httpx
+            
+            metrics = {}
+            
+            async with httpx.AsyncClient() as client:
+                # Bitcoin metrics from blockchain.com
+                try:
+                    btc_response = await client.get("https://blockchain.info/q/hashrate", timeout=5.0)
+                    if btc_response.status_code == 200:
+                        metrics["btc_hashrate"] = float(btc_response.text.strip()) / 1e9  # Convert to GH/s
+                except:
+                    metrics["btc_hashrate"] = 0
+                
+                # Ethereum gas prices from Etherscan (no API key needed for gas oracle)
+                try:
+                    gas_response = await client.get(
+                        "https://api.etherscan.io/api?module=gastracker&action=gasoracle", 
+                        timeout=5.0
+                    )
+                    if gas_response.status_code == 200:
+                        gas_data = gas_response.json()
+                        if gas_data.get('status') == '1':
+                            result = gas_data.get('result', {})
+                            metrics["eth_gas_safe"] = int(result.get('SafeGasPrice', 0))
+                            metrics["eth_gas_propose"] = int(result.get('ProposeGasPrice', 0))
+                            metrics["eth_gas_fast"] = int(result.get('FastGasPrice', 0))
+                except:
+                    metrics["eth_gas_safe"] = 0
+                    metrics["eth_gas_propose"] = 0
+                    metrics["eth_gas_fast"] = 0
+            
+            return metrics
+        except Exception as e:
+            print(f"Error fetching on-chain metrics: {e}")
+            return {}
+
+    @staticmethod
+    async def get_crypto_news(limit: int = 10) -> List[Dict[str, Any]]:
+        """
+        Fetches recent crypto news from CryptoCompare API (free tier).
+        """
+        try:
+            import httpx
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    "https://min-api.cryptocompare.com/data/v2/news/?lang=EN",
+                    timeout=10.0
+                )
+                
+            if response.status_code == 200:
+                data = response.json()
+                articles = data.get('Data', [])[:limit]
+                
+                results = []
+                for article in articles:
+                    # Simple sentiment based on categories
+                    sentiment = "neutral"
+                    categories = article.get('categories', '').lower()
+                    if any(word in categories for word in ['bullish', 'surge', 'rally', 'gain']):
+                        sentiment = "positive"
+                    elif any(word in categories for word in ['bearish', 'crash', 'drop', 'fall']):
+                        sentiment = "negative"
+                    
+                    results.append({
+                        "title": article.get('title', ''),
+                        "body": article.get('body', '')[:200] + "...",  # Truncate
+                        "source": article.get('source_info', {}).get('name', 'Unknown'),
+                        "url": article.get('url', ''),
+                        "published_on": article.get('published_on', 0),
+                        "sentiment": sentiment,
+                        "image_url": article.get('imageurl', '')
+                    })
+                
+                return results
+            else:
+                print(f"Crypto news API error: {response.status_code}")
+                return []
+        except Exception as e:
+            print(f"Error fetching crypto news: {e}")
             return []
 
     @staticmethod

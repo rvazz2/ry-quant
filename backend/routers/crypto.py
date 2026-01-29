@@ -36,6 +36,30 @@ async def get_arbitrage():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/global-stats")
+async def get_global_stats():
+    try:
+        data = await CryptoService.get_global_stats()
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/onchain")
+async def get_onchain_metrics():
+    try:
+        data = await CryptoService.get_onchain_metrics()
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/news")
+async def get_crypto_news(limit: int = 10):
+    try:
+        data = await CryptoService.get_crypto_news(limit=limit)
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Ensure connection is closed on shutdown
 @router.on_event("shutdown")
 async def shutdown_event():
