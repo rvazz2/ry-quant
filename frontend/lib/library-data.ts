@@ -378,6 +378,68 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
         ]
     },
     {
+        id: 'behavioral-finance',
+        title: 'Behavioral Finance',
+        icon: Users,
+        description: 'Psychological influences on financial practitioners and markets.',
+        terms: [
+            { term: 'Loss Aversion', definition: 'The tendency to prefer avoiding losses to acquiring equivalent gains.', example: 'Feeling the pain of losing $100 twice as intensely as the joy of finding $100' },
+            { term: 'Confirmation Bias', definition: 'Tendency to search for and interpret information in a way that confirms one\'s prior beliefs.', example: 'Only reading news articles that support a stock you already own' },
+            { term: 'Anchoring', definition: 'Relying too heavily on the first piece of information offered (the "anchor").', example: 'Fixating on a stock\'s 52-week high and considering anything lower a "bargain" regardless of fundamentals' },
+            { term: 'Herding', definition: 'Tendency for individuals to mimic the actions of a larger group.', example: 'Panic selling during a market crash just because everyone else is doing it' },
+            { term: 'Mental Accounting', definition: 'Tendency to treat money differently depending on its source or intended use.', example: 'Treating a tax refund as "free money" to be spent frivolously unlike regular income' },
+            { term: 'Overconfidence Effect', definition: 'Tendency to overestimate one\'s own abilities or the precision of one\'s beliefs.', example: 'Day traders believing they can consistently time the market better than professionals' },
+            { term: 'Recency Bias', definition: 'Giving more weight to recent events than earlier ones.', example: 'Assuming the current bull market will continue indefinitely because the last few months were good' },
+            { term: 'Gambler\'s Fallacy', definition: 'Belief that future probabilities are altered by past events.', example: 'Believing a stock is "due" to go up just because it has fallen for 5 days in a row' }
+        ]
+    },
+    {
+        id: 'quantitative-analysis',
+        title: 'Quantitative Analysis',
+        icon: Calculator,
+        description: 'Use of mathematical and statistical modeling taking place in financial markets.',
+        terms: [
+            { term: 'Algorithmic Trading', definition: 'Use of computer programs to execute trades at high speeds and volumes.', example: 'HFT firms making thousands of trades per second based on arbitrage opportunities' },
+            { term: 'Backtesting', definition: 'Testing a predictive model on historical data.', example: 'Running a trading strategy on data from 2010-2020 to see how it would have performed' },
+            { term: 'Standard Deviation', definition: 'Measure of the amount of variation or dispersion of a set of values.', example: 'Used to quantify the historical volatility of an investment' },
+            { term: 'Correlation Coefficient', definition: 'Statistical measure of the strength of the relationship between the relative movements of two variables.', example: '+1.0 is perfect positive correlation, -1.0 is perfect negative correlation' },
+            { term: 'Monte Carlo Simulation', definition: 'Mathematical technique used to model risk and uncertainty.', example: 'Simulating 10,000 possible future stock price paths to estimate portfolio risk' },
+            { term: 'Mean Reversion', definition: 'Theory that asset prices tend to return to their long-term average.', example: 'Buying a stock when it is historically oversold, betting it will bounce back' },
+            { term: 'Value at Risk (VaR)', definition: 'Statistic used to quantify the level of financial risk within a firm or portfolio.', example: '95% VaR of $1M means there is a 5% chance the portfolio loses more than $1M in a set period' },
+            { term: 'R-Squared', definition: 'Statistical measure representing the proportion of the variance for a dependent variable that\'s explained by an independent variable.', example: 'R-squared of 0.85 means 85% of a fund\'s movement is explained by the index' }
+        ]
+    },
+    {
+        id: 'crypto-assets',
+        title: 'Crypto Assets',
+        icon: Wallet,
+        description: 'Digital or virtual currencies secured by cryptography.',
+        terms: [
+            { term: 'Blockchain', definition: 'Distributed ledger technology that records all transactions across a network.', example: 'Ethereum blockchain recording smart contract executions' },
+            { term: 'DeFi', definition: 'Decentralized Finance - financial services on public blockchains without intermediaries.', example: 'Uniswap allowing trading without a centralized exchange' },
+            { term: 'Smart Contract', definition: 'Self-executing contract with the terms of the agreement between buyer and seller being directly written into lines of code.', example: 'Automatic insurance payout when flight delay data is received' },
+            { term: 'Tokenomics', definition: 'The economics of a crypto token (supply, distribution, utility).', example: 'Bitcoin\'s fixed supply cap of 21 million coins' },
+            { term: 'Proof of Work', definition: 'Consensus mechanism requiring computational effort to mine blocks.', example: 'Bitcoin miners solving complex puzzles to secure the network' },
+            { term: 'Proof of Stake', definition: 'Consensus mechanism where validators stake coins to create new blocks.', example: 'Ethereum 2.0 validators locking up 32 ETH' },
+            { term: 'NFT', definition: 'Non-Fungible Token - unique digital identifier recorded on a blockchain.', example: 'Digital art piece sold as a unique asset' },
+            { term: 'Stablecoin', definition: 'Cryptocurrency designed to have a relatively stable price, typically pegged to a commodity or currency.', example: 'USDC pegged 1:1 to the US Dollar' }
+        ]
+    },
+    {
+        id: 'supply-chain',
+        title: 'Supply Chain',
+        icon: Globe,
+        description: 'Management of the flow of goods and services.',
+        terms: [
+            { term: 'Just-in-Time (JIT)', definition: 'Inventory strategy to increase efficiency by receiving goods only as they are needed.', example: 'Toyota receiving car parts hours before assembly' },
+            { term: 'Bullwhip Effect', definition: 'Phenomenon where small fluctuations in demand at the retail level cause progressively larger fluctuations at the wholesale and manufacturer levels.', example: 'Panic buying of toilet paper causing massive overproduction orders' },
+            { term: 'Logistics', definition: 'Detailed organization and implementation of a complex operation.', example: 'Amazon optimizing delivery routes for millions of packages' },
+            { term: 'Procurement', definition: 'Process of finding and agreeing to terms, and acquiring goods or services.', example: 'Negotiating contracts with raw material suppliers' },
+            { term: 'Freight Forwarder', definition: 'Person or company that organizes shipments for individuals or corporations.', example: 'Company handling customs and shipping for importing electronics from Asia' },
+            { term: 'Last Mile Delivery', definition: 'Movement of goods from a transportation hub to the final delivery destination.', example: 'Delivery driver bringing package to your doorstep' }
+        ]
+    },
+    {
         id: 'financial-modeling',
         title: 'Financial Modeling',
         icon: Building,
@@ -389,7 +451,9 @@ export const LIBRARY_TOPICS: LibraryTopic[] = [
             { term: 'Scenario Analysis', definition: 'Evaluating outcomes under different sets of assumptions.', example: 'Base case, bull case, and bear case valuation scenarios' },
             { term: 'Terminal Value', definition: 'Value of business beyond explicit forecast period.', example: 'Using perpetuity growth method: Final FCF × (1+g) / (WACC - g)' },
             { term: 'Monte Carlo Simulation', definition: 'Using repeated random sampling to model probability of different outcomes.', example: 'Running 10,000 simulations to estimate range of possible stock prices' },
-            { term: 'Waterfall Analysis', definition: 'Showing how value flows from enterprise value to equity holders.', example: 'Enterprise Value minus Net Debt = Equity Value' }
+            { term: 'Waterfall Analysis', definition: 'Showing how value flows from enterprise value to equity holders.', example: 'Enterprise Value minus Net Debt = Equity Value' },
+            { term: 'LBO Model', definition: 'Model used to evaluate the acquisition of a company using a significant amount of debt.', example: 'Calculating IRR for a private equity buyout' },
+            { term: 'M&A Model', definition: 'Accretion/Dilution analysis to determine the impact of an acquisition on earnings per share.', example: 'Determining if buying a competitor will increase EPS' }
         ]
     }
 ];
