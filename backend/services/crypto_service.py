@@ -390,6 +390,75 @@ class CryptoService:
             return []
 
     @staticmethod
+    async def get_crypto_fear_greed() -> Dict[str, Any]:
+        """
+        Fetches the Crypto Fear & Greed Index from alternative.me.
+        """
+        try:
+            import httpx
+            async with httpx.AsyncClient() as client:
+                response = await client.get("https://api.alternative.me/fng/", timeout=10.0)
+                if response.status_code == 200:
+                    data = response.json()
+                    fng_data = data.get('data', [{}])[0]
+                    return {
+                        "value": int(fng_data.get('value', 50)),
+                        "value_classification": fng_data.get('value_classification', 'Neutral'),
+                        "timestamp": int(fng_data.get('timestamp', 0))
+                    }
+                return {"value": 50, "value_classification": "Neutral"}
+        except Exception as e:
+            print(f"Error fetching Fear & Greed: {e}")
+            return {"value": 50, "value_classification": "Neutral"}
+
+    @staticmethod
+    async def get_trending_coins() -> List[Dict[str, Any]]:
+        """
+        Fetches trending coins from CoinGecko.
+        """
+        try:
+            import httpx
+            async with httpx.AsyncClient() as client:
+                response = await client.get("https://api.coingecko.com/api/v3/search/trending", timeout=10.0)
+                if response.status_code == 200:
+                    data = response.json()
+                    coins = data.get('coins', [])
+                    results = []
+                    for coin in coins[:5]:
+                        item = coin.get('item', {})
+                        results.append({
+                            "symbol": item.get('symbol', 'UNK'),
+                            "name": item.get('name', 'Unknown'),
+                            "market_cap_rank": item.get('market_cap_rank', 0),
+                            "thumb": item.get('thumb', ''),
+                            "price_btc": item.get('price_btc', 0)
+                        })
+                    return results
+                return []
+        except Exception as e:
+            print(f"Error fetching trending coins: {e}")
+            return []
+
+    @staticmethod
+    async def get_top_movers() -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Fetches top gainers and losers from a simple comparison of top coins.
+        In a real app, you'd use a dedicated endpoint or broader scan.
+        """
+        try:
+            coins = await CryptoService.get_top_coins(limit=50)
+            # Sort by 24h change
+            sorted_coins = sorted(coins, key=lambda x: x.get('change_24h', 0), reverse=True)
+            
+            return {
+                "gainers": sorted_coins[:5],
+                "losers": sorted_coins[-5:][::-1]
+            }
+        except Exception as e:
+            print(f"Error fetching top movers: {e}")
+            return {"gainers": [], "losers": []}
+
+    @staticmethod
     async def close():
         if CryptoService._exchange:
             await CryptoService._exchange.close()

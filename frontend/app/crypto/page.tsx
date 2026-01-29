@@ -18,18 +18,11 @@ const MarketStatsBar = dynamic(() => import('@/components/crypto/MarketStatsBar'
     ssr: false
 });
 
-const MorphingPriceBackground = dynamic(() => import('@/components/crypto/MorphingPriceBackground'), {
-    ssr: false
-});
-
 import DashboardLayout from '@/components/DashboardLayout';
 
 export default function CryptoPage() {
     return (
         <DashboardLayout>
-            {/* Morphing Price Background */}
-            <MorphingPriceBackground className="z-0" />
-
             <div className="space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
                     <div>

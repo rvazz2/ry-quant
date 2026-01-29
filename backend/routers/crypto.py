@@ -60,6 +60,30 @@ async def get_crypto_news(limit: int = 10):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/fng")
+async def get_fng():
+    try:
+        data = await CryptoService.get_crypto_fear_greed()
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/trending")
+async def get_trending():
+    try:
+        data = await CryptoService.get_trending_coins()
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/movers")
+async def get_movers():
+    try:
+        data = await CryptoService.get_top_movers()
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Ensure connection is closed on shutdown
 @router.on_event("shutdown")
 async def shutdown_event():
