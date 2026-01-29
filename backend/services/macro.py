@@ -269,24 +269,24 @@ def get_global_macro_data():
         "TWN": "^TWII",    # TAIEX (Taipei)
     }
     
-    # Metadata: Lat/Lon, City Name, and Realistic 2025 Inflation Est (%)
+    # Metadata: Lat/Lon, City Name, Realistic 2025 Inflation Est (%), 2025 GDP Growth Est (%), and Country ETF
     coords = {
-        "USA": {"lat": 40.7128, "lon": -74.0060, "country": "United States", "city": "New York", "inflation": 2.9}, # Moved to NYC
-        "CHN": {"lat": 31.2304, "lon": 121.4737, "country": "China", "city": "Shanghai", "inflation": 0.8}, # Moved to Shanghai
-        "JPN": {"lat": 35.6762, "lon": 139.6503, "country": "Japan", "city": "Tokyo", "inflation": 2.6},
-        "DEU": {"lat": 50.1109, "lon": 8.6821, "country": "Germany", "city": "Frankfurt", "inflation": 2.4},
-        "IND": {"lat": 19.0760, "lon": 72.8777, "country": "India", "city": "Mumbai", "inflation": 5.1},
-        "GBR": {"lat": 51.5074, "lon": -0.1278, "country": "United Kingdom", "city": "London", "inflation": 3.9},
-        "BRA": {"lat": -23.5505, "lon": -46.6333, "country": "Brazil", "city": "Sao Paulo", "inflation": 4.1},
-        "CAN": {"lat": 43.65107, "lon": -79.347015, "country": "Canada", "city": "Toronto", "inflation": 2.7},
-        "AUS": {"lat": -33.8688, "lon": 151.2093, "country": "Australia", "city": "Sydney", "inflation": 3.5},
-        "FRA": {"lat": 48.8566, "lon": 2.3522, "country": "France", "city": "Paris", "inflation": 2.2},
-        "KOR": {"lat": 37.5665, "lon": 126.9780, "country": "South Korea", "city": "Seoul", "inflation": 2.4},
-        "HKG": {"lat": 22.3193, "lon": 114.1694, "country": "Hong Kong", "city": "Hong Kong", "inflation": 1.8},
-        "CHE": {"lat": 47.3769, "lon": 8.5417, "country": "Switzerland", "city": "Zurich", "inflation": 1.6},
-        "NLD": {"lat": 52.3676, "lon": 4.9041, "country": "Netherlands", "city": "Amsterdam", "inflation": 2.3},
-        "SGP": {"lat": 1.3521, "lon": 103.8198, "country": "Singapore", "city": "Singapore", "inflation": 2.9},
-        "TWN": {"lat": 25.0330, "lon": 121.5654, "country": "Taiwan", "city": "Taipei", "inflation": 2.1},
+        "USA": {"lat": 40.7128, "lon": -74.0060, "country": "United States", "city": "New York", "inflation": 2.9, "gdp": 2.2, "etf": "SPY"},
+        "CHN": {"lat": 31.2304, "lon": 121.4737, "country": "China", "city": "Shanghai", "inflation": 0.8, "gdp": 4.5, "etf": "FXI"}, 
+        "JPN": {"lat": 35.6762, "lon": 139.6503, "country": "Japan", "city": "Tokyo", "inflation": 2.6, "gdp": 1.0, "etf": "EWJ"},
+        "DEU": {"lat": 50.1109, "lon": 8.6821, "country": "Germany", "city": "Frankfurt", "inflation": 2.4, "gdp": 0.3, "etf": "EWG"},
+        "IND": {"lat": 19.0760, "lon": 72.8777, "country": "India", "city": "Mumbai", "inflation": 5.1, "gdp": 6.5, "etf": "INDA"},
+        "GBR": {"lat": 51.5074, "lon": -0.1278, "country": "United Kingdom", "city": "London", "inflation": 3.9, "gdp": 0.8, "etf": "EWU"},
+        "BRA": {"lat": -23.5505, "lon": -46.6333, "country": "Brazil", "city": "Sao Paulo", "inflation": 4.1, "gdp": 2.0, "etf": "EWZ"},
+        "CAN": {"lat": 43.65107, "lon": -79.347015, "country": "Canada", "city": "Toronto", "inflation": 2.7, "gdp": 1.5, "etf": "EWC"},
+        "AUS": {"lat": -33.8688, "lon": 151.2093, "country": "Australia", "city": "Sydney", "inflation": 3.5, "gdp": 1.7, "etf": "EWA"},
+        "FRA": {"lat": 48.8566, "lon": 2.3522, "country": "France", "city": "Paris", "inflation": 2.2, "gdp": 0.9, "etf": "EWQ"},
+        "KOR": {"lat": 37.5665, "lon": 126.9780, "country": "South Korea", "city": "Seoul", "inflation": 2.4, "gdp": 2.3, "etf": "EWY"},
+        "HKG": {"lat": 22.3193, "lon": 114.1694, "country": "Hong Kong", "city": "Hong Kong", "inflation": 1.8, "gdp": 2.8, "etf": "EWH"},
+        "CHE": {"lat": 47.3769, "lon": 8.5417, "country": "Switzerland", "city": "Zurich", "inflation": 1.6, "gdp": 1.2, "etf": "EWL"},
+        "NLD": {"lat": 52.3676, "lon": 4.9041, "country": "Netherlands", "city": "Amsterdam", "inflation": 2.3, "gdp": 0.7, "etf": "EWN"},
+        "SGP": {"lat": 1.3521, "lon": 103.8198, "country": "Singapore", "city": "Singapore", "inflation": 2.9, "gdp": 2.5, "etf": "EWS"},
+        "TWN": {"lat": 25.0330, "lon": 121.5654, "country": "Taiwan", "city": "Taipei", "inflation": 2.1, "gdp": 3.1, "etf": "EWT"},
     }
 
     results = []
@@ -326,6 +326,8 @@ def get_global_macro_data():
                 "lon": meta["lon"],
                 "performance": round(perf, 2), # Real Market Performance
                 "inflation": meta["inflation"], # Realistic 2025 Estimate
+                "gdp": meta["gdp"],   # Realistic 2025 GDP Estimate
+                "etf": meta["etf"],   # Country ETF
                 "color": color,
                 "code": code
             })
@@ -341,6 +343,8 @@ def get_global_macro_data():
                 "lon": meta["lon"],
                 "performance": 0.0, 
                 "inflation": meta["inflation"], 
+                "gdp": meta["gdp"],
+                "etf": meta["etf"],
                 "color": "neutral",
                 "code": code
             })
@@ -356,6 +360,8 @@ def get_global_macro_data():
                 "lon": meta["lon"],
                 "performance": 0.0, 
                 "inflation": meta["inflation"], 
+                "gdp": meta["gdp"],
+                "etf": meta["etf"],
                 "color": "neutral",
                 "code": code
             })

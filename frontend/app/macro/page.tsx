@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import DashboardLayout from '@/components/DashboardLayout';
-import { getMacroSummary, getYieldCurves } from '@/lib/api';
+import { getMacroSummary, getYieldCurves, getGlobalMacroData } from '@/lib/api';
 import MacroIndicators from '@/components/macro/MacroIndicators';
 import { Globe, RefreshCw, TrendingDown } from 'lucide-react';
 import DebtClock from '@/components/macro/DebtClock';
@@ -13,6 +13,10 @@ const YieldCurveChart = dynamic(() => import('@/components/macro/YieldCurveChart
     ssr: false
 });
 const MacroGlobe = dynamic(() => import('@/components/macro/MacroGlobe').then(mod => mod.MacroGlobe), {
+    loading: () => <div className="h-[500px] w-full bg-slate-900/50 animate-pulse rounded-xl" />,
+    ssr: false
+});
+const MacroWeatherMap = dynamic(() => import('@/components/macro/MacroWeatherMap'), {
     loading: () => <div className="h-[500px] w-full bg-slate-900/50 animate-pulse rounded-xl" />,
     ssr: false
 });
@@ -30,7 +34,9 @@ export default function MacroPage() {
     const [summary, setSummary] = useState<any[]>([]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [curves, setCurves] = useState<any>(null);
+    const [globalData, setGlobalData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
 
     const fetchData = React.useCallback(async () => {
         setLoading(true);
@@ -38,14 +44,17 @@ export default function MacroPage() {
             // Fetch independently so one failure doesn't block the other
             const summaryPromise = getMacroSummary().catch(() => []);
             const curvesPromise = getYieldCurves().catch(() => null);
+            const globalPromise = getGlobalMacroData().catch(() => []);
 
-            const [summaryData, curvesData] = await Promise.all([
+            const [summaryData, curvesData, globalRes] = await Promise.all([
                 summaryPromise,
-                curvesPromise
+                curvesPromise,
+                globalPromise
             ]);
 
             setSummary(summaryData);
             setCurves(curvesData);
+            setGlobalData(globalRes);
         } catch (e) {
             console.error("Failed to fetch macro data", e);
         } finally {
@@ -104,7 +113,31 @@ export default function MacroPage() {
 
                         {/* Macro Globe and Calendar */}
                         <div className="flex flex-col gap-8">
-                            <MacroGlobe />
+                            {/* View Toggle */}
+                            <div className="flex justify-between items-center bg-slate-900/50 p-2 rounded-lg border border-slate-800">
+                                <h3 className="text-sm font-bold text-slate-400 pl-2">Global Visualization</h3>
+                                <div className="flex gap-1">
+                                    <button
+                                        onClick={() => setViewMode('2d')}
+                                        className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${viewMode === '2d' ? 'bg-cyan-500 text-black' : 'text-slate-500 hover:text-slate-300'}`}
+                                    >
+                                        2D Weather Map
+                                    </button>
+                                    <button
+                                        onClick={() => setViewMode('3d')}
+                                        className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${viewMode === '3d' ? 'bg-purple-500 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                                    >
+                                        3D Globe
+                                    </button>
+                                </div>
+                            </div>
+
+                            {viewMode === '3d' ? (
+                                <MacroGlobe />
+                            ) : (
+                                <MacroWeatherMap data={globalData} />
+                            )}
+
                             <EconomicCalendar />
                         </div>
                     </div>
