@@ -1,938 +1,338 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import DashboardLayout from '@/components/DashboardLayout';
-import { getCompanyInfo } from '@/lib/api';
-import { api } from '@/lib/api';
-import { Search, Activity, AlertCircle, RotateCcw, TrendingUp, TrendingDown, Download, ChevronDown, ChevronUp, Zap, Award, BarChart3 } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from 'recharts';
-
-const PriceChart = dynamic(() => import('@/components/PriceChart'), { ssr: false, loading: () => <div className="h-64 bg-slate-900 animate-pulse rounded" /> });
-
-interface Position {
-    symbol: string;
-    shares: number;
-    avgCost: number;
-    currentPrice?: number;
-}
-
-interface TradeHistory {
-    timestamp: string;
-    action: string;
-    symbol: string;
-    shares: number;
-    price: number;
-    total: number;
-}
-
-interface Option {
-    symbol: string;
-    option_type: string;
-    strike: number;
-    expiry: string;
-    contracts: number;
-    premium: number;
-    currentPremium?: number;
-}
-
-interface Analytics {
-    total_equity: number;
-    total_return: number;
-    return_pct: number;
-    total_trades: number;
-    buy_trades: number;
-    sell_trades: number;
-    best_performer: { symbol: string; gain_pct: number } | null;
-    worst_performer: { symbol: string; gain_pct: number } | null;
-}
+import DashboardLayout from '../../components/DashboardLayout';
+import PriceChart from '../../components/PriceChart';
+import MarketNews from '../../components/MarketNews';
+import { api, getTickerHistory, checkBackendHealth } from '../../lib/api';
+import { Position, TradeHistoryItem } from '../../lib/types';
+import SimulatorWatchlist from '@/components/simulator/SimulatorWatchlist';
+import OrderForm from '@/components/simulator/OrderForm';
+import TradeHistory from '@/components/simulator/TradeHistory';
+import { RefreshCw, Wallet, TrendingUp, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function SimulatorPage() {
-    // Simulator State
+    // --- State ---
+    const [ticker, setTicker] = useState('AAPL');
     const [cash, setCash] = useState(100000);
     const [portfolio, setPortfolio] = useState<Position[]>([]);
-    const [history, setHistory] = useState<TradeHistory[]>([]);
-    const [analytics, setAnalytics] = useState<Analytics | null>(null);
-    const [options, setOptions] = useState<Option[]>([]);
-
-    // Trading State
-    const [ticker, setTicker] = useState(() => {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('sim_last_ticker') || 'AAPL';
-        }
-        return 'AAPL';
-    });
-    const [shares, setShares] = useState(10);
+    const [options, setOptions] = useState<any[]>([]);
+    const [history, setHistory] = useState<TradeHistoryItem[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [isBackendHealthy, setIsBackendHealthy] = useState(true);
     const [currentPrice, setCurrentPrice] = useState<number | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [priceData, setPriceData] = useState<any>([]);
-    const [prevClose, setPrevClose] = useState<number | undefined>(undefined);
-    const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+    const [prevClose, setPrevClose] = useState<number | null>(null);
 
-    // Options Trading State
-    const [optionType, setOptionType] = useState<'CALL' | 'PUT'>('CALL');
-    const [strike, setStrike] = useState('');
-    const [expiry, setExpiry] = useState('');
-    const [contracts, setContracts] = useState(1);
-    const [premium, setPremium] = useState('');
-    const [activeTab, setActiveTab] = useState<'stocks' | 'options'>('stocks');
+    // Tab state for bottom section
+    const [bottomTab, setBottomTab] = useState<'positions' | 'options' | 'history'>('positions');
 
-    // UI State
-    const [showHistory, setShowHistory] = useState(true);
-    const [sortBy, setSortBy] = useState<'symbol' | 'value' | 'gain'>('value');
+    // --- Data Fetching ---
 
-    // Load initial data
-    useEffect(() => {
-        fetchTickerData(ticker);
-        fetchPortfolio();
-        fetchHistory();
-        fetchAnalytics();
-        fetchOptions();
-    }, []);
-
-    // Auto-refresh portfolio prices every 60 seconds
-    useEffect(() => {
-        const interval = setInterval(() => {
-            refreshPortfolioValues();
-        }, 60000);
-        return () => clearInterval(interval);
-    }, [portfolio]);
-
-    // Save last viewed ticker
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('sim_last_ticker', ticker);
-        }
-    }, [ticker]);
-
-    const fetchPortfolio = async () => {
+    const fetchPortfolio = useCallback(async () => {
         try {
             const res = await api.get('/simulator/portfolio');
             setCash(res.data.cash);
             setPortfolio(res.data.portfolio);
+
+            const ops = await api.get('/simulator/options');
+            setOptions(ops.data.options);
+
+            const hist = await api.get('/simulator/history');
+            setHistory(hist.data.history);
         } catch (e) {
             console.error("Failed to load portfolio", e);
         }
-    };
+    }, []);
 
-    const fetchHistory = async () => {
+    const fetchTickerData = useCallback(async () => {
+        setLoading(true);
         try {
-            const res = await api.get('/simulator/history');
-            const historyData = res.data.history || [];
-            setHistory(historyData);
-        } catch (e) {
-            console.error("Failed to load history", e);
-            setHistory([]);
-        }
-    };
+            // Check if backend is up
+            const health = await checkBackendHealth();
+            setIsBackendHealthy(health);
 
-    const fetchAnalytics = async () => {
+            if (!health) {
+                toast.error("Backend is offline. Simulator features limited.");
+                setLoading(false);
+                return;
+            }
+
+            // Get live price
+            const details = await api.get(`/market/ticker/${ticker}`);
+            if (details.data) {
+                setCurrentPrice(details.data.price);
+                setPrevClose(details.data.prev_close || details.data.price);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(`Failed to fetch data for ${ticker}`);
+        } finally {
+            setLoading(false);
+        }
+    }, [ticker]);
+
+    // Initial Load
+    useEffect(() => {
+        fetchPortfolio();
+    }, [fetchPortfolio]);
+
+    // Update data when ticker changes
+    useEffect(() => {
+        fetchTickerData();
+        const interval = setInterval(fetchTickerData, 60000); // 1 min refresh
+        return () => clearInterval(interval);
+    }, [fetchTickerData]);
+
+
+    // --- Actions ---
+
+    const handleExecuteOrder = async (action: 'BUY' | 'SELL', shares: number) => {
+        if (!currentPrice) return;
+        setLoading(true);
         try {
-            const res = await api.get('/simulator/analytics');
-            setAnalytics(res.data);
-        } catch (e) {
-            console.error("Failed to load analytics", e);
+            const res = await api.post('/simulator/trade', {
+                symbol: ticker,
+                action,
+                shares,
+                price: currentPrice
+            });
+
+            setCash(res.data.cash);
+            setPortfolio(res.data.portfolio);
+            toast.success(res.data.message);
+            fetchPortfolio(); // Refresh all
+        } catch (err: any) {
+            console.error(err);
+            toast.error(err.response?.data?.detail || "Trade failed");
+        } finally {
+            setLoading(false);
         }
     };
 
-    const fetchOptions = async () => {
-        try {
-            const res = await api.get('/simulator/options');
-            setOptions(res.data.options || []);
-        } catch (e) {
-            console.error("Failed to load options", e);
-            setOptions([]);
-        }
-    };
-
-    const handleOptionTrade = async (action: 'BUY' | 'SELL') => {
-        if (!strike || !expiry || !premium) {
-            setError('Please fill in all option fields');
-            return;
-        }
-
-        const strikeNum = parseFloat(strike);
-        const premiumNum = parseFloat(premium);
-
-        if (isNaN(strikeNum) || isNaN(premiumNum)) {
-            setError('Invalid strike or premium');
-            return;
-        }
-
-        setIsLoading(true);
-        setError('');
-        setSuccessMessage('');
-
+    const handleExecuteOption = async (action: 'BUY' | 'SELL', optionData: any) => {
+        setLoading(true);
         try {
             const res = await api.post('/simulator/trade/option', {
                 symbol: ticker,
-                option_type: optionType,
-                strike: strikeNum,
-                expiry: expiry,
-                action: action,
-                contracts: contracts,
-                premium: premiumNum
+                action,
+                ...optionData
             });
+
             setCash(res.data.cash);
             setOptions(res.data.options);
-            setSuccessMessage(res.data.message);
-
-            // Refresh data
-            fetchOptions();
-            fetchHistory();
-            fetchAnalytics();
-
-            // Clear form
-            setStrike('');
-            setPremium('');
-
-            setTimeout(() => setSuccessMessage(''), 3000);
+            toast.success(res.data.message);
+            fetchPortfolio();
         } catch (err: any) {
-            setError(err.response?.data?.detail || 'Option trade failed');
+            console.error(err);
+            toast.error(err.response?.data?.detail || "Option Trade failed");
         } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const fetchTickerData = async (symbol: string) => {
-        setIsLoading(true);
-        setError('');
-        try {
-            const data = await getCompanyInfo(symbol);
-            if (data) {
-                setCurrentPrice(data.current_price ?? null);
-                setPriceData(data.chart_data || []);
-                setPrevClose(data.prev_close);
-            } else {
-                setError('Ticker not found');
-            }
-        } catch (err) {
-            setError('Failed to fetch data');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleExecuteOrder = async (side: 'BUY' | 'SELL') => {
-        if (!currentPrice) return;
-
-        const cost = shares * currentPrice;
-
-        // Confirmation for large trades
-        if (cost > 10000) {
-            if (!confirm(`Confirm ${side} order: ${shares} shares of ${ticker} for $${cost.toLocaleString()}?`)) {
-                return;
-            }
-        }
-
-        setIsLoading(true);
-        setError('');
-        setSuccessMessage('');
-
-        try {
-            const res = await api.post('/simulator/trade', {
-                symbol: ticker,
-                action: side,
-                shares: shares,
-                price: currentPrice
-            });
-            setCash(res.data.cash);
-            setPortfolio(res.data.portfolio);
-            setSuccessMessage(res.data.message);
-
-            // Refresh data
-            refreshPortfolioValues(res.data.portfolio);
-            fetchHistory();
-            fetchAnalytics();
-
-            // Clear success message after 3 seconds
-            setTimeout(() => setSuccessMessage(''), 3000);
-        } catch (err: any) {
-            setError(err.response?.data?.detail || 'Trade failed');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleQuickTrade = async (symbol: string, action: 'BUY' | 'SELL', quickShares: number) => {
-        try {
-            const data = await getCompanyInfo(symbol);
-            if (!data.current_price) return;
-
-            const res = await api.post('/simulator/trade', {
-                symbol: symbol,
-                action: action,
-                shares: quickShares,
-                price: data.current_price
-            });
-
-            setCash(res.data.cash);
-            setPortfolio(res.data.portfolio);
-            setSuccessMessage(res.data.message);
-            refreshPortfolioValues(res.data.portfolio);
-            fetchHistory();
-            fetchAnalytics();
-            setTimeout(() => setSuccessMessage(''), 3000);
-        } catch (err: any) {
-            setError(err.response?.data?.detail || 'Quick trade failed');
+            setLoading(false);
         }
     };
 
     const handleReset = async () => {
-        if (confirm("Are you sure you want to reset your portfolio? This cannot be undone.")) {
+        if (confirm("Reset paper trading account to $100,000? This cannot be undone.")) {
             try {
                 const res = await api.post('/simulator/reset');
                 setCash(res.data.cash);
                 setPortfolio(res.data.portfolio);
                 setHistory([]);
-                fetchAnalytics();
-            } catch (e) {
-                console.error("Failed to reset", e);
+                setOptions([]);
+                toast.success("Account reset successfully");
+            } catch {
+                toast.error("Failed to reset account");
             }
         }
     };
 
-    const refreshPortfolioValues = async (currentPortfolio: Position[] = portfolio) => {
-        try {
-            const updatedPortfolio = await Promise.all(currentPortfolio.map(async (pos) => {
-                try {
-                    const data = await getCompanyInfo(pos.symbol);
-                    return { ...pos, currentPrice: data.current_price ?? pos.currentPrice };
-                } catch (e) {
-                    return pos;
-                }
-            }));
-            setPortfolio(updatedPortfolio);
-        } catch (err) {
-            console.error("Failed to refresh portfolio", err);
-        }
+    // Calculates
+    const calculateEquity = () => {
+        let eq = cash;
+        portfolio.forEach(p => {
+            // Use current price if available, here we approximate with latest fetch or avg cost if offline
+            // Ideally we should fetch live prices for all positions, but for now use avgCost as proxy if live price unknown
+            // Or better, just sum up (in a real app, you'd batch fetch all prices)
+            eq += p.shares * (p.symbol === ticker && currentPrice ? currentPrice : p.avgCost);
+        });
+        return eq;
     };
 
-    const refreshPortfolio = () => refreshPortfolioValues();
-
-    const downloadHistory = () => {
-        const csv = [
-            ['Timestamp', 'Action', 'Symbol', 'Shares', 'Price', 'Total'],
-            ...history.map(t => [
-                new Date(t.timestamp).toLocaleString(),
-                t.action,
-                t.symbol,
-                t.shares,
-                t.price.toFixed(2),
-                t.total.toFixed(2)
-            ])
-        ].map(row => row.join(',')).join('\n');
-
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `trade_history_${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-    };
-
-    // Keyboard shortcuts
-    useEffect(() => {
-        const handleKeyPress = (e: KeyboardEvent) => {
-            // Prevent shortcuts when typing in input
-            if ((e.target as HTMLElement).tagName === 'INPUT') {
-                if (e.key === 'Enter' && (e.target as HTMLInputElement).value && ticker) {
-                    fetchTickerData(ticker);
-                }
-                return;
-            }
-
-            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
-                e.preventDefault();
-                if (currentPrice) handleExecuteOrder('BUY');
-            }
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                e.preventDefault();
-                if (currentPrice) handleExecuteOrder('SELL');
-            }
-            if (e.key === 'r' || e.key === 'R') {
-                refreshPortfolio();
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyPress);
-        return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [currentPrice, ticker, shares]);
-
-    // Calculate Portfolio Value
-    // For Longs: Add (shares * price) to portfolio value
-    // For Shorts: Subtract (abs(shares) * price) from portfolio value (it's a liability)
-    const portfolioValue = portfolio.reduce((acc, pos) => {
-        const currentPrice = pos.currentPrice || pos.avgCost;
-        if (pos.shares > 0) {
-            return acc + (pos.shares * currentPrice);
-        } else {
-            // Short position: liability (subtract from total value)
-            return acc - (Math.abs(pos.shares) * currentPrice);
-        }
-    }, 0);
-    const totalEquity = cash + portfolioValue;
-    const totalReturn = totalEquity - 100000;
-    const returnPct = (totalReturn / 100000) * 100;
-
-    // Sort portfolio
-    const sortedPortfolio = [...portfolio].sort((a, b) => {
-        if (sortBy === 'symbol') return a.symbol.localeCompare(b.symbol);
-        if (sortBy === 'value') {
-            // Sort by absolute value (both longs and shorts by their exposure)
-            const aVal = Math.abs(a.shares) * (a.currentPrice || a.avgCost);
-            const bVal = Math.abs(b.shares) * (b.currentPrice || b.avgCost);
-            return bVal - aVal;
-        }
-        if (sortBy === 'gain') {
-            const aCurrent = a.currentPrice || a.avgCost;
-            const bCurrent = b.currentPrice || b.avgCost;
-            // For shorts, gain is inverted: (avgCost - current) / avgCost
-            // For longs: (current - avgCost) / avgCost
-            const aGain = a.shares > 0
-                ? (aCurrent - a.avgCost) / a.avgCost
-                : (a.avgCost - aCurrent) / a.avgCost;
-            const bGain = b.shares > 0
-                ? (bCurrent - b.avgCost) / b.avgCost
-                : (b.avgCost - bCurrent) / b.avgCost;
-            return bGain - aGain;
-        }
-        return 0;
-    });
-
-    // Prepare pie chart data
-    // Show absolute values for visualization (both longs and shorts as positive wedges)
-    const totalAbsValue = portfolio.reduce((acc, pos) =>
-        acc + Math.abs(pos.shares) * (pos.currentPrice || pos.avgCost), 0);
-
-    const pieData = portfolio.map(pos => {
-        const absValue = Math.abs(pos.shares) * (pos.currentPrice || pos.avgCost);
-        return {
-            name: pos.symbol + (pos.shares < 0 ? ' (S)' : ''),
-            value: absValue,
-            percentage: totalAbsValue > 0 ? (absValue / totalAbsValue) * 100 : 0
-        };
-    });
-
-    const COLORS = ['#06b6d4', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#14b8a6'];
 
     return (
         <DashboardLayout>
-            <div className="max-w-7xl mx-auto space-y-6 pb-20">
-                {/* Header */}
-                <div className="glass-panel p-6">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div>
-                            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                                <Activity className="text-cyan-400" /> Paper Trading Simulator
-                            </h1>
-                            <p className="text-slate-400 text-sm mt-1">Practice trading with $100,000 virtual cash.</p>
-                            <div className="text-xs text-slate-500 mt-2">
-                                ⌨️ Shortcuts: Enter (load) • Ctrl+B (buy) • Ctrl+S (sell) • R (refresh)
+            <div className="max-w-[1600px] mx-auto p-4 space-y-4">
+
+                {/* 1. Header & Account Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="glass-panel p-4 flex items-center justify-between col-span-3">
+                        <div className="flex items-center gap-8">
+                            <div>
+                                <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Buying Power</div>
+                                <div className="text-3xl font-mono font-bold text-white flex items-center gap-2">
+                                    <Wallet className="text-emerald-400" />
+                                    ${cash.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </div>
+                            </div>
+
+                            <div className="h-10 w-px bg-slate-700/50"></div>
+
+                            <div>
+                                <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Total Equity (Est)</div>
+                                <div className="text-3xl font-mono font-bold text-white">
+                                    ${calculateEquity().toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </div>
                             </div>
                         </div>
-                        <button onClick={handleReset} className="text-xs text-rose-500 hover:text-rose-400 flex items-center gap-1 border border-rose-500/30 px-3 py-1.5 rounded hover:bg-rose-500/10 transition-colors">
-                            <RotateCcw size={12} /> Reset Account
+
+                        {!isBackendHealthy && (
+                            <div className="flex items-center gap-2 text-rose-400 bg-rose-500/10 px-4 py-2 rounded-lg border border-rose-500/20">
+                                <AlertTriangle size={20} />
+                                <span className="font-bold">System Offline</span>
+                            </div>
+                        )}
+                    </div>
+
+                    <button onClick={handleReset} className="glass-panel hover:bg-rose-900/10 transition-colors p-4 flex flex-col items-center justify-center gap-2 group cursor-pointer border-rose-500/10 hover:border-rose-500/50">
+                        <RefreshCw className="text-rose-400 group-hover:rotate-180 transition-transform duration-500" size={24} />
+                        <span className="text-rose-400 font-bold uppercase text-xs tracking-wider">Reset Account</span>
+                    </button>
+                </div>
+
+                {/* 2. Main Workspace */}
+                <div className="grid grid-cols-12 gap-4 h-[600px]">
+                    {/* Left Sidebar: Watchlist */}
+                    <div className="col-span-12 md:col-span-2 h-full">
+                        <SimulatorWatchlist onSelectTicker={setTicker} />
+                    </div>
+
+                    {/* Center: Chart */}
+                    <div className="col-span-12 md:col-span-7 h-full flex flex-col gap-4">
+                        <div className="glass-panel p-1 flex-1">
+                            <PriceChart
+                                symbol={ticker}
+                                height={350}
+                                prevClose={prevClose || undefined}
+                            />
+                        </div>
+                        <div className="glass-panel p-4 flex-1 overflow-y-auto custom-scrollbar">
+                            <h3 className="text-sm font-bold text-slate-300 mb-3 uppercase tracking-wider">News: {ticker}</h3>
+                            <MarketNews symbol={ticker} />
+                        </div>
+                    </div>
+
+                    {/* Right: Order Form */}
+                    <div className="col-span-12 md:col-span-3 h-full">
+                        <OrderForm
+                            ticker={ticker}
+                            currentPrice={currentPrice}
+                            isLoading={loading}
+                            onExecuteTrade={handleExecuteOrder}
+                            onExecuteOption={handleExecuteOption}
+                        />
+                    </div>
+                </div>
+
+                {/* 3. Bottom Tabs: Positions & History */}
+                <div className="glass-panel min-h-[400px]">
+                    <div className="border-b border-slate-700 flex px-4 pt-2 gap-4">
+                        <button
+                            onClick={() => setBottomTab('positions')}
+                            className={`pb-2 text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${bottomTab === 'positions' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-slate-500 hover:text-white'}`}
+                        >
+                            Stock Positions
+                        </button>
+                        <button
+                            onClick={() => setBottomTab('options')}
+                            className={`pb-2 text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${bottomTab === 'options' ? 'border-purple-400 text-purple-400' : 'border-transparent text-slate-500 hover:text-white'}`}
+                        >
+                            Option Positions
+                        </button>
+                        <button
+                            onClick={() => setBottomTab('history')}
+                            className={`pb-2 text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${bottomTab === 'history' ? 'border-emerald-400 text-emerald-400' : 'border-transparent text-slate-500 hover:text-white'}`}
+                        >
+                            History
                         </button>
                     </div>
-                </div>
 
-                {/* Success/Error Messages */}
-                {successMessage && (
-                    <div className="bg-emerald-500/10 border border-emerald-500/50 text-emerald-400 text-sm p-3 rounded animate-in slide-in-from-top">
-                        ✓ {successMessage}
-                    </div>
-                )}
+                    <div className="p-4">
+                        {bottomTab === 'positions' && (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="text-slate-500 text-xs uppercase border-b border-slate-700">
+                                            <th className="py-2 px-4">Symbol</th>
+                                            <th className="py-2 px-4 text-right">Shares</th>
+                                            <th className="py-2 px-4 text-right">Avg Cost</th>
+                                            <th className="py-2 px-4 text-right">Current Price</th>
+                                            <th className="py-2 px-4 text-right">Market Value</th>
+                                            <th className="py-2 px-4 text-right">Return</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {portfolio.length === 0 ? (
+                                            <tr><td colSpan={6} className="py-8 text-center text-slate-500 italic">No active positions</td></tr>
+                                        ) : (
+                                            portfolio.map((pos) => {
+                                                // We don't have real-time stream for all positions yet, so use AvgCost or currentTicker price if matches
+                                                const price = pos.symbol === ticker && currentPrice ? currentPrice : pos.avgCost; // Fallback to avgCost to not show wrong data
+                                                const mktValue = pos.shares * price;
+                                                const gain = (price - pos.avgCost) * pos.shares;
+                                                const gainPct = ((price - pos.avgCost) / pos.avgCost) * 100;
 
-                {/* Account Summary */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="glass-panel p-4">
-                        <div className="text-xs text-slate-500 uppercase mb-1">Total Equity</div>
-                        <div className="text-2xl font-mono font-bold text-white">${totalEquity.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
-                    </div>
-                    <div className="glass-panel p-4">
-                        <div className="text-xs text-slate-500 uppercase mb-1">Buying Power</div>
-                        <div className="text-2xl font-mono font-bold text-emerald-400">${cash.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
-                    </div>
-                    <div className="glass-panel p-4">
-                        <div className="text-xs text-slate-500 uppercase mb-1">Total P&L</div>
-                        <div className={`text-2xl font-mono font-bold ${totalReturn >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                            {totalReturn >= 0 ? '+' : ''}${totalReturn.toLocaleString(undefined, { maximumFractionDigits: 0 })} ({returnPct.toFixed(2)}%)
-                        </div>
-                    </div>
-                    <div className="glass-panel p-4">
-                        <div className="text-xs text-slate-500 uppercase mb-1">Total Trades</div>
-                        <div className="text-2xl font-mono font-bold text-cyan-400">{analytics?.total_trades || 0}</div>
-                    </div>
-                </div>
+                                                return (
+                                                    <tr key={pos.symbol} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                                                        <td className="py-3 px-4 font-bold text-white cursor-pointer hover:text-cyan-400" onClick={() => setTicker(pos.symbol)}>{pos.symbol}</td>
+                                                        <td className="py-3 px-4 text-right font-mono text-slate-300">{pos.shares}</td>
+                                                        <td className="py-3 px-4 text-right font-mono text-slate-400 ml-4">${pos.avgCost.toFixed(2)}</td>
+                                                        <td className="py-3 px-4 text-right font-mono text-white">${price.toFixed(2)}</td>
+                                                        <td className="py-3 px-4 text-right font-mono text-white font-bold">${mktValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                                                        <td className={`py-3 px-4 text-right font-mono font-bold ${gain >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                                            {gain >= 0 ? '+' : ''}{gain.toFixed(2)} ({gainPct.toFixed(2)}%)
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
 
-                {/* Performance Analytics */}
-                {analytics && analytics.total_trades > 0 && (
-                    <div className="glass-panel p-6">
-                        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                            <BarChart3 className="text-cyan-400" size={20} />
-                            Performance Analytics
-                        </h3>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                                <div className="text-xs text-slate-400 mb-1">Buy Trades</div>
-                                <div className="text-xl font-bold text-emerald-400">{analytics.buy_trades}</div>
-                            </div>
-                            <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                                <div className="text-xs text-slate-400 mb-1">Sell Trades</div>
-                                <div className="text-xl font-bold text-rose-400">{analytics.sell_trades}</div>
-                            </div>
-                            <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                                <div className="text-xs text-slate-400 mb-1 flex items-center gap-1">
-                                    <Award className="text-green-400" size={14} />
-                                    Best Performer
-                                </div>
-                                <div className="text-xl font-bold text-green-400">
-                                    {analytics.best_performer ? `${analytics.best_performer.symbol} +${analytics.best_performer.gain_pct.toFixed(1)}%` : 'N/A'}
-                                </div>
-                            </div>
-                            <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                                <div className="text-xs text-slate-400 mb-1 flex items-center gap-1">
-                                    <TrendingDown className="text-red-400" size={14} />
-                                    Worst Performer
-                                </div>
-                                <div className="text-xl font-bold text-red-400">
-                                    {analytics.worst_performer ? `${analytics.worst_performer.symbol} ${analytics.worst_performer.gain_pct.toFixed(1)}%` : 'N/A'}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Chart & Order Entry */}
-                    <div className="col-span-1 lg:col-span-2 space-y-6">
-                        <div className="glass-panel p-6 h-[500px] flex flex-col">
-                            <div className="flex gap-4 mb-4">
-                                <div className="relative flex-1">
-                                    <Search className="absolute left-3 top-2.5 text-slate-500" size={18} />
-                                    <input
-                                        type="text"
-                                        value={ticker}
-                                        onChange={(e) => setTicker(e.target.value.toUpperCase())}
-                                        onKeyDown={(e) => e.key === 'Enter' && fetchTickerData(ticker)}
-                                        className="w-full bg-slate-900 border border-slate-700 rounded pl-10 pr-4 py-2 text-white font-mono uppercase focus:border-cyan-500 outline-none"
-                                        placeholder="Enter Ticker (e.g. NVDA)"
-                                    />
-                                </div>
-                                <button
-                                    onClick={() => fetchTickerData(ticker)}
-                                    className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded transition-colors"
-                                >
-                                    Load
-                                </button>
-                            </div>
-                            <div className="flex-1 bg-slate-900/50 rounded border border-slate-800 relative min-h-0">
-                                {isLoading ? (
-                                    <div className="absolute inset-0 flex items-center justify-center text-slate-500 animate-pulse">Fetching Market Data...</div>
+                        {bottomTab === 'options' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {options.length === 0 ? (
+                                    <div className="col-span-3 text-center py-8 text-slate-500 italic">No active options contracts</div>
                                 ) : (
-                                    <PriceChart symbol={ticker} initialData={priceData} prevClose={prevClose} />
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Options Positions */}
-                    {options.length > 0 && (
-                        <div className="glass-panel p-6">
-                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Options Positions ({options.length})</h3>
-                            <div className="space-y-3">
-                                {options.map((opt, idx) => {
-                                    const isLong = opt.contracts > 0;
-                                    const absContracts = Math.abs(opt.contracts);
-                                    const totalValue = absContracts * 100 * opt.premium;
-
-                                    return (
-                                        <div key={idx} className={`p-3 rounded border ${isLong ? 'bg-slate-900/50 border-slate-800' : 'bg-purple-900/10 border-purple-900/30'}`}>
+                                    options.map((opt, idx) => (
+                                        <div key={idx} className="bg-slate-900/50 border border-slate-700 rounded-lg p-4 hover:bg-slate-800 transition-colors cursor-pointer" onClick={() => setTicker(opt.symbol)}>
                                             <div className="flex justify-between items-start mb-2">
-                                                <div>
-                                                    <div className="font-bold text-white flex items-center gap-2">
-                                                        {opt.symbol} ${opt.strike} {opt.option_type}
-                                                        {!isLong && <span className="text-[10px] bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Short</span>}
-                                                    </div>
-                                                    <div className="text-xs text-slate-500">
-                                                        Exp: {opt.expiry} | {absContracts} contract{absContracts > 1 ? 's' : ''}
-                                                    </div>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="text-xs text-slate-400">Premium</div>
-                                                    <div className="font-mono text-white">${opt.premium.toFixed(2)}</div>
+                                                <div className="font-bold text-white">{opt.symbol}</div>
+                                                <div className={`text-xs font-bold px-2 py-0.5 rounded ${opt.option_type === 'CALL' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                                    {opt.option_type}
                                                 </div>
                                             </div>
-                                            <div className="flex justify-between items-center text-xs pt-2 border-t border-slate-800">
-                                                <span className="text-slate-500">Total Value</span>
-                                                <span className="font-mono text-white">${totalValue.toLocaleString()}</span>
+                                            <div className="flex justify-between items-center mb-1">
+                                                <div className="text-xl font-mono text-white font-bold">${opt.strike}</div>
+                                                <div className="text-xs text-slate-400">{opt.expiry}</div>
                                             </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Trade History */}
-                    <div className="glass-panel p-6">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                                <Activity className="text-cyan-400" size={20} />
-                                Trade History ({history.length})
-                            </h3>
-                            <div className="flex gap-2">
-                                {history.length > 0 && (
-                                    <button onClick={downloadHistory} className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1">
-                                        <Download size={14} /> Export CSV
-                                    </button>
-                                )}
-                                <button onClick={() => setShowHistory(!showHistory)} className="text-xs text-slate-400 hover:text-white">
-                                    {showHistory ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                </button>
-                            </div>
-                        </div>
-                        {showHistory && (
-                            <div className="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
-                                {history.length === 0 ? (
-                                    <div className="text-center text-slate-600 py-4 italic text-sm">No trades yet.</div>
-                                ) : (
-                                    [...history].reverse().slice(0, 50).map((trade, idx) => (
-                                        <div key={idx} className="bg-slate-900/50 p-3 rounded border border-slate-800 flex justify-between items-center text-sm">
-                                            <div className="flex items-center gap-3">
-                                                <div className={`px-2 py-1 rounded text-xs font-bold ${trade.action === 'BUY' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
-                                                    {trade.action}
-                                                </div>
-                                                <div>
-                                                    <div className="font-mono font-bold text-white">{trade.symbol}</div>
-                                                    <div className="text-xs text-slate-500">{new Date(trade.timestamp).toLocaleString()}</div>
-                                                </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <div className="font-mono text-white">{trade.shares} shs @ ${trade.price.toFixed(2)}</div>
-                                                <div className="text-xs text-slate-400">${trade.total.toLocaleString()}</div>
+                                            <div className="flex justify-between items-center pt-2 border-t border-slate-800">
+                                                <div className="text-sm text-slate-300">{opt.contracts} <span className="text-slate-500 text-xs">contracts</span></div>
+                                                <div className="text-sm font-mono text-white">${opt.premium.toFixed(2)} <span className="text-slate-500 text-xs">prem</span></div>
                                             </div>
                                         </div>
                                     ))
                                 )}
                             </div>
                         )}
+
+                        {bottomTab === 'history' && (
+                            <TradeHistory history={history} />
+                        )}
                     </div>
                 </div>
 
-                {/* Right Column */}
-                <div className="col-span-1 space-y-6">
-                    {/* Order Execution */}
-                    <div className="glass-panel p-6">
-                        <div className="flex items-center justify-between mb-4 border-b border-slate-700 pb-2">
-                            <h3 className="text-lg font-bold text-white">Execute Order</h3>
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => setActiveTab('stocks')}
-                                    className={`px-3 py-1 text-xs rounded transition-colors ${activeTab === 'stocks' ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}
-                                >
-                                    Stocks
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('options')}
-                                    className={`px-3 py-1 text-xs rounded transition-colors ${activeTab === 'options' ? 'bg-purple-500/20 text-purple-400' : 'text-slate-500 hover:text-slate-300'}`}
-                                >
-                                    Options
-                                </button>
-                            </div>
-                        </div>
-
-                        {error && (
-                            <div className="bg-red-500/10 border border-red-500/50 text-red-400 text-sm p-3 rounded mb-4 flex items-center gap-2">
-                                <AlertCircle size={16} /> {error}
-                            </div>
-                        )}
-
-                        {activeTab === 'stocks' ? (
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-slate-400">Symbol</span>
-                                    <span className="font-mono font-bold text-xl text-white">{ticker}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-slate-400">Market Price</span>
-                                    <span className="font-mono font-bold text-xl text-cyan-400">${currentPrice?.toFixed(2) || '---'}</span>
-                                </div>
-
-                                <div>
-                                    <label className="block text-xs text-slate-500 uppercase mb-1">Quantity (Shares)</label>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        value={shares}
-                                        onChange={(e) => setShares(Number(e.target.value))}
-                                        className="w-full bg-slate-900 border border-slate-700 rounded p-3 text-white font-mono text-lg text-right"
-                                    />
-                                </div>
-
-                                <div className="flex justify-between items-center py-2 border-t border-slate-800">
-                                    <span className="text-slate-400">Estimated Cost</span>
-                                    <span className="font-mono font-bold text-white">${(shares * (currentPrice || 0)).toLocaleString()}</span>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4 pt-2">
-                                    <button
-                                        onClick={() => handleExecuteOrder('BUY')}
-                                        disabled={!currentPrice || isLoading}
-                                        className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 rounded shadow-lg shadow-emerald-900/20 transition-all hover:scale-105"
-                                    >
-                                        BUY
-                                    </button>
-                                    <button
-                                        onClick={() => handleExecuteOrder('SELL')}
-                                        disabled={!currentPrice || isLoading}
-                                        className="bg-rose-600 hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 rounded shadow-lg shadow-rose-900/20 transition-all hover:scale-105"
-                                    >
-                                        SELL
-                                    </button>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-slate-400">Symbol</span>
-                                    <span className="font-mono text-white font-bold">{ticker}</span>
-                                </div>
-
-                                <div>
-                                    <label className="text-sm text-slate-400 block mb-1">Type</label>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => setOptionType('CALL')}
-                                            className={`flex-1 py-2 px-3 rounded transition-colors ${optionType === 'CALL' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}
-                                        >
-                                            Call
-                                        </button>
-                                        <button
-                                            onClick={() => setOptionType('PUT')}
-                                            className={`flex-1 py-2 px-3 rounded transition-colors ${optionType === 'PUT' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/50' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}
-                                        >
-                                            Put
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="text-sm text-slate-400 block mb-1">Strike Price</label>
-                                    <input
-                                        type="number"
-                                        value={strike}
-                                        onChange={(e) => setStrike(e.target.value)}
-                                        placeholder="100.00"
-                                        className="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-sm text-slate-400 block mb-1">Expiry Date</label>
-                                    <input
-                                        type="date"
-                                        value={expiry}
-                                        onChange={(e) => setExpiry(e.target.value)}
-                                        className="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-sm text-slate-400 block mb-1">Contracts</label>
-                                    <input
-                                        type="number"
-                                        value={contracts}
-                                        onChange={(e) => setContracts(parseInt(e.target.value) || 1)}
-                                        min="1"
-                                        className="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-sm text-slate-400 block mb-1">Premium (per share)</label>
-                                    <input
-                                        type="number"
-                                        value={premium}
-                                        onChange={(e) => setPremium(e.target.value)}
-                                        placeholder="2.50"
-                                        step="0.01"
-                                        className="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500"
-                                    />
-                                </div>
-
-                                {premium && contracts && (
-                                    <div className="bg-slate-900/50 p-3 rounded border border-slate-800">
-                                        <div className="text-sm text-slate-400">Total Cost</div>
-                                        <div className="font-mono text-white font-bold text-lg">
-                                            ${(parseFloat(premium) * contracts * 100).toLocaleString()}
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="flex gap-3 pt-2">
-                                    <button
-                                        onClick={() => handleOptionTrade('BUY')}
-                                        disabled={isLoading}
-                                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-700 text-white font-bold py-3 px-6 rounded transition-all disabled:cursor-not-allowed"
-                                    >
-                                        Buy Option
-                                    </button>
-                                    <button
-                                        onClick={() => handleOptionTrade('SELL')}
-                                        disabled={isLoading}
-                                        className="flex-1 bg-purple-600 hover:bg-purple-700 disabled:bg-slate-700 text-white font-bold py-3 px-6 rounded transition-all disabled:cursor-not-allowed"
-                                    >
-                                        Write/Sell
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Portfolio Allocation Pie Chart */}
-                    {portfolio.length > 0 && (
-                        <div className="glass-panel p-6">
-                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Portfolio Allocation</h3>
-                            <div className="h-64">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={pieData}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={50}
-                                            outerRadius={80}
-                                            paddingAngle={2}
-                                            dataKey="value"
-                                        >
-                                            {pieData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <RechartsTooltip
-                                            contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#f8fafc' }}
-                                            formatter={(value: number) => `$${value.toLocaleString()}`}
-                                        />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
-                            <div className="mt-2 space-y-1">
-                                {pieData.map((item, idx) => (
-                                    <div key={idx} className="flex justify-between items-center text-xs">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS[idx % COLORS.length] }}></div>
-                                            <span className="font-mono text-white">{item.name}</span>
-                                        </div>
-                                        <span className="text-slate-400">{item.percentage.toFixed(1)}%</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Holdings */}
-                    <div className="glass-panel p-4 flex flex-col">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Your Positions</h3>
-                            <div className="flex gap-2 items-center">
-                                <select
-                                    value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value as any)}
-                                    className="text-xs bg-slate-800 text-slate-400 border border-slate-700 rounded px-2 py-1"
-                                >
-                                    <option value="value">By Value</option>
-                                    <option value="gain">By Gain</option>
-                                    <option value="symbol">By Symbol</option>
-                                </select>
-                                <button onClick={refreshPortfolio} className="text-xs text-cyan-400 hover:text-cyan-300">Refresh</button>
-                            </div>
-                        </div>
-                        <div className="space-y-2 flex-1 overflow-y-auto max-h-[500px] custom-scrollbar">
-                            {sortedPortfolio.length === 0 ? (
-                                <div className="text-center text-slate-600 py-8 italic">No positions yet.</div>
-                            ) : (
-                                sortedPortfolio.map((pos) => {
-                                    const isShort = pos.shares < 0;
-                                    const shares = Math.abs(pos.shares);
-                                    const currentPrice = pos.currentPrice || 0;
-
-                                    // Market Value
-                                    // If Long: Shares * Price
-                                    // If Short: Liability = Shares * Price (Displayed as positive liability usually, or negative value)
-                                    // For UI consistency, let's show the "Value" of the position as signed.
-                                    const marketVal = pos.shares * currentPrice;
-
-                                    // Cost Basis
-                                    // If Long: Shares * AvgCost
-                                    // If Short: -Shares * AvgCost (The proceeds we got) -> displayed as signed
-                                    const costBasis = pos.shares * pos.avgCost;
-
-                                    // Gain
-                                    // Long: Market - Cost
-                                    // Short: Cost - Market (Entry - Current) * Shares? 
-                                    // Actually: (EntryPrice - CurrentPrice) * Shares
-                                    // Existing Math: 
-                                    // gain = marketVal - costBasis
-                                    // If Short: (-10 * 80) - (-10 * 100) = -800 - (-1000) = -800 + 1000 = +200.
-                                    // So the Math holds up!
-                                    const gain = marketVal - costBasis;
-
-                                    // Gain %
-                                    // Long: Gain / CostBasis
-                                    // Short: Gain / |CostBasis| (Return on exposure/margin used?)
-                                    // Usually Short Return = (Entry - Current) / Entry
-                                    const gainPct = isShort
-                                        ? ((pos.avgCost - currentPrice) / pos.avgCost) * 100
-                                        : (gain / costBasis) * 100;
-
-                                    return (
-                                        <div key={pos.symbol} className={`p-3 rounded border ${isShort ? 'bg-rose-900/10 border-rose-900/30' : 'bg-slate-900/50 border-slate-800'}`}>
-                                            <div className="flex justify-between items-start mb-2">
-                                                <div>
-                                                    <div className="font-bold text-white flex items-center gap-2">
-                                                        {pos.symbol}
-                                                        {isShort && <span className="text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Short</span>}
-                                                    </div>
-                                                    <div className="text-xs text-slate-500">
-                                                        {shares} shs @ ${pos.avgCost.toFixed(2)}
-                                                    </div>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="font-mono text-white">${Math.abs(marketVal).toLocaleString()} {isShort && <span className="text-slate-500 text-[10px]">(Liab)</span>}</div>
-                                                    <div className={`text-xs font-bold ${gain >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                                        {gain >= 0 ? '+' : ''}${gain.toLocaleString(undefined, { maximumFractionDigits: 0 })} ({gainPct.toFixed(1)}%)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flex gap-2 mt-2">
-                                                <button
-                                                    onClick={() => handleQuickTrade(pos.symbol, 'BUY', 10)}
-                                                    className="flex-1 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs py-1.5 rounded border border-emerald-500/30 transition-colors flex items-center justify-center gap-1"
-                                                >
-                                                    <Zap size={12} /> {isShort ? 'Cover 10' : 'Buy 10'}
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        // If Short: We are adding to short, so just Sell 10 (or whatever amount).
-                                                        // If Long: We are selling to close, so max is current shares.
-                                                        const sharesToSell = isShort ? 10 : Math.min(10, pos.shares);
-                                                        handleQuickTrade(pos.symbol, 'SELL', sharesToSell);
-                                                    }}
-                                                    className="flex-1 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 text-xs py-1.5 rounded border border-rose-500/30 transition-colors flex items-center justify-center gap-1"
-                                                >
-                                                    <Zap size={12} /> {isShort ? 'Short More 10' : 'Sell 10'}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    );
-                                })
-                            )}
-                        </div>
-                    </div>
-                </div>
             </div>
         </DashboardLayout>
     );

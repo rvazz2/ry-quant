@@ -7,7 +7,11 @@ import { Newspaper, ExternalLink, Clock } from 'lucide-react';
 import ErrorBoundary from './ErrorBoundary';
 import { ShimmerSkeleton } from './LoadingSkeleton';
 
-const MarketNews = () => {
+interface MarketNewsProps {
+    symbol?: string;
+}
+
+const MarketNews = ({ symbol }: MarketNewsProps) => {
     const [news, setNews] = useState<NewsItem[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -16,8 +20,9 @@ const MarketNews = () => {
     useEffect(() => {
         setMounted(true);
         const fetchNews = async () => {
+            setLoading(true);
             try {
-                const data = await getMarketNews();
+                const data = await getMarketNews(symbol);
                 setNews(data);
             } catch (error) {
                 console.error("Failed to fetch market news", error);
@@ -27,7 +32,7 @@ const MarketNews = () => {
         };
 
         fetchNews();
-    }, []);
+    }, [symbol]);
 
     const formatTime = (timestamp: number) => {
         const date = new Date(timestamp * 1000);
@@ -153,10 +158,10 @@ const MarketNews = () => {
     );
 };
 
-export default function MarketNewsData() {
+export default function MarketNewsData(props: MarketNewsProps) {
     return (
         <ErrorBoundary name="Market News">
-            <MarketNews />
+            <MarketNews {...props} />
         </ErrorBoundary>
     );
 }

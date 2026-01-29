@@ -45,9 +45,9 @@ async def search(q: str):
         print(f"API Error (search): {e}")
         return []
 @router.get("/news")
-async def market_news():
+async def market_news(symbol: str = None):
     try:
-        data = await get_market_news()
+        data = await get_market_news(symbol)
         return data
     except Exception as e:
         print(f"API Error (news): {e}")

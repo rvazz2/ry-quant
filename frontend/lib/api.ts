@@ -247,11 +247,12 @@ export const getMacroSummary = async (): Promise<any[]> => {
     }
 };
 
-export const getMarketNews = async (): Promise<NewsItem[]> => {
-    return fetchWithCache('market_news', async () => {
-        const response = await api.get('/market/news');
+export const getMarketNews = async (symbol?: string): Promise<NewsItem[]> => {
+    return fetchWithCache(`market_news_${symbol || 'global'}`, async () => {
+        const url = symbol ? `/market/news?symbol=${symbol}` : '/market/news';
+        const response = await api.get(url);
         return response.data;
-    });
+    }, 300); // 5 min cache
 };
 
 export const getYieldCurves = async (): Promise<YieldCurveData[]> => {

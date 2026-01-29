@@ -252,3 +252,18 @@ export interface ChatMessage {
     sender: 'user' | 'bot';
     timestamp: Date;
 }
+export interface Position {
+    symbol: string;
+    shares: number;
+    avgCost: number;
+    currentPrice?: number;
+}
+
+export interface TradeHistoryItem {
+    timestamp: string;
+    action: string;
+    symbol: string;
+    shares: number;
+    price: number;
+    total: number;
+}

@@ -278,18 +278,23 @@ def _search_tickers_sync(query: str):
 async def search_tickers(query: str):
     return await asyncio.to_thread(_search_tickers_sync, query)
 
-@timed_cache(seconds=1800)
-def _get_market_news_sync():
+@timed_cache(seconds=600)
+def _get_market_news_sync(symbol: str = None):
     """
-    Fetches top market news by aggregating news from major ETFs (SPY, QQQ, DIA).
+    Fetches market news. If symbol is provided, fetches specific news.
+    Otherwise, aggregates news from major ETFs (SPY, QQQ, DIA).
     """
     news_items = []
     seen_titles = set()
     
     import concurrent.futures
 
-    # Use SPY, QQQ, DIA as proxies for general market news
-    tickers = ["SPY", "QQQ", "DIA"]
+    # If symbol provided, just fetch that one
+    if symbol:
+        tickers = [symbol]
+    else:
+        # Use SPY, QQQ, DIA as proxies for general market news
+        tickers = ["SPY", "QQQ", "DIA"]
     
     def fetch_news_for_ticker(ticker):
         try:
@@ -316,8 +321,6 @@ def _get_market_news_sync():
                              link = content['clickThroughUrl'].get('url')
                         if not link:
                              link = '#'
-
-
 
                         # Handle time
                         pub_time = item.get('providerPublishTime')
@@ -354,5 +357,5 @@ def _get_market_news_sync():
     news_items.sort(key=lambda x: x['providerPublishTime'], reverse=True)
     return news_items[:10]
 
-async def get_market_news():
-    return await asyncio.to_thread(_get_market_news_sync)
+async def get_market_news(symbol: str = None):
+    return await asyncio.to_thread(_get_market_news_sync, symbol)
