@@ -30,85 +30,10 @@ import { SportsGame } from './SportsGame';
 import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
 import { PokerChip } from '../ui/PokerChip';
 import { RouletteWheel } from '../ui/RouletteWheel';
+import { useCasinoSFX } from '@/hooks/useCasinoSFX';
 
 type TabType = 'slots' | 'tables' | 'electronic' | 'other' | 'reality';
 
-// Custom hook for synthesized casino sound effects
-const useCasinoSFX = () => {
-    const playSound = (type: 'spin' | 'win' | 'loss' | 'deal' | 'click' | 'bell' | 'chip') => {
-        try {
-            const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
-            const ctx = new AudioContextClass();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            const now = ctx.currentTime;
-
-            if (type === 'spin') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(440, now);
-                osc.frequency.exponentialRampToValueAtTime(110, now + 0.5);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-                osc.start();
-                osc.stop(now + 0.5);
-            } else if (type === 'win') {
-                osc.type = 'square';
-                const notes = [523.25, 659.25, 783.99, 1046.50];
-                notes.forEach((freq, i) => {
-                    osc.frequency.setValueAtTime(freq, now + i * 0.1);
-                });
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.linearRampToValueAtTime(0, now + 0.5);
-                osc.start();
-                osc.stop(now + 0.5);
-            } else if (type === 'loss') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(220, now);
-                osc.frequency.linearRampToValueAtTime(55, now + 0.5);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.linearRampToValueAtTime(0, now + 0.5);
-                osc.start();
-                osc.stop(now + 0.5);
-            } else if (type === 'deal') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(880, now);
-                gain.gain.setValueAtTime(0.05, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                osc.start();
-                osc.stop(now + 0.1);
-            } else if (type === 'click') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(1000, now);
-                gain.gain.setValueAtTime(0.02, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-                osc.start();
-                osc.stop(now + 0.05);
-            } else if (type === 'bell') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(1500, now);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 1);
-                osc.start();
-                osc.stop(now + 1);
-            } else if (type === 'chip') {
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(2000, now);
-                gain.gain.setValueAtTime(0.03, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-                osc.start();
-                osc.stop(now + 0.05);
-            }
-        } catch (e) {
-            console.warn("Audio Context failed", e);
-        }
-    };
-
-    return { playSound };
-};
 
 // GogginsMessage component for typewriter effect
 const GogginsMessage = ({ text, onComplete }: { text: string; onComplete: () => void }) => {
@@ -940,9 +865,9 @@ export function CasinoGuide() {
                                     {activeGame === 'keno' && <KenoEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'poker' && <PokerGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'sports' && <SportsGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
-                                    {activeGame === 'spades' && <SpadesGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
-                                    {activeGame === 'hearts' && <HeartsGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
-                                    {activeGame === 'rummy' && <RummyGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                                    {activeGame === 'spades' && <SpadesGame onAction={handleAction} balance={balance} setBalance={setBalance} />}
+                                    {activeGame === 'hearts' && <HeartsGame onAction={handleAction} balance={balance} setBalance={setBalance} />}
+                                    {activeGame === 'rummy' && <RummyGame onAction={handleAction} balance={balance} setBalance={setBalance} />}
                                 </div>
                             </motion.div>
                         )}

@@ -5,11 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
 import { Heart, Skull } from 'lucide-react';
 
+import { useCasinoSFX } from '@/hooks/useCasinoSFX';
+import { WinParticles } from '../ui/WinParticles';
+
 interface HeartsGameProps {
     onAction: (amount: number) => void;
     balance: number;
     setBalance: React.Dispatch<React.SetStateAction<number>>;
-    playSound: (type: 'spin' | 'win' | 'loss' | 'deal' | 'click' | 'bell' | 'chip') => void;
 }
 
 type CardType = { suit: Suit; rank: Rank; value: number };
@@ -22,7 +24,8 @@ const getCardValue = (rank: Rank): number => {
     return values[rank];
 };
 
-export function HeartsGame({ onAction, balance, setBalance, playSound }: HeartsGameProps) {
+export function HeartsGame({ onAction, balance, setBalance }: HeartsGameProps) {
+    const { playSound } = useCasinoSFX();
     const [gameState, setGameState] = useState<'betting' | 'playing' | 'result'>('betting');
     const [playerHand, setPlayerHand] = useState<CardType[]>([]);
     const [botHand, setBotHand] = useState<CardType[]>([]);
