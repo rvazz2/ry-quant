@@ -107,13 +107,14 @@ export default function MacroWeatherMap({ data, className }: MacroWeatherMapProp
             projection: { type: 'natural earth' },
             showlakes: false,
             showocean: true,
-            oceancolor: '#020617',
-            landcolor: '#0f172a',
+            showland: true, // Explicitly show land
+            oceancolor: '#020617', // Very dark blue
+            landcolor: '#1e293b', // Visible slate
             bgcolor: 'rgba(0,0,0,0)',
             showframe: false,
             showcountries: true,
-            countrycolor: '#1e293b',
-            coastlinecolor: '#1e293b',
+            countrycolor: '#475569', // Lighter outline
+            coastlinecolor: '#475569',
         },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
@@ -122,7 +123,7 @@ export default function MacroWeatherMap({ data, className }: MacroWeatherMapProp
         font: {
             family: 'Inter, sans-serif'
         },
-        dragmode: false, // Disable panning for cleaner UX? Or keep it?
+        dragmode: false,
         autosize: true
     }), []);
 

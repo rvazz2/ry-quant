@@ -312,10 +312,10 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
                 </div>
             )}
 
-            <Canvas camera={{ position: [0, 0, isFullScreen ? 3.2 : 2.6], fov: 45 }}>
-                <ambientLight intensity={2.5} />
-                <pointLight position={[10, 10, 10]} intensity={3.0} color="#38bdf8" />
-                <pointLight position={[-10, 5, 2]} intensity={2.0} color="#c084fc" />
+            <Canvas camera={{ position: [0, 0, isFullScreen ? 3.5 : 2.8], fov: 45 }}>
+                <ambientLight intensity={3.0} />
+                <pointLight position={[10, 10, 10]} intensity={4.0} color="#38bdf8" />
+                <pointLight position={[-10, 5, 2]} intensity={3.0} color="#c084fc" />
 
                 <Stars radius={100} depth={50} count={isFullScreen ? 5000 : 3000} factor={4} saturation={0} fade speed={0.5} />
 
@@ -335,12 +335,13 @@ export function MacroGlobe({ className }: MacroGlobeProps) {
                 ))}
 
                 <OrbitControls
+                    makeDefault
                     enablePan={false}
                     enableZoom={true}
-                    minDistance={1.8}
-                    maxDistance={6.0}
+                    minDistance={1.5}
+                    maxDistance={8.0}
                     autoRotate
-                    autoRotateSpeed={0.5}
+                    autoRotateSpeed={0.8}
                 />
             </Canvas>
         </div>
