@@ -33,6 +33,7 @@ import { SportsGame } from './SportsGame';
 import { CrashGame } from './casino/CrashGame';
 import { MinesGame } from './casino/MinesGame';
 import { PlinkoGame } from './casino/PlinkoGame';
+import { SlotsGame } from './casino/SlotsGame';
 import { LoanSharkModal } from './casino/LoanSharkModal';
 import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
 import { PokerChip } from '../ui/PokerChip';
@@ -973,7 +974,7 @@ export function CasinoGuide() {
                                 </div>
 
                                 <div className="flex-1 overflow-y-auto p-8 flex items-center justify-center bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/5 via-transparent to-transparent">
-                                    {activeGame === 'slots' && <SlotsEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                                    {activeGame === 'slots' && <SlotsGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'blackjack' && <BlackjackEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'roulette' && <RouletteEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'craps' && <CrapsEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
@@ -1021,106 +1022,7 @@ interface GameEngineProps {
     playSound: (type: 'spin' | 'win' | 'loss' | 'deal' | 'click' | 'bell' | 'chip') => void;
 }
 
-function SlotsEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
-    const symbols = ['🍒', '🍋', '🔔', '💎', '7️⃣', '🎰'];
-    const [reels, setReels] = useState(['🎰', '🎰', '🎰']);
-    const [isSpinning, setIsSpinning] = useState(false);
-    const [result, setResult] = useState('');
 
-    const betSize = 10;
-
-    const spin = async () => {
-        if (balance < betSize || isSpinning) return;
-
-        setIsSpinning(true);
-        setResult('');
-        setBalance((b: number) => b - betSize);
-        onAction(-betSize);
-        playSound('spin');
-
-        // Animation
-        for (let i = 0; i < 15; i++) {
-            setReels([
-                symbols[Math.floor(Math.random() * symbols.length)],
-                symbols[Math.floor(Math.random() * symbols.length)],
-                symbols[Math.floor(Math.random() * symbols.length)]
-            ]);
-            if (i % 3 === 0) playSound('click');
-            await new Promise(r => setTimeout(r, 60 + (i * 10)));
-        }
-
-        // Rigged RTP: 90%
-        const winChance = 0.15;
-        const isWin = Math.random() < winChance;
-
-        if (isWin) {
-            const sym = symbols[Math.floor(Math.random() * symbols.length)];
-            setReels([sym, sym, sym]);
-            const payout = betSize * 6;
-            setResult(`BIG WIN! +$${payout}`);
-            setBalance((b: number) => b + payout);
-            onAction(payout - betSize);
-            playSound('win');
-            playSound('bell');
-            triggerConfetti('jackpot');
-        } else {
-            // Near miss simulation
-            const sym1 = symbols[Math.floor(Math.random() * symbols.length)];
-            const sym2 = symbols[Math.floor(Math.random() * symbols.length)];
-            setReels([sym1, sym1, sym2]);
-            setResult('NEAR MISS!');
-            playSound('loss');
-        }
-
-        setIsSpinning(false);
-    };
-
-    return (
-        <div className="max-w-md w-full text-center">
-            <div className="flex justify-center gap-4 mb-12 p-8 bg-slate-900 border-4 border-yellow-500/50 rounded-[3rem] shadow-[0_0_30px_rgba(234,179,8,0.3)] relative">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-500 text-black px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter shadow-lg">90% RTP RIGGED</div>
-                {reels.map((s, i) => (
-                    <motion.div
-                        key={i}
-                        animate={isSpinning ? { y: [0, 10, -10, 0], scale: [1, 1.1, 0.9, 1] } : {}}
-                        transition={{ repeat: isSpinning ? Infinity : 0, duration: 0.1 }}
-                        className="w-24 h-32 bg-slate-950 border-2 border-slate-800 rounded-2xl flex items-center justify-center text-5xl shadow-inner shadow-yellow-500/5"
-                    >
-                        {s}
-                    </motion.div>
-                ))}
-            </div>
-
-            <button
-                onClick={spin}
-                disabled={isSpinning || balance < betSize}
-                className={`w-full py-5 rounded-3xl font-black text-3xl uppercase tracking-[0.2em] transition-all shadow-[0_10px_40px_-10px_rgba(234,179,8,0.5)] active:scale-95 ${isSpinning ? 'bg-slate-800 text-slate-600' : 'bg-yellow-500 hover:bg-yellow-400 text-black'
-                    }`}
-            >
-                {isSpinning ? 'Spinning...' : 'SPIN $10'}
-            </button>
-
-            <AnimatePresence>
-                {result && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.5, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.5 }}
-                        className={`mt-8 text-4xl font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] ${result.includes('WIN') ? 'text-yellow-400' : 'text-slate-500'}`}
-                    >
-                        {result}
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            <div className="mt-12 text-center">
-                <p className="text-[10px] text-slate-500 leading-relaxed max-w-xs mx-auto italic">
-                    Notice the &quot;Near Misses&quot;? They are mathematically tuned to keep you clicking while your balance trends to zero.
-                </p>
-            </div>
-        </div>
-    );
-}
 
 function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngineProps) {
     type CardType = { suit: Suit; rank: Rank };
