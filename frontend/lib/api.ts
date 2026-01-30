@@ -484,3 +484,10 @@ export const getSectorPerformance = async (): Promise<any[]> => {
     }, 300); // 5 min cache
 };
 
+export const getGlobalMacroData = async (): Promise<any[]> => {
+    return fetchWithCache('global_macro_data', async () => {
+        const response = await api.get('/macro/globe');
+        return response.data;
+    }, 600); // 10 min cache
+};
+
