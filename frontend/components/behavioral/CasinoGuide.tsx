@@ -22,7 +22,8 @@ import {
     Trophy,
     User,
     Volume2,
-    VolumeX
+    VolumeX,
+    Bomb
 } from 'lucide-react';
 import { SpadesGame } from './SpadesGame';
 import { HeartsGame } from './HeartsGame';
@@ -30,6 +31,8 @@ import { RummyGame } from './RummyGame';
 import { PokerGame } from './PokerGame';
 import { SportsGame } from './SportsGame';
 import { CrashGame } from './casino/CrashGame';
+import { MinesGame } from './casino/MinesGame';
+import { PlinkoGame } from './casino/PlinkoGame';
 import { LoanSharkModal } from './casino/LoanSharkModal';
 import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
 import { PokerChip } from '../ui/PokerChip';
@@ -224,6 +227,34 @@ export function CasinoGuide() {
                         </div>
                     </div>
                 </button>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                        onClick={() => { setActiveGame('mines'); playSound('click'); }}
+                        className="p-6 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] hover:border-emerald-500/40 transition-all group"
+                    >
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="p-3 bg-emerald-500/10 rounded-xl">
+                                <Bomb className="text-emerald-500" size={24} />
+                            </div>
+                        </div>
+                        <h5 className="text-lg font-bold text-white mb-1 group-hover:text-emerald-400 transition-colors">Mines</h5>
+                        <p className="text-xs text-slate-500 font-medium">Grid-swiping tension. High risk, instant rewards.</p>
+                    </button>
+
+                    <button
+                        onClick={() => { setActiveGame('plinko'); playSound('click'); }}
+                        className="p-6 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] hover:border-indigo-500/40 transition-all group"
+                    >
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="p-3 bg-indigo-500/10 rounded-xl">
+                                <TrendingDown className="text-indigo-500" size={24} />
+                            </div>
+                        </div>
+                        <h5 className="text-lg font-bold text-white mb-1 group-hover:text-indigo-400 transition-colors">Plinko</h5>
+                        <p className="text-xs text-slate-500 font-medium">The classic ball drop. Pure probability visualization.</p>
+                    </button>
+                </div>
 
                 <div className="p-8 bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2.5rem] relative overflow-hidden">
                     <div className="flex items-start gap-4">
@@ -947,6 +978,8 @@ export function CasinoGuide() {
                                     {activeGame === 'videopoker' && <VideoPokerEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'keno' && <KenoEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'crash' && <CrashGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                                    {activeGame === 'mines' && <MinesGame onAction={handleAction} balance={balance} setBalance={setBalance} />}
+                                    {activeGame === 'plinko' && <PlinkoGame onAction={handleAction} balance={balance} setBalance={setBalance} />}
                                     {activeGame === 'poker' && <PokerGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'sports' && <SportsGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'spades' && <SpadesGame onAction={handleAction} balance={balance} setBalance={setBalance} />}
@@ -1977,7 +2010,7 @@ function KenoEngine({ onAction, balance, setBalance, playSound }: GameEngineProp
 
             <div className="mt-12 p-5 bg-yellow-500/5 rounded-2xl border border-yellow-500/10">
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                    <strong>The Donation Trap:</strong> Keno is statistically the worst game in any casino. With a house edge often exceeding 25%, it is effectively a voluntary "donation" to the house while you wait for other results.
+                    <strong>The Donation Trap:</strong> Keno is statistically the worst game in any casino. With a house edge often exceeding 25%, it is effectively a voluntary &quot;donation&quot; to the house while you wait for other results.
                 </p>
             </div>
         </div>
