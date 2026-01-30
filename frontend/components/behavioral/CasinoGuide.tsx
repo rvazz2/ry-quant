@@ -135,7 +135,7 @@ export function CasinoGuide() {
 
     // Loss Calculator State (legacy/static)
     const [bankroll, setBankroll] = useState(100);
-    const [hours, setHours] = useState(1);
+    const [hours] = useState(1);
     const [betSize, setBetSize] = useState(10);
 
     const handleAction = (amount: number) => {
@@ -636,12 +636,16 @@ export function CasinoGuide() {
                                 )}
                             </div>
 
-                            <div className="inline-flex p-3 bg-yellow-500/10 rounded-2xl mb-4 border border-yellow-500/20 relative">
-                                <div className="absolute inset-0 bg-yellow-500/20 blur-xl rounded-full" />
-                                <Dices className="text-yellow-500 relative z-10" size={32} />
+                            <div className="flex justify-center mb-6">
+                                <div className="relative group">
+                                    <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 blur-xl rounded-full opacity-75 group-hover:opacity-100 transition duration-500" />
+                                    <img
+                                        src="/ryans_casino_logo_neon.png"
+                                        alt="Ryan's Casino"
+                                        className="h-32 w-auto relative z-10 drop-shadow-[0_0_25px_rgba(6,182,212,0.5)]"
+                                    />
+                                </div>
                             </div>
-                            <h2 className="text-5xl font-black text-white tracking-tight mb-2 italic drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]">Ryans Casino</h2>
-                            <p className="text-2xl font-bold text-yellow-500/80 tracking-wide">&quot;Good Luck,&quot;</p>
                         </div>
 
                         <div className="flex flex-col lg:flex-row gap-8">
@@ -796,7 +800,7 @@ export function CasinoGuide() {
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ duration: 0.6, type: 'spring' }}
-                                        src="/ryans-casino-logo.png"
+                                        src="/ryans_casino_logo_neon.png"
                                         alt="Ryan's Casino"
                                         className="w-64 h-64 drop-shadow-[0_0_50px_rgba(124,58,237,0.7)]"
                                     />
@@ -1908,7 +1912,7 @@ function KenoEngine({ onAction, balance, setBalance, playSound }: GameEngineProp
     const [selected, setSelected] = useState<number[]>([]);
     const [isDrawing, setIsDrawing] = useState(false);
     const [drawn, setDrawn] = useState<number[]>([]);
-    const [matches, setMatches] = useState(0);
+    // const [matches, setMatches] = useState(0);
     const [result, setResult] = useState('');
 
     const betSize = 10;
