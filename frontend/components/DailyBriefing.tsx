@@ -56,9 +56,16 @@ const DailyBriefing = () => {
                 if (!mountedRef.current) return;
 
                 setDisplayText(prev => {
-                    // Prevent duplicates in strict mode if somehow double triggered
+                    // Strict bounds check to prevent crash
+                    if (currentSectionIndex >= AI_SUMMARIES.length) return prev;
+
+                    const item = AI_SUMMARIES[currentSectionIndex];
+                    if (!item) return prev;
+
+                    // Prevent duplicates
                     if (prev.length > currentSectionIndex) return prev;
-                    return [...prev, AI_SUMMARIES[currentSectionIndex].content];
+
+                    return [...prev, item.content];
                 });
 
                 currentSectionIndex++;
