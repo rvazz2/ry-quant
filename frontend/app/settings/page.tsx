@@ -6,11 +6,11 @@ import Link from "next/link";
 import Image from "next/image";
 import {
     Shield, Globe, Cpu, Lock, Layout,
-    RefreshCw, AlertTriangle, Activity, HelpCircle
+    RefreshCw, AlertTriangle, Activity, HelpCircle,
+    Bell, Smartphone, Mail, Fingerprint, Clock
 } from "lucide-react";
 import Tooltip from "@/components/ui/Tooltip";
 import HelpSidebar from "@/components/settings/HelpSidebar";
-import { api } from "@/lib/api";
 import SettingsErrorBoundary from "@/components/settings/SettingsErrorBoundary";
 
 // Lazy load SystemMonitor for better code splitting
@@ -30,8 +30,10 @@ export default function SettingsPage() {
     const tabs = useMemo(() => [
         { id: "risk", label: "Risk & Execution", icon: <Shield size={18} /> },
         { id: "data", label: "Data & Regional", icon: <Globe size={18} /> },
-        { id: "system", label: "System & Updates", icon: <Cpu size={18} /> },
         { id: "visual", label: "Visual Density", icon: <Layout size={18} /> },
+        { id: "notifications", label: "Notifications & Alerts", icon: <Bell size={18} /> },
+        { id: "security", label: "Security & Privacy", icon: <Lock size={18} /> },
+        { id: "system", label: "System & Updates", icon: <Cpu size={18} /> },
     ], []);
 
     const renderRiskSettings = () => (
@@ -558,13 +560,170 @@ export default function SettingsPage() {
         </div>
     );
 
-    const renderComingSoon = () => (
-        <div className="flex flex-col items-center justify-center py-20 bg-slate-900/50 rounded-lg border border-slate-800 border-dashed">
-            <Lock size={48} className="text-slate-600 mb-4" />
-            <h3 className="text-xl font-bold text-slate-400">Pro Feature</h3>
-            <p className="text-slate-500 mt-2 text-center max-w-sm">
-                Advanced notifications and API keys are available in the Enterprise Plan.
-            </p>
+    const renderNotificationsSettings = () => (
+        <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Communication Channels */}
+                <div className="p-4 bg-slate-900 border border-slate-800 rounded-lg space-y-4">
+                    <h3 className="text-slate-200 font-bold flex items-center gap-2 mb-4">
+                        <Bell size={18} className="text-purple-400" />
+                        Communication Channels
+                    </h3>
+
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <div className="text-sm font-medium text-slate-300">Email Alerts</div>
+                            <div className="text-xs text-slate-500">Receive summaries and security alerts</div>
+                        </div>
+                        <button
+                            onClick={() => handleChange("emailAlerts", !settings.emailAlerts)}
+                            className={`w-12 h-6 rounded-full transition-colors relative ${settings.emailAlerts ? 'bg-purple-500' : 'bg-slate-700'}`}
+                        >
+                            <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.emailAlerts ? 'translate-x-6' : ''}`} />
+                        </button>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <div className="text-sm font-medium text-slate-300">Push Notifications</div>
+                            <div className="text-xs text-slate-500">Real-time browser notifications</div>
+                        </div>
+                        <button
+                            onClick={() => handleChange("pushNotifications", !settings.pushNotifications)}
+                            className={`w-12 h-6 rounded-full transition-colors relative ${settings.pushNotifications ? 'bg-purple-500' : 'bg-slate-700'}`}
+                        >
+                            <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.pushNotifications ? 'translate-x-6' : ''}`} />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Alert Types */}
+                <div className="p-4 bg-slate-900 border border-slate-800 rounded-lg space-y-4">
+                    <h3 className="text-slate-200 font-bold flex items-center gap-2 mb-4">
+                        <Activity size={18} className="text-cyan-400" />
+                        Active Triggers
+                    </h3>
+
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <div className="text-sm font-medium text-slate-300">Trade Confirmations</div>
+                            <div className="text-xs text-slate-500">Notify on order execution</div>
+                        </div>
+                        <button
+                            onClick={() => handleChange("tradeConfirmations", !settings.tradeConfirmations)}
+                            className={`w-12 h-6 rounded-full transition-colors relative ${settings.tradeConfirmations ? 'bg-cyan-500' : 'bg-slate-700'}`}
+                        >
+                            <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.tradeConfirmations ? 'translate-x-6' : ''}`} />
+                        </button>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <div className="text-sm font-medium text-slate-300">Risk Alerts</div>
+                            <div className="text-xs text-slate-500">Margin call & stop loss warnings</div>
+                        </div>
+                        <button
+                            onClick={() => handleChange("riskAlerts", !settings.riskAlerts)}
+                            className={`w-12 h-6 rounded-full transition-colors relative ${settings.riskAlerts ? 'bg-cyan-500' : 'bg-slate-700'}`}
+                        >
+                            <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.riskAlerts ? 'translate-x-6' : ''}`} />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* AI Briefing Schedule */}
+            <div className="p-4 bg-slate-900 border border-slate-800 rounded-lg">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h3 className="text-slate-200 font-bold flex items-center gap-2">
+                            <Clock size={18} className="text-emerald-400" />
+                            AI Daily Briefing
+                        </h3>
+                        <p className="text-sm text-slate-500 mt-1">Scheduled generation time for your market summary.</p>
+                    </div>
+                    <input
+                        type="time"
+                        value={settings.aiBriefingTime}
+                        onChange={(e) => handleChange("aiBriefingTime", e.target.value)}
+                        className="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-emerald-500"
+                    />
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderSecuritySettings = () => (
+        <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* 2FA */}
+                <div className="p-6 bg-slate-900 border border-slate-800 rounded-lg flex flex-col justify-between">
+                    <div>
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 bg-indigo-500/10 rounded-lg">
+                                <Smartphone size={24} className="text-indigo-400" />
+                            </div>
+                            <h3 className="text-lg font-bold text-white">Two-Factor Authentication</h3>
+                        </div>
+                        <p className="text-sm text-slate-400 mb-6">
+                            Secure your account with 2FA using Google Authenticator or Authy.
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={() => handleChange("twoFactorEnabled", !settings.twoFactorEnabled)}
+                        className={`w-full py-3 rounded-lg font-bold border transition-all ${settings.twoFactorEnabled
+                            ? 'bg-red-500/10 border-red-500 text-red-400 hover:bg-red-500/20'
+                            : 'bg-emerald-500/10 border-emerald-500 text-emerald-400 hover:bg-emerald-500/20'
+                            }`}
+                    >
+                        {settings.twoFactorEnabled ? 'Disable 2FA' : 'Enable 2FA'}
+                    </button>
+                </div>
+
+                {/* Session Management */}
+                <div className="p-6 bg-slate-900 border border-slate-800 rounded-lg flex flex-col justify-between">
+                    <div>
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 bg-amber-500/10 rounded-lg">
+                                <Clock size={24} className="text-amber-400" />
+                            </div>
+                            <h3 className="text-lg font-bold text-white">Session Timeout</h3>
+                        </div>
+                        <p className="text-sm text-slate-400 mb-6">
+                            Automatically log out after a period of inactivity to protect your portfolio.
+                        </p>
+                    </div>
+
+                    <select
+                        value={settings.sessionTimeout}
+                        onChange={(e) => handleChange("sessionTimeout", Number(e.target.value))}
+                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none focus:border-amber-500"
+                    >
+                        <option value={15}>15 Minutes</option>
+                        <option value={30}>30 Minutes</option>
+                        <option value={60}>1 Hour</option>
+                        <option value={240}>4 Hours</option>
+                    </select>
+                </div>
+            </div>
+
+            {/* Biometrics */}
+            <div className="p-4 bg-slate-900 border border-slate-800 rounded-lg flex justify-between items-center">
+                <div className="flex items-center gap-4">
+                    <Fingerprint size={24} className="text-slate-500" />
+                    <div>
+                        <div className="text-slate-200 font-bold">Biometric Login</div>
+                        <div className="text-xs text-slate-500">Use FaceID or TouchID when available</div>
+                    </div>
+                </div>
+                <button
+                    onClick={() => handleChange("biometricLogin", !settings.biometricLogin)}
+                    className={`w-12 h-6 rounded-full transition-colors relative ${settings.biometricLogin ? 'bg-cyan-500' : 'bg-slate-700'}`}
+                >
+                    <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.biometricLogin ? 'translate-x-6' : ''}`} />
+                </button>
+            </div>
         </div>
     );
 
@@ -627,7 +786,8 @@ export default function SettingsPage() {
                                     {activeTab === "data" && renderDataSettings()}
                                     {activeTab === "system" && renderSystemSettings()}
                                     {activeTab === "visual" && renderVisualSettings()}
-                                    {(activeTab === "notify" || activeTab === "security") && renderComingSoon()}
+                                    {activeTab === "notifications" && renderNotificationsSettings()}
+                                    {activeTab === "security" && renderSecuritySettings()}
                                 </SettingsErrorBoundary>
                             </div>
                         </div>

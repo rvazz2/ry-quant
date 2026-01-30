@@ -34,13 +34,23 @@ interface Settings {
     errorReporting: boolean;
     cacheSize: "small" | "medium" | "large";
 
-    // Alerts
+    // Alerts & Notifications
     marginAlertThreshold: number;
+    emailAlerts: boolean;
+    pushNotifications: boolean;
+    tradeConfirmations: boolean;
+    riskAlerts: boolean;
+    aiBriefingTime: string;
+
+    // Security
+    twoFactorEnabled: boolean;
+    sessionTimeout: number; // in minutes
+    biometricLogin: boolean;
 }
 
 interface SettingsContextType {
     settings: Settings;
-    updateSetting: (key: keyof Settings, value: any) => void;
+    updateSetting: (key: keyof Settings, value: string | number | boolean) => void;
     resetSettings: () => void;
     updateAvailable: boolean;
     setUpdateAvailable: (available: boolean) => void;
@@ -84,8 +94,18 @@ const defaultSettings: Settings = {
     errorReporting: true,
     cacheSize: "medium",
 
-    // Alerts
-    marginAlertThreshold: 80
+    // Alerts & Notifications
+    marginAlertThreshold: 80,
+    emailAlerts: true,
+    pushNotifications: false,
+    tradeConfirmations: true,
+    riskAlerts: true,
+    aiBriefingTime: "08:00",
+
+    // Security
+    twoFactorEnabled: false,
+    sessionTimeout: 30,
+    biometricLogin: false
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -146,7 +166,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
         };
     }, [settings, initialized]);
 
-    const updateSetting = useCallback((key: keyof Settings, value: any) => {
+    const updateSetting = useCallback((key: keyof Settings, value: string | number | boolean) => {
         setSettings(prev => ({ ...prev, [key]: value }));
     }, []);
 
@@ -158,14 +178,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
         setUpdateHandler(() => handler);
     }, []);
 
-    const triggerUpdate = useCallback(() => {
-        // Use a ref if updateHandler changes too often, but here it's likely fine
-        // However, updateHandler is state. We need to access the current state.
-        // But triggerUpdate depends on updateHandler. 
-        // NOTE: updateHandler changes when registerUpdateHandler is called.
-        // If we put updateHandler in dependency, triggerUpdate changes when handler changes.
-        // This is fine.
-    }, []);
+
     // Actually, to fully solve the loop, registerUpdateHandler MUST be stable.
     // triggerUpdate changing is fine as long as consumers don't loop on it.
 
