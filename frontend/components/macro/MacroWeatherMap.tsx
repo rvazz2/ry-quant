@@ -76,6 +76,7 @@ export default function MacroWeatherMap({ data, className }: MacroWeatherMapProp
             locations: locations,
             z: z,
             text: text,
+            locationmode: 'ISO-3', // Explicitly set ISO-3
             colorscale: colorscale,
             autocolorscale: false,
             reversescale: false,
@@ -117,11 +118,12 @@ export default function MacroWeatherMap({ data, className }: MacroWeatherMapProp
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         margin: { t: 0, b: 0, l: 0, r: 0 },
-        height: 500,
+        // height: 500, // Let container control height
         font: {
             family: 'Inter, sans-serif'
         },
-        dragmode: false // Disable panning for cleaner UX? Or keep it?
+        dragmode: false, // Disable panning for cleaner UX? Or keep it?
+        autosize: true
     }), []);
 
     // Handle Click
@@ -176,6 +178,7 @@ export default function MacroWeatherMap({ data, className }: MacroWeatherMapProp
                 <Plot
                     data={plotData}
                     layout={layout}
+                    useResizeHandler={true}
                     config={{ displayModeBar: false, responsive: true }}
                     style={{ width: '100%', height: '100%' }}
                     onClick={handlePlotClick}
