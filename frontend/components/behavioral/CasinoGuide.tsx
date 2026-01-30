@@ -642,7 +642,7 @@ export function CasinoGuide() {
                                     <img
                                         src="/ryans_casino_logo_neon.png"
                                         alt="Ryan's Casino"
-                                        className="h-32 w-auto relative z-10 drop-shadow-[0_0_25px_rgba(6,182,212,0.5)]"
+                                        className="h-56 w-auto relative z-10 drop-shadow-[0_0_25px_rgba(6,182,212,0.5)]"
                                     />
                                 </div>
                             </div>
