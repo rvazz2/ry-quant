@@ -4,11 +4,12 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { getIndexDetails } from '@/lib/api';
 import { useDashboard } from '@/contexts/DashboardContext';
-import { ArrowUp, ArrowDown, Activity, PieChart } from 'lucide-react';
+import { ArrowUp, ArrowDown, Activity } from 'lucide-react';
 import IndexDetailModal from './IndexDetailModal';
 import { ShimmerSkeleton } from './LoadingSkeleton';
 import ErrorBoundary from './ErrorBoundary';
 import GlobalErrorFallback from './GlobalErrorFallback';
+import DailyBriefing from './DailyBriefing';
 
 import { IndexDetails, MarketOverviewItem } from '@/lib/types';
 
@@ -116,6 +117,11 @@ const MarketOverview = () => {
                 )}
 
 
+            </div>
+
+            {/* AI Daily Briefing Section */}
+            <div className="w-full">
+                <DailyBriefing />
             </div>
 
             {/* Market News Section - RESTORED */}

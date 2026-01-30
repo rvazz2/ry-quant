@@ -20,17 +20,22 @@ import {
     Info,
     Smartphone,
     Trophy,
-    User
+    User,
+    Volume2,
+    VolumeX
 } from 'lucide-react';
 import { SpadesGame } from './SpadesGame';
 import { HeartsGame } from './HeartsGame';
 import { RummyGame } from './RummyGame';
 import { PokerGame } from './PokerGame';
 import { SportsGame } from './SportsGame';
+import { CrashGame } from './casino/CrashGame';
+import { LoanSharkModal } from './casino/LoanSharkModal';
 import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
 import { PokerChip } from '../ui/PokerChip';
 import { RouletteWheel } from '../ui/RouletteWheel';
 import { useCasinoSFX } from '@/hooks/useCasinoSFX';
+import { toast } from 'sonner';
 
 type TabType = 'slots' | 'tables' | 'electronic' | 'other' | 'reality';
 
@@ -71,13 +76,58 @@ export function CasinoGuide() {
     const [showGoggins, setShowGoggins] = useState(false);
     const [isLockdown, setIsLockdown] = useState(false);
     const [isUnlocked, setIsUnlocked] = useState(false);
-    const { playSound } = useCasinoSFX();
+    const { playSound: playSoundRaw } = useCasinoSFX();
+
+    // Global Settings & Persistence
+    const [muted, setMuted] = useState(false);
+    const [debt, setDebt] = useState(0);
+    const [showLoanShark, setShowLoanShark] = useState(false);
+
+    const playSound = (type: 'spin' | 'win' | 'loss' | 'deal' | 'click' | 'bell' | 'chip' | 'shatter') => {
+        if (!muted) playSoundRaw(type);
+    };
 
     // Session State
     const [balance, setBalance] = useState(1000);
     const [totalLost, setTotalLost] = useState(0);
     const [actionCount, setActionCount] = useState(0);
     const [showRealityCheck, setShowRealityCheck] = useState(false);
+
+    // Persistence Effect
+    useEffect(() => {
+        const saved = localStorage.getItem('ryans-casino-save');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                setBalance(parsed.balance || 1000);
+                setTotalLost(parsed.totalLost || 0);
+                setDebt(parsed.debt || 0);
+                setMuted(parsed.muted || false);
+                // Don't restore actionCount to reset session check, or do? Let's reset it.
+            } catch (e) {
+                console.error("Failed to load casino save", e);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        const save = {
+            balance,
+            totalLost,
+            debt,
+            muted
+        };
+        localStorage.setItem('ryans-casino-save', JSON.stringify(save));
+    }, [balance, totalLost, debt, muted]);
+
+    // Check for Bankruptcy / Loan Shark
+    useEffect(() => {
+        if (balance < 10 && debt === 0 && !showLoanShark && !activeGame) {
+            const timer = setTimeout(() => setShowLoanShark(true), 2000); // Delay for effect
+            return () => clearTimeout(timer);
+        }
+    }, [balance, debt, showLoanShark, activeGame]);
+
 
     // Loss Calculator State (legacy/static)
     const [bankroll, setBankroll] = useState(100);
@@ -141,6 +191,22 @@ export function CasinoGuide() {
             </div>
 
             <div className="grid grid-cols-1 gap-4">
+                <button
+                    onClick={() => { setActiveGame('crash'); playSound('click'); }}
+                    className="group relative p-8 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2.5rem] hover:border-rose-500/40 transition-all overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-gradient-to-br from-rose-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="flex justify-between items-center relative z-10">
+                        <div className="flex-1">
+                            <span className="text-xs font-black text-rose-500/60 uppercase tracking-[0.2em] mb-2 block">Behavioral Experiment</span>
+                            <h5 className="text-xl font-bold text-white mb-2 group-hover:text-rose-400 transition-colors">The Bubble (Crash)</h5>
+                            <p className="text-sm text-slate-400 leading-relaxed font-medium max-w-xl">Ride the multiplier as it inflates. Cash out before the "Rug Pull" or lose everything. A lesson in greed and the Greater Fool Theory.</p>
+                        </div>
+                        <div className="w-16 h-16 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/5 group-hover:border-rose-500/30 transition-all">
+                            <TrendingDown size={32} className="text-rose-500 rotate-180" />
+                        </div>
+                    </div>
+                </button>
                 <button
                     onClick={() => { setActiveGame('videopoker'); playSound('deal'); }}
                     className="group relative p-8 text-left bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2.5rem] hover:border-cyan-500/40 transition-all overflow-hidden"
@@ -512,15 +578,30 @@ export function CasinoGuide() {
                         {/* Header Section with Session Balance */}
                         <div className="mb-10 text-center relative">
                             <div className="absolute top-0 right-0 flex flex-col items-end gap-2">
-                                <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-2xl">
-                                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter mb-1">Session Balance</div>
-                                    <div className="text-xl font-mono font-bold text-emerald-400">${balance.toLocaleString()}</div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setMuted(!muted)}
+                                        className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-xl hover:bg-slate-800 transition-colors text-slate-400 hover:text-white"
+                                    >
+                                        {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                                    </button>
+                                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-2xl min-w-[120px]">
+                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter mb-1">Session Balance</div>
+                                        <div className={`text-xl font-mono font-bold ${balance < 100 ? 'text-red-500 animate-pulse' : 'text-emerald-400'}`}>${balance.toLocaleString()}</div>
+                                    </div>
                                 </div>
                                 <div className="bg-slate-900 border border-slate-800 rounded-xl p-2 px-3 shadow-xl flex items-center gap-2">
                                     <TrendingDown size={12} className="text-red-500" />
                                     <div className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Lost</div>
                                     <div className="text-sm font-mono font-bold text-red-500">-${totalLost.toLocaleString()}</div>
                                 </div>
+                                {debt > 0 && (
+                                    <div className="bg-rose-950/20 border border-rose-500/20 rounded-xl p-2 px-3 shadow-xl flex items-center gap-2 animate-pulse">
+                                        <Skull size={12} className="text-rose-500" />
+                                        <div className="text-[10px] font-bold text-rose-500 uppercase tracking-tighter">Debt</div>
+                                        <div className="text-sm font-mono font-bold text-rose-500">-${debt.toLocaleString()}</div>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="inline-flex p-3 bg-yellow-500/10 rounded-2xl mb-4 border border-yellow-500/20 relative">
@@ -603,6 +684,7 @@ export function CasinoGuide() {
                                 RC
                             </button>
                         </div>
+
                     </div>
 
                     {/* David Goggins Lockdown Mode Overlay */}
@@ -863,6 +945,7 @@ export function CasinoGuide() {
                                     {activeGame === 'paigow' && <PaiGowEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'videopoker' && <VideoPokerEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'keno' && <KenoEngine onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
+                                    {activeGame === 'crash' && <CrashGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'poker' && <PokerGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'sports' && <SportsGame onAction={handleAction} balance={balance} setBalance={setBalance} playSound={playSound} />}
                                     {activeGame === 'spades' && <SpadesGame onAction={handleAction} balance={balance} setBalance={setBalance} />}
@@ -872,6 +955,20 @@ export function CasinoGuide() {
                             </motion.div>
                         )}
                     </AnimatePresence>
+                    <LoanSharkModal
+                        isOpen={showLoanShark}
+                        onClose={() => setShowLoanShark(false)}
+                        debt={debt}
+                        onAccept={(amount, rate) => {
+                            setBalance(prev => prev + amount);
+                            setDebt(prev => prev + amount * (1 + rate));
+                            setShowLoanShark(false);
+                            playSound('deal');
+                            toast.success(`Loan of $${amount} received!`, {
+                                description: "The meter is running. Good luck.",
+                            });
+                        }}
+                    />
                 </>
             )}
         </div>
