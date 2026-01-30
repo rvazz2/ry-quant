@@ -121,7 +121,12 @@ const MarketOverview = () => {
 
             {/* AI Daily Briefing Section */}
             <div className="w-full">
-                <ErrorBoundary fallback={<div className="p-4 text-center text-slate-500 text-xs">Daily Briefing Unavailable</div>}>
+                <ErrorBoundary fallbackRender={(error) => (
+                    <div className="p-4 text-center text-rose-500 text-xs border border-rose-500/20 rounded-lg bg-rose-500/5">
+                        <p className="font-bold mb-1">Briefing Error</p>
+                        <p className="font-mono opacity-80">{error?.message || "Unknown error"}</p>
+                    </div>
+                )}>
                     <DailyBriefing />
                 </ErrorBoundary>
             </div>
