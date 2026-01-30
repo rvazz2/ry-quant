@@ -69,7 +69,7 @@ export function SlotsGame({ onAction, balance, setBalance, playSound }: SlotsGam
 
         // Determine Outcome (Rigged Engine)
         const rand = Math.random();
-        let finalReels = [];
+        let finalReels: typeof SYMBOLS = [];
         let outcome = 'loss';
         let winAmount = 0;
 
