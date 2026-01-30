@@ -36,6 +36,7 @@ import { PokerChip } from '../ui/PokerChip';
 import { RouletteWheel } from '../ui/RouletteWheel';
 import { useCasinoSFX } from '@/hooks/useCasinoSFX';
 import { toast } from 'sonner';
+import { triggerConfetti } from '@/lib/confetti';
 
 type TabType = 'slots' | 'tables' | 'electronic' | 'other' | 'reality';
 
@@ -1024,6 +1025,7 @@ function SlotsEngine({ onAction, balance, setBalance, playSound }: GameEnginePro
             onAction(payout - betSize);
             playSound('win');
             playSound('bell');
+            triggerConfetti('jackpot');
         } else {
             // Near miss simulation
             const sym1 = symbols[Math.floor(Math.random() * symbols.length)];
@@ -1175,6 +1177,7 @@ function BlackjackEngine({ onAction, balance, setBalance, playSound }: GameEngin
             setBalance((b: number) => b + betSize * 2);
             onAction(betSize);
             playSound('win');
+            triggerConfetti('win');
         } else if (pSum === dSum) {
             setResult('PUSH (TIE)');
             setBalance((b: number) => b + betSize);
@@ -1354,6 +1357,7 @@ function RouletteEngine({ onAction, balance, setBalance, playSound }: GameEngine
             onAction(betSize);
             playSound('win');
             playSound('bell');
+            triggerConfetti('win');
         } else {
             setResult(isGreen ? 'HOUSE WINS (0/00)' : 'LOSE');
             playSound('loss');
@@ -1447,6 +1451,7 @@ function CrapsEngine({ onAction, balance, setBalance, playSound }: GameEnginePro
                 onAction(betSize);
                 playSound('win');
                 playSound('bell');
+                triggerConfetti('win');
             } else if (sum === 2 || sum === 3 || sum === 12) {
                 setResult('CRAPS! (LOSE)');
                 playSound('loss');
@@ -1465,6 +1470,7 @@ function CrapsEngine({ onAction, balance, setBalance, playSound }: GameEnginePro
                 setPoint(null);
                 playSound('win');
                 playSound('bell');
+                triggerConfetti('win');
             } else if (sum === 7) {
                 setResult('SEVEN OUT! (LOSE)');
                 setGameState('comeout');
@@ -1572,6 +1578,7 @@ function BaccaratEngine({ onAction, balance, setBalance, playSound }: GameEngine
                 setBalance((b: number) => b + betSize * 2);
                 onAction(betSize);
                 playSound('win');
+                triggerConfetti('win');
             } else {
                 playSound('loss');
             }
@@ -1584,6 +1591,7 @@ function BaccaratEngine({ onAction, balance, setBalance, playSound }: GameEngine
                 onAction(winAmount - betSize);
                 playSound('win');
                 playSound('chip');
+                triggerConfetti('win');
             } else {
                 playSound('loss');
             }
@@ -1693,6 +1701,7 @@ function PaiGowEngine({ onAction, balance, setBalance, playSound }: GameEnginePr
             onAction(betSize * 0.95);
             playSound('win');
             playSound('chip');
+            triggerConfetti('win');
         } else {
             setResult('HOUSE WINS');
             playSound('loss');
@@ -1787,12 +1796,14 @@ function VideoPokerEngine({ onAction, balance, setBalance, playSound }: GameEngi
             setBalance((b: number) => b + 10);
             onAction(5);
             playSound('win');
+            triggerConfetti('win');
         } else if (roll < 0.26) {
             setResult('THREE OF A KIND! WIN $15');
             setBalance((b: number) => b + 15);
             onAction(10);
             playSound('win');
             playSound('bell');
+            triggerConfetti('win');
         } else {
             setResult('LOSING HAND');
             playSound('loss');
@@ -1910,6 +1921,7 @@ function KenoEngine({ onAction, balance, setBalance, playSound }: GameEngineProp
             onAction(win - betSize);
             playSound('win');
             playSound('bell');
+            triggerConfetti('win');
         } else {
             setResult('NO LUCK');
             playSound('loss');

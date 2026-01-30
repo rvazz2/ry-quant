@@ -7,6 +7,7 @@ import { Heart, Skull } from 'lucide-react';
 
 import { useCasinoSFX } from '@/hooks/useCasinoSFX';
 import { WinParticles } from '../ui/WinParticles';
+import { triggerConfetti } from '@/lib/confetti';
 
 interface HeartsGameProps {
     onAction: (amount: number) => void;
@@ -272,6 +273,7 @@ export function HeartsGame({ onAction, balance, setBalance }: HeartsGameProps) {
             win = betSize * 2;
             msg = `YOU WIN! (Score: ${finalP} vs ${finalB})`;
             playSound('win');
+            triggerConfetti('win');
             setBalance(b => b + win);
             onAction(win - betSize);
         } else if (finalP > finalB) {

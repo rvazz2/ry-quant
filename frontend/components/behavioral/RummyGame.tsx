@@ -7,6 +7,7 @@ import { Layers } from 'lucide-react';
 
 import { useCasinoSFX } from '@/hooks/useCasinoSFX';
 import { WinParticles } from '../ui/WinParticles';
+import { triggerConfetti } from '@/lib/confetti';
 
 interface RummyGameProps {
     onAction: (amount: number) => void;
@@ -177,6 +178,7 @@ export function RummyGame({ onAction, balance, setBalance }: RummyGameProps) {
             win = betSize * 2;
             msg = `YOU WIN! (${pDeadwood} vs ${bDeadwood})`;
             playSound('win');
+            triggerConfetti('win');
             setBalance(b => b + win);
             onAction(win - betSize);
             setWinnings(win);

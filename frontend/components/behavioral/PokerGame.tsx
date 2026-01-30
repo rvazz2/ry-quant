@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
 import { Trophy, TrendingDown } from 'lucide-react';
+import { triggerConfetti } from '@/lib/confetti';
 
 interface PokerGameProps {
     onAction: (amount: number) => void;
@@ -105,6 +106,7 @@ export function PokerGame({ onAction, balance, setBalance, playSound }: PokerGam
             onAction(winnings - betSize);
             playSound('win');
             playSound('chip');
+            triggerConfetti('win');
         } else {
             setResult(`OPPONENT WINS`);
             playSound('loss');

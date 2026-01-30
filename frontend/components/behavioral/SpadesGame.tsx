@@ -6,6 +6,7 @@ import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
 import { Spade } from 'lucide-react';
 import { useCasinoSFX } from '@/hooks/useCasinoSFX';
 import { WinParticles } from '../ui/WinParticles';
+import { triggerConfetti } from '@/lib/confetti';
 
 interface SpadesGameProps {
     onAction: (amount: number) => void;
@@ -226,6 +227,7 @@ export function SpadesGame({ onAction, balance, setBalance }: SpadesGameProps) {
             if (pTricks > playerBid) msg += ` + ${pTricks - playerBid} Overtricks`;
 
             playSound('win');
+            triggerConfetti('win');
             setBalance(b => b + win);
             onAction(win - betSize);
         } else {

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, AlertTriangle, Play, StopCircle } from 'lucide-react';
+import { triggerConfetti } from '@/lib/confetti';
 
 interface CrashGameProps {
     onAction: (amount: number) => void;
@@ -94,6 +95,7 @@ export function CrashGame({ onAction, balance, setBalance, playSound }: CrashGam
         setGameState('cashed');
         playSound('win');
         playSound('bell');
+        triggerConfetti('win');
     };
 
     useEffect(() => {

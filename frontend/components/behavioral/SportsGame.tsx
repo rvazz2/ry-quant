@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { triggerConfetti } from '@/lib/confetti';
 
 interface SportsGameProps {
     onAction: (amount: number) => void;
@@ -42,6 +43,7 @@ export function SportsGame({ onAction, balance, setBalance, playSound }: SportsG
             setBalance((b: number) => b + betSize + bet.payout);
             onAction(bet.payout);
             playSound('win');
+            triggerConfetti('win');
         } else {
             setResult('LOSS (-$110)');
             playSound('loss');
