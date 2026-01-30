@@ -1912,7 +1912,7 @@ function KenoEngine({ onAction, balance, setBalance, playSound }: GameEngineProp
     const [selected, setSelected] = useState<number[]>([]);
     const [isDrawing, setIsDrawing] = useState(false);
     const [drawn, setDrawn] = useState<number[]>([]);
-    // const [matches, setMatches] = useState(0);
+
     const [result, setResult] = useState('');
 
     const betSize = 10;
@@ -1932,7 +1932,7 @@ function KenoEngine({ onAction, balance, setBalance, playSound }: GameEngineProp
 
         setIsDrawing(true);
         setDrawn([]);
-        setMatches(0);
+
         setResult('');
         setBalance((b: number) => b - betSize);
         onAction(-betSize);
@@ -1949,7 +1949,7 @@ function KenoEngine({ onAction, balance, setBalance, playSound }: GameEngineProp
         }
 
         const matchCount = drawResults.filter(n => selected.includes(n)).length;
-        setMatches(matchCount);
+
 
         if (matchCount >= 2) {
             const win = matchCount === 2 ? 10 : matchCount === 3 ? 30 : matchCount === 4 ? 100 : 500;
