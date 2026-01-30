@@ -24,36 +24,50 @@ const AI_SUMMARIES = [
 const DailyBriefing = () => {
     const [isGenerating, setIsGenerating] = useState(false);
     const [displayText, setDisplayText] = useState<string[]>([]);
+    const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+    const mountedRef = React.useRef(false);
+
+    useEffect(() => {
+        mountedRef.current = true;
+        generateBriefing();
+        return () => {
+            mountedRef.current = false;
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
+    }, []);
 
     const generateBriefing = () => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
         setIsGenerating(true);
         setDisplayText([]); // Clear text
 
-        // Simulate AI streaming generation
         let currentSectionIndex = 0;
 
         const streamSection = () => {
+            if (!mountedRef.current) return;
+
             if (currentSectionIndex >= AI_SUMMARIES.length) {
                 setIsGenerating(false);
                 return;
             }
 
-            // Add the section immediately (in a real app, you might char-by-char stream this)
-            // For now, we'll just stagger the appearance of paragraphs
-            setTimeout(() => {
-                setDisplayText(prev => [...prev, AI_SUMMARIES[currentSectionIndex].content]);
+            timeoutRef.current = setTimeout(() => {
+                if (!mountedRef.current) return;
+
+                setDisplayText(prev => {
+                    // Prevent duplicates in strict mode if somehow double triggered
+                    if (prev.length > currentSectionIndex) return prev;
+                    return [...prev, AI_SUMMARIES[currentSectionIndex].content];
+                });
+
                 currentSectionIndex++;
                 streamSection();
-            }, 800); // Delay between paragraphs
+            }, 800);
         };
 
         streamSection();
     };
-
-    useEffect(() => {
-        // Auto-generate on mount
-        generateBriefing();
-    }, []);
 
     return (
         <div className="glass-panel p-6 relative overflow-hidden group">
@@ -92,8 +106,8 @@ const DailyBriefing = () => {
                         <div
                             key={summary.category}
                             className={`transition-all duration-700 transform ${displayText.length > idx
-                                    ? 'translate-y-0 opacity-100'
-                                    : 'translate-y-4 opacity-0'
+                                ? 'translate-y-0 opacity-100'
+                                : 'translate-y-4 opacity-0'
                                 }`}
                         >
                             <div className="flex items-start gap-3">

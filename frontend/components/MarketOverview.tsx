@@ -105,7 +105,7 @@ const MarketOverview = () => {
                     </>
                 ) : (
                     <>
-                        {overview.map((item) => (
+                        {overview?.map((item) => (
                             <IndexCard
                                 key={item.symbol}
                                 item={item}
@@ -121,7 +121,9 @@ const MarketOverview = () => {
 
             {/* AI Daily Briefing Section */}
             <div className="w-full">
-                <DailyBriefing />
+                <ErrorBoundary fallback={<div className="p-4 text-center text-slate-500 text-xs">Daily Briefing Unavailable</div>}>
+                    <DailyBriefing />
+                </ErrorBoundary>
             </div>
 
             {/* Market News Section - RESTORED */}
