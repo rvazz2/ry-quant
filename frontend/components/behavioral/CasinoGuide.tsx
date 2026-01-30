@@ -952,7 +952,7 @@ export function CasinoGuide() {
                                 initial={{ opacity: 0, y: "100%" }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: "100%" }}
-                                className="fixed inset-0 z-[550] bg-slate-950 flex flex-col"
+                                className="fixed inset-0 md:left-72 z-[550] bg-slate-950 flex flex-col"
                             >
                                 <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-xl">
                                     <div className="flex items-center gap-6">
