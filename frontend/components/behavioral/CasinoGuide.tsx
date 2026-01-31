@@ -23,7 +23,8 @@ import {
     User,
     Volume2,
     VolumeX,
-    Bomb
+    Bomb,
+    Settings
 } from 'lucide-react';
 import { SpadesGame } from './SpadesGame';
 import { HeartsGame } from './HeartsGame';
@@ -38,11 +39,12 @@ import { LoanSharkModal } from './casino/LoanSharkModal';
 import { PlayingCard, Suit, Rank } from '../ui/PlayingCard';
 import { PokerChip } from '../ui/PokerChip';
 import { RouletteWheel } from '../ui/RouletteWheel';
+import { CasinoSettings } from '../ui/CasinoSettings';
 import { useCasinoSFX } from '@/hooks/useCasinoSFX';
 import { toast } from 'sonner';
 import { triggerConfetti } from '@/lib/confetti';
 
-type TabType = 'slots' | 'tables' | 'electronic' | 'other' | 'reality';
+type TabType = 'slots' | 'tables' | 'electronic' | 'other' | 'reality' | 'settings';
 
 
 // GogginsMessage component for typewriter effect
@@ -181,6 +183,7 @@ export function CasinoGuide() {
         { id: 'electronic', label: 'Electronic', icon: <Gamepad2 size={18} /> },
         { id: 'other', label: 'Card Room', icon: <MoreHorizontal size={18} /> },
         { id: 'reality', label: 'The Reality Check', icon: <AlertTriangle size={18} /> },
+        { id: 'settings', label: 'Settings', icon: <Settings size={18} /> },
     ];
 
     const renderElectronic = () => (
@@ -699,6 +702,7 @@ export function CasinoGuide() {
                                         {activeTab === 'reality' && renderReality()}
                                         {activeTab === 'electronic' && renderElectronic()}
                                         {activeTab === 'other' && renderOther()}
+                                        {activeTab === 'settings' && <CasinoSettings />}
                                     </motion.div>
                                 </AnimatePresence>
                             </div>

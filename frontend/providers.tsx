@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CopilotProvider } from '@/contexts/CopilotContext';
+import { CasinoSettingsProvider } from '@/contexts/CasinoSettingsContext';
 import { useState, ReactNode } from 'react';
 
 export default function Providers({ children }: { children: ReactNode }) {
@@ -19,7 +20,9 @@ export default function Providers({ children }: { children: ReactNode }) {
     return (
         <QueryClientProvider client={queryClient}>
             <CopilotProvider>
-                {children}
+                <CasinoSettingsProvider>
+                    {children}
+                </CasinoSettingsProvider>
             </CopilotProvider>
         </QueryClientProvider>
     );
