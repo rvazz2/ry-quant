@@ -203,7 +203,12 @@ def calculate_efficient_frontier(tickers, start_date, end_date, constraints=None
 
     def get_port_details(weights):
         p_ret, p_std = calculate_portfolio_performance(weights, mean_returns, cov_matrix)
-        sharpe = (p_ret - rf) / p_std if p_std != 0 else 0
+        
+        # Explicitly cast to float to avoid pandas ambiguity errors
+        p_ret = float(p_ret)
+        p_std = float(p_std)
+        
+        sharpe = (p_ret - rf) / p_std if p_std > 0 else 0
         
         # VaR 95%
         var_95 = 1.65 * p_std
@@ -215,8 +220,8 @@ def calculate_efficient_frontier(tickers, start_date, end_date, constraints=None
         return {
             "return": p_ret,
             "volatility": p_std,
-            "sharpe": sharpe,
-            "var_95": var_95,
+            "sharpe": float(sharpe),
+            "var_95": float(var_95),
             "weights": dict(zip(tickers, weights))
         }
 
