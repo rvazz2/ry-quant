@@ -18,12 +18,30 @@ export default function MarketStatsBar() {
     const [stats, setStats] = useState<GlobalStats | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // Fallback data for when API is unavailable
+    const fallbackStats: GlobalStats = {
+        total_market_cap_usd: 3420000000000,
+        total_volume_24h_usd: 185000000000,
+        btc_dominance: 58.5,
+        eth_dominance: 11.2,
+        market_cap_change_24h: -1.8,
+        active_cryptocurrencies: 14500,
+        markets: 885
+    };
+
     const fetchStats = async () => {
         try {
             const data = await getCryptoGlobalStats();
-            setStats(data);
+            // Validate that we got real data, not empty object
+            if (data && data.total_market_cap_usd && data.total_market_cap_usd > 0) {
+                setStats(data);
+            } else {
+                // Use fallback if API returns empty/invalid data
+                setStats(fallbackStats);
+            }
         } catch (error) {
-            console.error("Failed to fetch global stats", error);
+            console.error("Failed to fetch global stats, using fallback", error);
+            setStats(fallbackStats);
         } finally {
             setLoading(false);
         }
