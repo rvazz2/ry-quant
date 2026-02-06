@@ -22,8 +22,8 @@ export default function NatureBreakPage() {
                 </div>
 
                 {/* Image Gallery */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                    <div className="group relative overflow-hidden rounded-2xl border border-[#333] hover:border-green-500/50 transition-all duration-500 shadow-xl">
+                <div className="flex justify-center max-w-2xl mx-auto">
+                    <div className="group relative overflow-hidden rounded-2xl border border-[#333] hover:border-green-500/50 transition-all duration-500 shadow-xl w-full">
                         <div className="aspect-video relative">
                             <img
                                 src="/images/nature/nature-2.jpg"
@@ -34,22 +34,6 @@ export default function NatureBreakPage() {
                                 <div>
                                     <span className="text-white text-lg font-semibold">Clear Skies</span>
                                     <p className="text-gray-300 text-sm">Sometimes the best views are at the places we love</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="group relative overflow-hidden rounded-2xl border border-[#333] hover:border-green-500/50 transition-all duration-500 shadow-xl">
-                        <div className="aspect-video relative flex items-center justify-center bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]">
-                            <img
-                                src="/images/nature/nature-1.png"
-                                alt="Relaxing View"
-                                className="object-contain max-h-full max-w-full group-hover:scale-105 transition-transform duration-700"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-                                <div>
-                                    <span className="text-white text-lg font-semibold">Focus</span>
-                                    <p className="text-gray-300 text-sm">Take a deep breath and reset</p>
                                 </div>
                             </div>
                         </div>
