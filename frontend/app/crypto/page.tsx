@@ -34,8 +34,9 @@ export default function CryptoPage() {
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <span className="px-3 py-1 bg-green-500/20 text-green-400 border border-green-500/30 rounded-full text-xs font-mono">
-                            ● BINANCE LIVE
+                        <span className="px-3 py-1 bg-green-500/20 text-green-400 border border-green-500/30 rounded-full text-xs font-mono flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                            COINGECKO LIVE
                         </span>
                     </div>
                 </div>

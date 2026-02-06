@@ -80,7 +80,8 @@ export default function CryptoDashboard() {
                                             <th className="pb-3 text-right">Price</th>
                                             <th className="pb-3 text-right">24h</th>
                                             <th className="pb-3 text-right hidden md:table-cell">Market Cap</th>
-                                            <th className="pb-3 text-right hidden lg:table-cell">ATH</th>
+                                            <th className="pb-3 text-center hidden lg:table-cell">7D</th>
+                                            <th className="pb-3 text-right hidden xl:table-cell">ATH</th>
                                         </tr>
                                     </thead>
                                     <tbody className="text-sm">
@@ -113,7 +114,31 @@ export default function CryptoDashboard() {
                                                     <td className="py-4 text-right text-gray-500 hidden md:table-cell">
                                                         {coin.market_cap ? `$${(coin.market_cap / 1e9).toFixed(1)}B` : 'N/A'}
                                                     </td>
-                                                    <td className={`py-4 text-right text-xs hidden lg:table-cell ${athColor}`}>
+                                                    <td className="py-4 hidden lg:table-cell">
+                                                        {coin.sparkline && coin.sparkline.length > 0 && (
+                                                            <svg viewBox="0 0 100 30" className="w-20 h-6 mx-auto">
+                                                                <polyline
+                                                                    fill="none"
+                                                                    stroke={parseFloat(coin.change_24h) >= 0 ? '#22c55e' : '#ef4444'}
+                                                                    strokeWidth="2"
+                                                                    points={
+                                                                        coin.sparkline
+                                                                            .slice(-24)
+                                                                            .map((p: number, i: number, arr: number[]) => {
+                                                                                const min = Math.min(...arr);
+                                                                                const max = Math.max(...arr);
+                                                                                const range = max - min || 1;
+                                                                                const x = (i / (arr.length - 1)) * 100;
+                                                                                const y = 30 - ((p - min) / range) * 28;
+                                                                                return `${x},${y}`;
+                                                                            })
+                                                                            .join(' ')
+                                                                    }
+                                                                />
+                                                            </svg>
+                                                        )}
+                                                    </td>
+                                                    <td className={`py-4 text-right text-xs hidden xl:table-cell ${athColor}`}>
                                                         {athDist.toFixed(1)}%
                                                     </td>
                                                 </tr>

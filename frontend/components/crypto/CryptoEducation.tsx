@@ -1,14 +1,42 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, Lightbulb, ShieldCheck, Layers, Cpu, Globe, AlertTriangle } from 'lucide-react';
+import { BookOpen, Lightbulb, ShieldCheck, Layers, Cpu, Globe, AlertTriangle, History, Sparkles, Skull } from 'lucide-react';
 
 const CryptoEducation = () => {
     const [activeTab, setActiveTab] = useState('essentials');
 
     const tabs = [
         { id: 'essentials', label: 'Start Here', icon: <BookOpen className="w-4 h-4" /> },
+        { id: 'history', label: 'History', icon: <History className="w-4 h-4" /> },
         { id: 'defi', label: 'DeFi Ecosystem', icon: <Layers className="w-4 h-4" /> },
         { id: 'risks', label: 'Security & Risks', icon: <ShieldCheck className="w-4 h-4" /> }
+    ];
+
+    const bitcoinTimeline = [
+        { year: '2008', event: 'Satoshi Nakamoto publishes Bitcoin whitepaper', type: 'milestone' },
+        { year: '2009', event: 'Genesis Block mined (Jan 3) - First 50 BTC created', type: 'milestone' },
+        { year: '2010', event: 'Bitcoin Pizza Day - 10,000 BTC for 2 pizzas (~$740M today)', type: 'fun' },
+        { year: '2011', event: 'BTC reaches $1 for the first time', type: 'price' },
+        { year: '2012', event: 'First halving: Block reward drops to 25 BTC', type: 'halving' },
+        { year: '2013', event: 'BTC crosses $1,000 briefly', type: 'price' },
+        { year: '2014', event: 'Mt. Gox hack - 850,000 BTC stolen', type: 'hack' },
+        { year: '2016', event: 'Second halving: Block reward drops to 12.5 BTC', type: 'halving' },
+        { year: '2017', event: 'BTC hits $20,000 - ICO boom', type: 'price' },
+        { year: '2020', event: 'Third halving: Block reward drops to 6.25 BTC', type: 'halving' },
+        { year: '2021', event: 'BTC reaches $69,000 ATH (Nov 10)', type: 'price' },
+        { year: '2022', event: 'FTX collapses - $8B customer funds lost', type: 'hack' },
+        { year: '2024', event: 'Fourth halving: Block reward drops to 3.125 BTC', type: 'halving' },
+        { year: '2024', event: 'US approves spot Bitcoin ETFs', type: 'milestone' },
+        { year: '2025', event: 'BTC crosses $100,000', type: 'price' },
+    ];
+
+    const cryptoFacts = [
+        { icon: '🔑', title: 'Lost Forever', desc: 'An estimated 3-4 million BTC are permanently lost due to forgotten keys.' },
+        { icon: '👤', title: 'Mystery Creator', desc: 'Satoshi Nakamoto\'s identity remains unknown. Their wallet holds ~1M BTC untouched.' },
+        { icon: '⚡', title: 'Power Hungry', desc: 'Bitcoin mining uses ~150 TWh/year - more than some countries.' },
+        { icon: '🌍', title: 'Global Reach', desc: 'Over 420 million people worldwide own cryptocurrency (2024).' },
+        { icon: '💰', title: 'Fixed Supply', desc: 'Only 21 million BTC will ever exist. ~19.6M already mined.' },
+        { icon: '📈', title: 'Best Performer', desc: 'BTC is the best-performing asset of the 2010s with 9,000,000%+ returns.' },
     ];
 
     return (
@@ -80,6 +108,78 @@ const CryptoEducation = () => {
                                         <div className="text-xs text-gray-500">{item.desc}</div>
                                     </div>
                                 ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Tab Content: History */}
+                <div className={`${activeTab === 'history' ? 'block animate-in fade-in slide-in-from-bottom-2 duration-300' : 'hidden'}`}>
+                    <div className="space-y-6">
+                        {/* Bitcoin Timeline */}
+                        <div>
+                            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <Sparkles className="w-4 h-4 text-amber-500" /> Bitcoin Timeline
+                            </h4>
+                            <div className="relative">
+                                <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-amber-500 via-orange-500 to-red-500" />
+                                <div className="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+                                    {bitcoinTimeline.map((item, idx) => {
+                                        const typeColors: Record<string, string> = {
+                                            milestone: 'border-blue-500/30 bg-blue-500/5',
+                                            price: 'border-green-500/30 bg-green-500/5',
+                                            halving: 'border-amber-500/30 bg-amber-500/5',
+                                            hack: 'border-red-500/30 bg-red-500/5',
+                                            fun: 'border-pink-500/30 bg-pink-500/5',
+                                        };
+                                        const dotColors: Record<string, string> = {
+                                            milestone: 'bg-blue-500',
+                                            price: 'bg-green-500',
+                                            halving: 'bg-amber-500',
+                                            hack: 'bg-red-500',
+                                            fun: 'bg-pink-500',
+                                        };
+                                        return (
+                                            <div key={idx} className="relative pl-10">
+                                                <div className={`absolute left-2.5 top-3 w-3 h-3 rounded-full ${dotColors[item.type]} ring-4 ring-[#111]`} />
+                                                <div className={`p-3 rounded-lg border ${typeColors[item.type]} hover:scale-[1.01] transition-transform`}>
+                                                    <span className="text-xs font-mono text-gray-500">{item.year}</span>
+                                                    <p className="text-sm text-gray-300 mt-1">{item.event}</p>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Crypto Facts */}
+                        <div>
+                            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">Did You Know?</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                {cryptoFacts.map((fact, idx) => (
+                                    <div key={idx} className="p-4 rounded-xl bg-[#151515] border border-[#2A2A2A] hover:border-indigo-500/30 transition-colors group">
+                                        <div className="text-2xl mb-2">{fact.icon}</div>
+                                        <div className="text-sm font-bold text-gray-200 group-hover:text-indigo-400 mb-1">{fact.title}</div>
+                                        <div className="text-xs text-gray-500">{fact.desc}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Legend */}
+                        <div className="flex flex-wrap gap-4 pt-4 border-t border-[#222]">
+                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                                <div className="w-2 h-2 rounded-full bg-blue-500" /> Milestone
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                                <div className="w-2 h-2 rounded-full bg-green-500" /> Price
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                                <div className="w-2 h-2 rounded-full bg-amber-500" /> Halving
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                                <div className="w-2 h-2 rounded-full bg-red-500" /> Hack/Event
                             </div>
                         </div>
                     </div>
