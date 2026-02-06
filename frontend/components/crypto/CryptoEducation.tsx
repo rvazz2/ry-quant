@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, Lightbulb, ShieldCheck, Layers, Cpu, Globe, AlertTriangle, History, Sparkles, Skull, Leaf } from 'lucide-react';
+import { BookOpen, Lightbulb, ShieldCheck, Layers, Cpu, Globe, AlertTriangle, History, Sparkles, Skull } from 'lucide-react';
 
 const CryptoEducation = () => {
     const [activeTab, setActiveTab] = useState('essentials');
 
     const tabs = [
         { id: 'essentials', label: 'Start Here', icon: <BookOpen className="w-4 h-4" /> },
-        { id: 'nature', label: 'Nature Break', icon: <Leaf className="w-4 h-4" /> },
         { id: 'history', label: 'History', icon: <History className="w-4 h-4" /> },
         { id: 'defi', label: 'DeFi Ecosystem', icon: <Layers className="w-4 h-4" /> },
         { id: 'risks', label: 'Security & Risks', icon: <ShieldCheck className="w-4 h-4" /> }
@@ -114,46 +113,6 @@ const CryptoEducation = () => {
                     </div>
                 </div>
 
-                {/* Tab Content: Nature Break */}
-                <div className={`${activeTab === 'nature' ? 'block animate-in fade-in slide-in-from-bottom-2 duration-300' : 'hidden'}`}>
-                    <div className="space-y-6">
-                        <div className="p-5 rounded-2xl bg-gradient-to-br from-green-900/10 to-emerald-900/10 border border-green-500/20">
-                            <h3 className="text-green-300 font-semibold mb-3 flex items-center gap-2">
-                                <Leaf className="w-5 h-5" /> Nature Break
-                            </h3>
-                            <p className="text-sm text-gray-400 mb-6">
-                                Taking a moment to view nature scenes can reduce stress and improve cognitive function. Relax and recharge.
-                            </p>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="group relative overflow-hidden rounded-xl border border-[#333] hover:border-green-500/50 transition-all duration-300">
-                                    <div className="aspect-video relative">
-                                        <img
-                                            src="/images/nature/nature-2.jpg"
-                                            alt="Nature Scene 1"
-                                            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                                            <span className="text-white text-sm font-medium">Mental Clarity</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="group relative overflow-hidden rounded-xl border border-[#333] hover:border-green-500/50 transition-all duration-300">
-                                    <div className="aspect-video relative flex items-center justify-center bg-[#1a1a1a]">
-                                        <img
-                                            src="/images/nature/nature-1.png"
-                                            alt="Nature Scene 2"
-                                            className="object-contain max-h-full max-w-full group-hover:scale-105 transition-transform duration-700"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                                            <span className="text-white text-sm font-medium">Focus</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Tab Content: History */}
                 <div className={`${activeTab === 'history' ? 'block animate-in fade-in slide-in-from-bottom-2 duration-300' : 'hidden'}`}>

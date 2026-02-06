@@ -2,7 +2,7 @@
 
 import React, { Suspense } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, TrendingUp, Activity, Calculator, Search, Settings, SquareTerminal, BookOpen, BrainCircuit, Bitcoin, Menu, X, GraduationCap, HardDrive, FileSpreadsheet, Command, Zap, FileText } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Activity, Calculator, Search, Settings, SquareTerminal, BookOpen, BrainCircuit, Bitcoin, Menu, X, GraduationCap, HardDrive, FileSpreadsheet, Command, Zap, FileText, Leaf } from 'lucide-react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { SearchResult } from '@/lib/types';
 import MarketStatus from './MarketStatus';
@@ -64,6 +64,7 @@ const SidebarContent = () => {
                 <span>System</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
             </div>
+            <NavItem href="/nature" icon={<Leaf size={18} className="text-green-400" />} label="Nature Break" />
             <NavItem
                 href="/settings"
                 icon={
