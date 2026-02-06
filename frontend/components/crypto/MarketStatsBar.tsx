@@ -17,31 +17,21 @@ interface GlobalStats {
 export default function MarketStatsBar() {
     const [stats, setStats] = useState<GlobalStats | null>(null);
     const [loading, setLoading] = useState(true);
-
-    // Fallback data for when API is unavailable
-    const fallbackStats: GlobalStats = {
-        total_market_cap_usd: 3420000000000,
-        total_volume_24h_usd: 185000000000,
-        btc_dominance: 58.5,
-        eth_dominance: 11.2,
-        market_cap_change_24h: -1.8,
-        active_cryptocurrencies: 14500,
-        markets: 885
-    };
+    const [unavailable, setUnavailable] = useState(false);
 
     const fetchStats = async () => {
         try {
             const data = await getCryptoGlobalStats();
-            // Validate that we got real data, not empty object
+            // Validate that we got real data
             if (data && data.total_market_cap_usd && data.total_market_cap_usd > 0) {
                 setStats(data);
+                setUnavailable(false);
             } else {
-                // Use fallback if API returns empty/invalid data
-                setStats(fallbackStats);
+                setUnavailable(true);
             }
         } catch (error) {
-            console.error("Failed to fetch global stats, using fallback", error);
-            setStats(fallbackStats);
+            console.error("Failed to fetch global stats", error);
+            setUnavailable(true);
         } finally {
             setLoading(false);
         }
@@ -53,7 +43,7 @@ export default function MarketStatsBar() {
         return () => clearInterval(interval);
     }, []);
 
-    if (loading || !stats) {
+    if (loading) {
         return (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 {[1, 2, 3, 4].map(i => (
@@ -62,6 +52,15 @@ export default function MarketStatsBar() {
                         <div className="h-8 bg-slate-800 rounded w-32" />
                     </div>
                 ))}
+            </div>
+        );
+    }
+
+    if (unavailable || !stats) {
+        return (
+            <div className="bg-slate-900/50 border border-amber-500/30 rounded-xl p-4 mb-6 text-center">
+                <div className="text-amber-400 text-sm font-medium">Market data temporarily unavailable</div>
+                <div className="text-slate-500 text-xs mt-1">Reconnecting to data feed...</div>
             </div>
         );
     }

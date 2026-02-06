@@ -125,25 +125,9 @@ class CryptoService:
         except Exception as e:
             print(f"CoinCap fallback also failed: {e}")
         
-        # Ultimate fallback with realistic Feb 2026 prices
-        print("Using static fallback data")
-        return [
-            {"symbol": "BTC/USD", "name": "Bitcoin", "price": 102500.0, "change_24h": -1.2, "volume": 45000000000, "high": 104000, "low": 101500, "market_cap": 2020000000000, "ath_distance": -5.0, "sparkline": [], "image": ""},
-            {"symbol": "ETH/USD", "name": "Ethereum", "price": 3180.0, "change_24h": -2.5, "volume": 18000000000, "high": 3250, "low": 3150, "market_cap": 382000000000, "ath_distance": -35.0, "sparkline": [], "image": ""},
-            {"symbol": "XRP/USD", "name": "XRP", "price": 2.85, "change_24h": 1.8, "volume": 8000000000, "high": 2.92, "low": 2.78, "market_cap": 163000000000, "ath_distance": -15.0, "sparkline": [], "image": ""},
-            {"symbol": "BNB/USD", "name": "BNB", "price": 665.0, "change_24h": -0.8, "volume": 2500000000, "high": 675, "low": 658, "market_cap": 96000000000, "ath_distance": -20.0, "sparkline": [], "image": ""},
-            {"symbol": "SOL/USD", "name": "Solana", "price": 198.0, "change_24h": -3.2, "volume": 4500000000, "high": 205, "low": 195, "market_cap": 95000000000, "ath_distance": -25.0, "sparkline": [], "image": ""},
-            {"symbol": "DOGE/USD", "name": "Dogecoin", "price": 0.32, "change_24h": 2.1, "volume": 3200000000, "high": 0.33, "low": 0.31, "market_cap": 47000000000, "ath_distance": -55.0, "sparkline": [], "image": ""},
-            {"symbol": "ADA/USD", "name": "Cardano", "price": 0.92, "change_24h": -1.5, "volume": 1200000000, "high": 0.95, "low": 0.90, "market_cap": 32000000000, "ath_distance": -70.0, "sparkline": [], "image": ""},
-            {"symbol": "TRX/USD", "name": "TRON", "price": 0.24, "change_24h": 0.5, "volume": 800000000, "high": 0.245, "low": 0.235, "market_cap": 21000000000, "ath_distance": -40.0, "sparkline": [], "image": ""},
-            {"symbol": "AVAX/USD", "name": "Avalanche", "price": 35.50, "change_24h": -2.8, "volume": 650000000, "high": 36.50, "low": 34.80, "market_cap": 14500000000, "ath_distance": -75.0, "sparkline": [], "image": ""},
-            {"symbol": "LINK/USD", "name": "Chainlink", "price": 22.50, "change_24h": 1.2, "volume": 580000000, "high": 23.00, "low": 22.00, "market_cap": 14200000000, "ath_distance": -55.0, "sparkline": [], "image": ""},
-            {"symbol": "DOT/USD", "name": "Polkadot", "price": 6.80, "change_24h": -1.8, "volume": 320000000, "high": 7.00, "low": 6.65, "market_cap": 10500000000, "ath_distance": -88.0, "sparkline": [], "image": ""},
-            {"symbol": "SHIB/USD", "name": "Shiba Inu", "price": 0.000022, "change_24h": 3.5, "volume": 450000000, "high": 0.000023, "low": 0.000021, "market_cap": 13000000000, "ath_distance": -75.0, "sparkline": [], "image": ""},
-            {"symbol": "LTC/USD", "name": "Litecoin", "price": 125.0, "change_24h": 0.8, "volume": 420000000, "high": 127, "low": 123, "market_cap": 9400000000, "ath_distance": -68.0, "sparkline": [], "image": ""},
-            {"symbol": "BCH/USD", "name": "Bitcoin Cash", "price": 485.0, "change_24h": -0.5, "volume": 380000000, "high": 495, "low": 480, "market_cap": 9600000000, "ath_distance": -88.0, "sparkline": [], "image": ""},
-            {"symbol": "UNI/USD", "name": "Uniswap", "price": 12.80, "change_24h": 2.2, "volume": 280000000, "high": 13.20, "low": 12.50, "market_cap": 7700000000, "ath_distance": -71.0, "sparkline": [], "image": ""},
-        ]
+        # All APIs failed - return empty list so frontend can show unavailable message
+        print("All crypto APIs failed - returning empty list")
+        return []
 
 
     @staticmethod
@@ -392,18 +376,9 @@ class CryptoService:
         except Exception as e:
             print(f"CoinCap global stats fallback failed: {e}")
         
-        # Ultimate fallback with realistic Feb 2026 data
-        print("Using static global stats fallback")
-        return {
-            "total_market_cap_usd": 3420000000000,  # ~$3.42T
-            "total_volume_24h_usd": 185000000000,   # ~$185B
-            "btc_dominance": 58.5,
-            "eth_dominance": 11.2,
-            "market_cap_change_24h": -1.8,
-            "active_cryptocurrencies": 14500,
-            "markets": 885,
-            "updated_at": 0
-        }
+        # All APIs failed - return empty dict so frontend can show unavailable message
+        print("All global stats APIs failed - returning empty dict")
+        return {}
 
 
     @staticmethod
