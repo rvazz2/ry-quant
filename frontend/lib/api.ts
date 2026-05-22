@@ -48,7 +48,7 @@ export const checkBackendHealth = async (): Promise<boolean> => {
     try {
         // Health endpoint is at root, not under /api
         const baseUrl = API_URL.replace('/api', '');
-        const response = await axios.get(`${baseUrl}/health`, { timeout: 2000 });
+        const response = await axios.get(`${baseUrl}/health`, { timeout: 10000 });
         return response.status === 200;
     } catch (e) {
         return false;
