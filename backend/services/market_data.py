@@ -312,7 +312,7 @@ def _get_market_news_sync(symbol: str = None):
                 if t_news:
                     for item in t_news:
                         # Handle new nested structure from yahoo finance
-                        content = item.get('content', {})
+                        content = item.get('content') or {}
                         title = item.get('title') or content.get('title', '')
                         
                         # Handle link
@@ -326,7 +326,7 @@ def _get_market_news_sync(symbol: str = None):
                         pub_time = item.get('providerPublishTime')
                         if not pub_time and 'content' in item:
                              # Try to get from content
-                             content = item.get('content', {})
+                             content = item.get('content') or {}
                              pub_time = content.get('providerPublishTime')
                              
                              if not pub_time and 'pubDate' in content:

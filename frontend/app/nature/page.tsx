@@ -53,6 +53,98 @@ export default function NatureBreakPage() {
                             </div>
                         </div>
                     </div>
+                    <div className="group relative overflow-hidden rounded-2xl border border-[#333] hover:border-green-500/50 transition-all duration-500 shadow-xl">
+                        <div className="aspect-video relative">
+                            <img
+                                src="/images/nature/nature-4.jpg"
+                                alt="Purple Sky"
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                <div>
+                                    <span className="text-white text-lg font-semibold">Purple Haze</span>
+                                    <p className="text-gray-300 text-sm">Vibrant purple tones painting the evening sky</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="group relative overflow-hidden rounded-2xl border border-[#333] hover:border-green-500/50 transition-all duration-500 shadow-xl">
+                        <div className="aspect-video relative">
+                            <img
+                                src="/images/nature/nature-5.jpg"
+                                alt="Evening Glow"
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                <div>
+                                    <span className="text-white text-lg font-semibold">Evening Glow</span>
+                                    <p className="text-gray-300 text-sm">Soft pink clouds drifting over the neighborhood</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-6">
+                    <div className="group relative overflow-hidden rounded-2xl border border-[#333] hover:border-green-500/50 transition-all duration-500 shadow-xl">
+                        <div className="aspect-video relative">
+                            <img
+                                src="/images/nature/nature-6.jpg"
+                                alt="Morning Light"
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                <div>
+                                    <span className="text-white text-lg font-semibold">Morning Light</span>
+                                    <p className="text-gray-300 text-sm">First light breaking through the winter chill</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="group relative overflow-hidden rounded-2xl border border-[#333] hover:border-green-500/50 transition-all duration-500 shadow-xl">
+                        <div className="aspect-video relative">
+                            <img
+                                src="/images/nature/nature-7.jpg"
+                                alt="Urban Quiet"
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                <div>
+                                    <span className="text-white text-lg font-semibold">Urban Quiet</span>
+                                    <p className="text-gray-300 text-sm">The city sleeps under a cotton candy sky</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="group relative overflow-hidden rounded-2xl border border-[#333] hover:border-green-500/50 transition-all duration-500 shadow-xl">
+                        <div className="aspect-video relative">
+                            <img
+                                src="/images/nature/nature-8.jpg"
+                                alt="Sunrise Hues"
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                <div>
+                                    <span className="text-white text-lg font-semibold">Sunrise Hues</span>
+                                    <p className="text-gray-300 text-sm">Vivid colors painting the morning horizon</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="group relative overflow-hidden rounded-2xl border border-[#333] hover:border-green-500/50 transition-all duration-500 shadow-xl">
+                        <div className="aspect-video relative">
+                            <img
+                                src="/images/nature/nature-9.jpg"
+                                alt="Soft Clouds"
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                                <div>
+                                    <span className="text-white text-lg font-semibold">Soft Clouds</span>
+                                    <p className="text-gray-300 text-sm">Gentle pastels drifting overhead</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Breathing Exercise */}

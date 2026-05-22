@@ -5,6 +5,8 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+__pycache__/
+*.pyc
 
 # Node
 frontend/node_modules/
@@ -20,6 +22,8 @@ frontend/.swc/
 
 # Database & Cache
 market_cache_db/
+backend/cache_data/
+cache_data/
 *.db
 *.sqlite
 *.sqlite3
@@ -48,3 +52,13 @@ yarn-error.log*
 test_*.py
 verify_*.py
 .vercel
+.env*.local
+
+# Nature RAW images & temp assets
+*.dng
+frontend/public/images/nature/test_write.txt
+frontend/public/images/nature/debug_log.txt
+
+# Local workspace docs & screenshots
+Ry Website Things to do.docx
+Screenshot_20251208_130816_Gallery.jpg
