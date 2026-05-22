@@ -30,6 +30,29 @@ const QuizMode: React.FC<QuizModeProps> = ({ topics, onClose, onMarkStudied, onM
     const [showResults, setShowResults] = useState(false);
 
     useEffect(() => {
+        if (showResults && cards.length > 0) {
+            try {
+                const savedHistory = localStorage.getItem('library-quiz-history');
+                const history = savedHistory ? JSON.parse(savedHistory) : [];
+                
+                const newRecord = {
+                    id: `quiz-${Date.now()}`,
+                    date: Date.now(),
+                    totalCards: cards.length,
+                    masteredCount: knownCards.size,
+                    reviewCount: studyMoreCards.size,
+                    score: Math.round((knownCards.size / cards.length) * 100)
+                };
+                
+                history.unshift(newRecord);
+                localStorage.setItem('library-quiz-history', JSON.stringify(history.slice(0, 50)));
+            } catch (e) {
+                console.error("Failed to save quiz history", e);
+            }
+        }
+    }, [showResults, cards.length, knownCards.size, studyMoreCards.size]);
+
+    useEffect(() => {
         // Flatten all terms into flashcards
         const allCards: FlashCard[] = [];
         topics.forEach(topic => {

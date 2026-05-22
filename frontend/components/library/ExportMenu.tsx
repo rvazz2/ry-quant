@@ -65,10 +65,13 @@ const ExportMenu: React.FC<ExportMenuProps> = ({ topics, categoryFilter }) => {
                             <div className="p-1">
                                 <button
                                     onClick={handleExportJSON}
-                                    className="flex items-center gap-3 w-full px-3 py-2 text-sm text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
+                                    className="flex flex-col items-start w-full px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
                                 >
-                                    <FileText size={16} className="text-cyan-400" />
-                                    Export JSON
+                                    <div className="flex items-center gap-3 text-sm font-medium">
+                                        <FileText size={16} className="text-cyan-400" />
+                                        Export JSON
+                                    </div>
+                                    <span className="text-[10px] text-slate-500 pl-7 font-mono">Includes custom terms</span>
                                 </button>
                                 <button
                                     onClick={handlePrint}

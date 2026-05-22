@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { LIBRARY_TOPICS, LibraryTopic } from '@/lib/library-data';
-import { Search, BookOpen, ChevronRight, X, Filter, Star, Brain, Trophy, BarChart2, Grid, List, Sparkles, Download } from 'lucide-react';
+import { Search, BookOpen, ChevronRight, X, Filter, Star, Brain, Trophy, BarChart2, Grid, List, Sparkles, Download, Plus, Trash2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
@@ -18,6 +18,7 @@ interface LibraryContentProps {
 
 type ViewMode = 'grid' | 'list' | 'bookmarks';
 type CategoryFilter = 'All' | string;
+type DifficultyFilter = 'All' | 'Beginner' | 'Intermediate' | 'Advanced';
 
 const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -25,10 +26,19 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
     const [mounted, setMounted] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
     const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('All');
+    const [difficultyFilter, setDifficultyFilter] = useState<DifficultyFilter>('All');
     const [showQuizMode, setShowQuizMode] = useState(false);
     const [showStats, setShowStats] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
     const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+    // Custom Terms States
+    const [customTerms, setCustomTerms] = useState<{ id: string; topicId: string; term: string; definition: string; example?: string }[]>([]);
+    const [showAddCustomModal, setShowAddCustomModal] = useState(false);
+    const [newTermName, setNewTermName] = useState("");
+    const [newTermDefinition, setNewTermDefinition] = useState("");
+    const [newTermExample, setNewTermExample] = useState("");
+    const [newTermTopicId, setNewTermTopicId] = useState("corporate-finance");
 
     const {
         bookmarkedTerms,
@@ -49,8 +59,19 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
 
     const searchParams = useSearchParams();
 
+    // Initial Load & Load Custom Terms
     React.useEffect(() => {
         setMounted(true);
+        if (typeof window !== 'undefined') {
+            const savedCustom = localStorage.getItem('library-custom-terms');
+            if (savedCustom) {
+                try {
+                    setCustomTerms(JSON.parse(savedCustom));
+                } catch (e) {
+                    console.error("Error parsing custom terms", e);
+                }
+            }
+        }
     }, []);
 
     // Deep Linking Effect
@@ -61,7 +82,7 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
         const termName = searchParams.get('term');
 
         if (topicId) {
-            const foundTopic = LIBRARY_TOPICS.find(t => t.id === topicId);
+            const foundTopic = mergedTopics.find(t => t.id === topicId);
             if (foundTopic) {
                 setSelectedTopic(foundTopic);
 
@@ -92,19 +113,70 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
         return () => document.removeEventListener('keydown', handleEscape);
     }, [selectedTopic, showQuizMode, showStats]);
 
+    // Merge custom terms into topics dynamically
+    const mergedTopics = useMemo(() => {
+        const topicsCopy = LIBRARY_TOPICS.map(topic => ({
+            ...topic,
+            terms: [...topic.terms]
+        }));
+
+        customTerms.forEach(ct => {
+            const targetTopic = topicsCopy.find(t => t.id === ct.topicId);
+            if (targetTopic) {
+                if (!targetTopic.terms.some(t => t.term === ct.term)) {
+                    targetTopic.terms.push({
+                        term: ct.term,
+                        definition: ct.definition,
+                        example: ct.example
+                    });
+                }
+            } else if (ct.topicId === 'custom-topic') {
+                let customTopicObj = topicsCopy.find(t => t.id === 'custom-topic');
+                if (!customTopicObj) {
+                    customTopicObj = {
+                        id: 'custom-topic',
+                        title: 'My Vocabulary',
+                        icon: Sparkles,
+                        description: 'Your personalized collection of finance and trading terms.',
+                        category: 'Custom',
+                        difficulty: 'Beginner',
+                        tags: ['Custom', 'Personalized'],
+                        relatedTopics: [],
+                        terms: []
+                    };
+                    topicsCopy.push(customTopicObj);
+                }
+                if (!customTopicObj.terms.some(t => t.term === ct.term)) {
+                    customTopicObj.terms.push({
+                        term: ct.term,
+                        definition: ct.definition,
+                        example: ct.example
+                    });
+                }
+            }
+        });
+
+        return topicsCopy;
+    }, [customTerms]);
+
     // Get unique categories
     const categories = useMemo(() => {
-        const cats = new Set(LIBRARY_TOPICS.map(t => t.category));
+        const cats = new Set(mergedTopics.map(t => t.category));
         return ['All', ...Array.from(cats).sort()];
-    }, []);
+    }, [mergedTopics]);
 
     // Filter topics
     const filteredTopics = useMemo(() => {
-        let topics = LIBRARY_TOPICS;
+        let topics = mergedTopics;
 
         // Category filter
         if (categoryFilter !== 'All') {
             topics = topics.filter(t => t.category === categoryFilter);
+        }
+
+        // Difficulty filter
+        if (difficultyFilter !== 'All') {
+            topics = topics.filter(t => t.difficulty === difficultyFilter);
         }
 
         // Bookmarks view
@@ -129,12 +201,12 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
         }
 
         return topics;
-    }, [categoryFilter, viewMode, bookmarkedTerms, searchQuery]);
+    }, [categoryFilter, difficultyFilter, viewMode, bookmarkedTerms, searchQuery, mergedTopics]);
 
     // Calculate total terms
     const totalTerms = useMemo(() => {
-        return LIBRARY_TOPICS.reduce((sum, topic) => sum + topic.terms.length, 0);
-    }, []);
+        return mergedTopics.reduce((sum, topic) => sum + topic.terms.length, 0);
+    }, [mergedTopics]);
 
     const progress = getProgress(totalTerms);
 
@@ -143,7 +215,7 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
         const breakdown: { category: string; count: number; studied: number }[] = [];
         const categoryMap = new Map<string, { count: number; studied: number }>();
 
-        LIBRARY_TOPICS.forEach(topic => {
+        mergedTopics.forEach(topic => {
             const existing = categoryMap.get(topic.category) || { count: 0, studied: 0 };
             const topicStudied = topic.terms.filter(term =>
                 studiedTerms.has(`${topic.id}-${term.term}`)
@@ -159,10 +231,70 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
         });
 
         return breakdown.sort((a, b) => b.count - a.count);
-    }, [studiedTerms]);
+    }, [studiedTerms, mergedTopics]);
 
     const handleStartQuiz = () => {
         setShowQuizMode(true);
+    };
+
+    const handleAddCustomTerm = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newTermName || !newTermDefinition) return;
+
+        const newTerm = {
+            id: `custom-${Date.now()}`,
+            topicId: newTermTopicId,
+            term: newTermName.trim(),
+            definition: newTermDefinition.trim(),
+            example: newTermExample.trim() || undefined
+        };
+
+        const updated = [...customTerms, newTerm];
+        setCustomTerms(updated);
+        localStorage.setItem('library-custom-terms', JSON.stringify(updated));
+
+        // Reset fields
+        setNewTermName("");
+        setNewTermDefinition("");
+        setNewTermExample("");
+        setShowAddCustomModal(false);
+    };
+
+    const handleDeleteCustomTerm = (topicId: string, termName: string) => {
+        const updated = customTerms.filter(ct => !(ct.topicId === topicId && ct.term === termName));
+        setCustomTerms(updated);
+        localStorage.setItem('library-custom-terms', JSON.stringify(updated));
+
+        // Update selected topic terms live if open
+        if (selectedTopic && selectedTopic.id === topicId) {
+            setSelectedTopic(prev => {
+                if (!prev) return null;
+                return {
+                    ...prev,
+                    terms: prev.terms.filter(t => t.term !== termName)
+                };
+            });
+        }
+    };
+
+    const highlightText = (text: string | undefined, query: string) => {
+        if (!text) return null;
+        if (!query) return <span>{text}</span>;
+
+        const parts = text.split(new RegExp(`(${query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi'));
+        return (
+            <span>
+                {parts.map((part, i) =>
+                    part.toLowerCase() === query.toLowerCase() ? (
+                        <mark key={i} className="bg-cyan-500/35 text-cyan-200 rounded px-0.5 font-semibold">
+                            {part}
+                        </mark>
+                    ) : (
+                        part
+                    )
+                )}
+            </span>
+        );
     };
 
     const difficultyColor = (difficulty: string) => {
@@ -181,7 +313,7 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 blur-3xl rounded-full -z-10" />
                     <div className="flex flex-col gap-6 mb-10">
                         {/* Header */}
-                        <div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-end">
+                        <div className="flex flex-col xl:flex-row gap-6 justify-between items-start xl:items-end">
                             <div>
                                 <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent mb-2">
                                     Knowledge Library
@@ -192,7 +324,14 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="flex gap-3">
+                            <div className="flex gap-3 flex-wrap">
+                                <button
+                                    onClick={() => setShowAddCustomModal(true)}
+                                    className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-300 rounded-xl hover:shadow-lg hover:shadow-green-500/20 transition-all font-bold"
+                                >
+                                    <Plus size={20} />
+                                    <span>Add Term</span>
+                                </button>
                                 <ExportMenu topics={filteredTopics} categoryFilter={categoryFilter} />
                                 <button
                                     onClick={() => setShowStats(!showStats)}
@@ -278,7 +417,7 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                             </div>
 
                             {/* View Mode Toggle */}
-                            <div className="flex gap-2 bg-slate-900 border border-slate-800 rounded-xl p-1">
+                            <div className="flex gap-2 bg-slate-900 border border-slate-800 rounded-xl p-1 justify-end">
                                 <button
                                     onClick={() => setViewMode('grid')}
                                     className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-cyan-500 text-white' : 'text-slate-400 hover:text-white'}`}
@@ -310,27 +449,49 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                             </div>
                         </div>
 
-                        {/* Category Filters */}
+                        {/* Category & Difficulty Filters */}
                         <AnimatePresence>
                             {showFilters && (
                                 <motion.div
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
-                                    className="flex flex-wrap gap-2 overflow-hidden"
+                                    className="bg-slate-950/60 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 space-y-4 overflow-hidden"
                                 >
-                                    {categories.map(cat => (
-                                        <button
-                                            key={cat}
-                                            onClick={() => setCategoryFilter(cat)}
-                                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${categoryFilter === cat
-                                                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/30'
-                                                : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
-                                                }`}
-                                        >
-                                            {cat}
-                                        </button>
-                                    ))}
+                                    <div className="space-y-2">
+                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-1">Categories</span>
+                                        <div className="flex flex-wrap gap-2">
+                                            {categories.map(cat => (
+                                                <button
+                                                    key={cat}
+                                                    onClick={() => setCategoryFilter(cat)}
+                                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${categoryFilter === cat
+                                                        ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/30'
+                                                        : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+                                                        }`}
+                                                >
+                                                    {cat}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-1">Difficulty Level</span>
+                                        <div className="flex flex-wrap gap-2">
+                                            {(['All', 'Beginner', 'Intermediate', 'Advanced'] as const).map(diff => (
+                                                <button
+                                                    key={diff}
+                                                    onClick={() => setDifficultyFilter(diff)}
+                                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${difficultyFilter === diff
+                                                        ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg shadow-purple-500/30'
+                                                        : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+                                                        }`}
+                                                >
+                                                    {diff}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -523,7 +684,9 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                                                     className="group bg-slate-900/20 border border-slate-800/50 hover:border-cyan-500/30 rounded-xl p-5 hover:bg-slate-800/40 transition-all duration-300"
                                                 >
                                                     <div className="flex items-start justify-between gap-4 mb-2">
-                                                        <h4 className="text-lg font-bold text-cyan-100 group-hover:text-cyan-400 transition-colors flex-1">{term.term}</h4>
+                                                        <h4 className="text-lg font-bold text-cyan-100 group-hover:text-cyan-400 transition-colors flex-1">
+                                                            {highlightText(term.term, searchQuery)}
+                                                        </h4>
                                                         <div className="flex gap-2">
                                                             <button
                                                                 onClick={(e) => {
@@ -536,16 +699,30 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                                                             >
                                                                 <Star size={18} fill={isBookmarked ? 'currentColor' : 'none'} />
                                                             </button>
+                                                            {customTerms.some(ct => ct.topicId === selectedTopic.id && ct.term === term.term) && (
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        if (confirm(`Are you sure you want to delete the custom term "${term.term}"?`)) {
+                                                                            handleDeleteCustomTerm(selectedTopic.id, term.term);
+                                                                        }
+                                                                    }}
+                                                                    className="p-1.5 rounded-lg text-slate-600 hover:text-red-400 hover:scale-110 transition-all"
+                                                                    title="Delete Custom Term"
+                                                                >
+                                                                    <Trash2 size={18} />
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     </div>
                                                     <p className="text-slate-300 leading-relaxed text-base font-light">
-                                                        {term.definition}
+                                                        {highlightText(term.definition, searchQuery)}
                                                     </p>
                                                     {term.example && (
                                                         <div className="mt-4 p-4 bg-gradient-to-r from-cyan-950/20 to-transparent rounded-lg border-l-2 border-cyan-500/50">
                                                             <span className="text-xs font-bold text-cyan-500 uppercase tracking-wide block mb-1">Example</span>
                                                             <span className="text-sm text-cyan-100/80 italic font-medium">
-                                                                &quot;{term.example}&quot;
+                                                                &quot;{highlightText(term.example, searchQuery)}&quot;
                                                             </span>
                                                         </div>
                                                     )}
@@ -575,7 +752,7 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                                             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Related Topics</h3>
                                             <div className="flex flex-wrap gap-2">
                                                 {selectedTopic.relatedTopics.map(relatedId => {
-                                                    const related = LIBRARY_TOPICS.find(t => t.id === relatedId);
+                                                    const related = mergedTopics.find(t => t.id === relatedId);
                                                     if (!related) return null;
                                                     return (
                                                         <button
@@ -595,6 +772,105 @@ const LibraryContent = ({ isDrawer = false }: LibraryContentProps) => {
                         </div>
                     )}
                 </AnimatePresence>,
+                document.body
+            )}
+
+            {/* Add Custom Term Modal */}
+            {mounted && showAddCustomModal && createPortal(
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        onClick={() => setShowAddCustomModal(false)}
+                        className="absolute inset-0 bg-black/75 backdrop-blur-md"
+                    />
+                    <motion.div
+                        initial={{ scale: 0.95, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="relative w-full max-w-lg bg-[#0e1117] border border-slate-800 rounded-3xl p-6 shadow-2xl z-10 overflow-hidden"
+                    >
+                        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-green-500 to-emerald-500" />
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                                <Sparkles className="text-green-400" size={22} />
+                                Add Custom Term
+                            </h3>
+                            <button
+                                onClick={() => setShowAddCustomModal(false)}
+                                className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleAddCustomTerm} className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Select Topic</label>
+                                <select
+                                    value={newTermTopicId}
+                                    onChange={(e) => setNewTermTopicId(e.target.value)}
+                                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:border-green-500 focus:ring-0 outline-none"
+                                >
+                                    {LIBRARY_TOPICS.map(topic => (
+                                        <option key={topic.id} value={topic.id}>{topic.title}</option>
+                                    ))}
+                                    <option value="custom-topic">Personal Collection (New Topic)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Term Name</label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="e.g. Sharpe Ratio"
+                                    value={newTermName}
+                                    onChange={(e) => setNewTermName(e.target.value)}
+                                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 focus:border-green-500 focus:ring-0 outline-none"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Definition</label>
+                                <textarea
+                                    required
+                                    rows={3}
+                                    placeholder="Provide a clear explanation of this concept..."
+                                    value={newTermDefinition}
+                                    onChange={(e) => setNewTermDefinition(e.target.value)}
+                                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 focus:border-green-500 focus:ring-0 outline-none resize-none"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Example (Optional)</label>
+                                <textarea
+                                    rows={2}
+                                    placeholder="e.g. A Sharpe ratio of 1.5 is considered very good..."
+                                    value={newTermExample}
+                                    onChange={(e) => setNewTermExample(e.target.value)}
+                                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 focus:border-green-500 focus:ring-0 outline-none resize-none"
+                                />
+                            </div>
+
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowAddCustomModal(false)}
+                                    className="flex-1 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 font-bold py-3 rounded-xl transition-all"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:shadow-lg hover:shadow-green-500/20 text-white font-bold py-3 rounded-xl transition-all"
+                                >
+                                    Add Term
+                                </button>
+                            </div>
+                        </form>
+                    </motion.div>
+                </div>,
                 document.body
             )}
 
