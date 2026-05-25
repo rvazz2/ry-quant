@@ -384,11 +384,24 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     </div>
                 </header>
 
-                <div className="p-8 pb-32 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out max-w-[1920px] mx-auto">
+                <div className="p-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out max-w-[1920px] mx-auto">
                     <ErrorBoundary name="Dashboard Content">
                         {children}
                     </ErrorBoundary>
                 </div>
+
+                {/* Dashboard footer */}
+                <footer className="py-6 text-center text-slate-600 text-xs border-t border-white/5 mx-8 flex flex-col md:flex-row justify-between items-center gap-4 shrink-0 relative z-10 bg-slate-950/20 backdrop-blur-sm rounded-xl px-6 mb-8">
+                    <div>
+                        <p>© {new Date().getFullYear()} Ry Quant. All rights reserved.</p>
+                        <p className="mt-1 opacity-50">QuantDash™ is a trademark of Ry Quant.</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Link href="/terms" className="hover:text-cyan-400 transition-colors">Terms of Service</Link>
+                        <span className="opacity-30">•</span>
+                        <Link href="/privacy" className="hover:text-cyan-400 transition-colors">Privacy Policy</Link>
+                    </div>
+                </footer>
             </main>
 
             {/* Command Palette Modal */}
